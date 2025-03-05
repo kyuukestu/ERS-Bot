@@ -1,0 +1,21 @@
+{
+	"main": "index.ts",
+	"name": "ers-bot",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest",
+		"eslint": "^9.21.0"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"axios": "^1.8.1",
+		"axios-cache-interceptor": "^1.6.2",
+		"discord.js": "^14.18.0",
+		"express": "^4.21.2",
+		"pokenode-ts": "^1.20.0"
+	}
+}
