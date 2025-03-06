@@ -1,5 +1,28 @@
 const { PokemonClient } = require('pokenode-ts');
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+import type { CommandInteraction } from 'discord.js';
+const { EmbedBuilder } = require('discord.js');
+
+// Define the structure of the Pokémon data with sprites
+interface PokemonData {
+	name: string;
+	types: { type: { name: string } }[];
+	abilities: { ability: { name: string } }[];
+	height: number;
+	weight: number;
+	stats: { stat: { name: string }; base_stat: number }[];
+	sprites: {
+		front_default: string; // Default front sprite
+		front_shiny: string; // Shiny front sprite
+		back_default: string; // Default back sprite
+		back_shiny: string; // Shiny back sprite
+		other: {
+			'official-artwork': {
+				front_default: string; // Official artwork sprite
+			};
+		};
+	};
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,53 +35,43 @@ module.exports = {
 				.setRequired(true)
 		),
 
-	async execute(interaction: any) {
+	async execute(interaction: CommandInteraction) {
 		const api = new PokemonClient();
-		const pokemonName = interaction.options.getString('pokemon');
+		const pokemonName = interaction.options.get('pokemon', true)
+			.value as string;
 
-		// Ensure the user provided a valid name
-		if (!pokemonName) {
-			return interaction.reply({
-				content: '❌ You must provide a Pokémon name!',
-				ephemeral: true,
-			});
-		}
-
-		function wait(ms: number) {
-			return new Promise((resolve) => setTimeout(resolve, ms));
-		}
+		console.log(`Searching for Pokémon: ${pokemonName}`);
 
 		try {
-			console.log(interaction.options.data);
+			// Defer the reply to avoid interaction timeouts
+			await interaction.deferReply();
 
-			await interaction.deferReply(); // Acknowledge first
-
-			await wait(500); // Wait 500ms before calling the API
-			const data = await api.getPokemonByName(pokemonName.toLowerCase());
-			await interaction.editReply(`Pokémon found: ${data.name}`);
+			// Fetch Pokémon data from the API
+			const data: PokemonData = await api.getPokemonByName(
+				pokemonName.toLowerCase()
+			);
 
 			// Extract key info
 			const name = data.name.toUpperCase();
-			const types = data.types.map((t: any) => `\`${t.type.name}\``).join(', ');
-			const abilities = data.abilities
-				.map((a: any) => `\`${a.ability.name}\``)
-				.join(', ');
+			const types = data.types.map((t) => t.type.name).join(', ');
+			const abilities = data.abilities.map((a) => a.ability.name).join(', ');
 			const height = (data.height / 10).toFixed(1); // Convert decimeters to meters
 			const weight = (data.weight / 10).toFixed(1); // Convert hectograms to kg
 			const stats = data.stats
-				.map((s: any) => `**${s.stat.name}**: ${s.base_stat}`)
+				.map((s) => `${s.stat.name}: ${s.base_stat}`)
 				.join('\n');
 
-			// Pokémon sprite (official front default)
-			const sprite =
-				data.sprites.other['official-artwork'].front_default ||
-				data.sprites.front_default;
+			// Extract sprite URLs
+			const defaultSprite = data.sprites.front_default;
+			const shinySprite = data.sprites.front_shiny;
+			const officialArtwork =
+				data.sprites.other['official-artwork'].front_default;
 
-			// Create an embed
+			// Create an embed with Pokémon details
 			const embed = new EmbedBuilder()
-				.setColor('#FFCC00')
-				.setTitle(`Pokédex Entry: ${name}`)
-				.setThumbnail(sprite)
+				.setColor('#FFCC00') // Set the embed color
+				.setTitle(`📖 Pokédex Entry: ${name}`)
+				.setThumbnail(defaultSprite) // Set the official artwork as the thumbnail
 				.addFields(
 					{ name: 'Type(s)', value: types, inline: true },
 					{ name: 'Abilities', value: abilities, inline: true },
@@ -66,17 +79,32 @@ module.exports = {
 					{ name: 'Weight', value: `${weight} kg`, inline: true },
 					{ name: 'Base Stats', value: stats }
 				)
+				.setImage(officialArtwork) // Set the default sprite as the main image
 				.setFooter({
 					text: `Requested by ${interaction.user.username}`,
 					iconURL: interaction.user.displayAvatarURL(),
 				});
 
-			// Reply with the embed
-			await interaction.reply({ embeds: [embed] });
+			// Edit the deferred reply with the embed
+			await interaction.editReply({ embeds: [embed] });
+
+			// Optionally, send additional sprites in a follow-up message
+			await interaction.followUp({
+				content: `**Sprites:**\n- [Default Front](${defaultSprite})\n- [Shiny Front](${shinySprite})`,
+			});
 		} catch (error) {
-			await interaction.reply(
-				`❌ Error: Pokémon not found. Please check the name.`
-			);
+			console.error('Error fetching Pokémon data:', error);
+
+			// Check if the interaction has already been acknowledged
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp(
+					`❌ Error: ${pokemonName} not found. Please check the name.`
+				);
+			} else {
+				await interaction.reply(
+					`❌ Error: ${pokemonName} not found. Please check the name.`
+				);
+			}
 		}
 	},
 };
