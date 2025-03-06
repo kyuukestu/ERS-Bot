@@ -36,4 +36,22 @@ const moveEndPoint = async (moveName: string) => {
 	return await response.json();
 };
 
+const berryEndPoint = async (berryName: string) => {
+	// Format the berry name (lowercase, replace spaces with hyphens, remove apostrophes)
+	const formattedBerryName = berryName
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/'/g, '');
+
+	// Fetch berry data from PokeAPI
+	const response = await fetch(
+		`https://pokeapi.co/api/v2/berry/${formattedBerryName}`
+	);
+	if (!response.ok) {
+		throw new Error(`Berry not found: ${formattedBerryName}`);
+	}
+
+	return response.toJSON();
+};
+
 export { pokemonEndPoint, moveEndPoint };
