@@ -1,28 +1,8 @@
-const { PokemonClient } = require('pokenode-ts');
+const { pokemonEndPoint } = require('../../components/apis/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-import type { CommandInteraction } from 'discord.js';
 const { EmbedBuilder } = require('discord.js');
-
-// Define the structure of the Pokémon data with sprites
-interface PokemonData {
-	name: string;
-	types: { type: { name: string } }[];
-	abilities: { ability: { name: string } }[];
-	height: number;
-	weight: number;
-	stats: { stat: { name: string }; base_stat: number }[];
-	sprites: {
-		front_default: string; // Default front sprite
-		front_shiny: string; // Shiny front sprite
-		back_default: string; // Default back sprite
-		back_shiny: string; // Shiny back sprite
-		other: {
-			'official-artwork': {
-				front_default: string; // Official artwork sprite
-			};
-		};
-	};
-}
+import type { CommandInteraction } from 'discord.js';
+import type { PokemonData } from '../../components/interface/pokemonData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -36,20 +16,14 @@ module.exports = {
 		),
 
 	async execute(interaction: CommandInteraction) {
-		const api = new PokemonClient();
 		const pokemonName = interaction.options.get('pokemon', true)
 			.value as string;
-
-		console.log(`Searching for Pokémon: ${pokemonName}`);
 
 		try {
 			// Defer the reply to avoid interaction timeouts
 			await interaction.deferReply();
 
-			// Fetch Pokémon data from the API
-			const data: PokemonData = await api.getPokemonByName(
-				pokemonName.toLowerCase()
-			);
+			const data: PokemonData = await pokemonEndPoint(pokemonName);
 
 			// Extract key info
 			const name = data.name.toUpperCase();

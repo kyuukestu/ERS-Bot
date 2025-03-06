@@ -1,20 +1,8 @@
-const { MoveClient } = require('pokenode-ts');
+const { moveEndPoint } = require('../../components/apis/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-import type { CommandInteraction } from 'discord.js';
 const { EmbedBuilder } = require('discord.js');
-const { fetch } = require('node-fetch');
-
-// Define the structure of the move data
-interface MoveData {
-	name: string;
-	accuracy?: number;
-	effect_chance?: number;
-	priority: number;
-	power?: number;
-	damage_class: { name: string };
-	type: { name: string };
-	flavor_text_entries: { flavor_text: string }[];
-}
+import type { CommandInteraction } from 'discord.js';
+import type { MoveData } from '../../components/interface/moveData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -34,24 +22,10 @@ module.exports = {
 			// Defer the reply to avoid interaction timeouts
 			await interaction.deferReply();
 
-			// Format the move name (lowercase, replace spaces with hyphens, remove apostrophes)
-			const formattedMoveName = moveName
-				.toLowerCase()
-				.replace(/\s+/g, '-')
-				.replace(/'/g, '');
-
-			// Fetch move data from the API
-			// const data: MoveData = await api.getMoveByName(moveName.toLowerCase());
-			const response = await fetch(
-				`https://pokeapi.co/api/v2/move/${formattedMoveName}`
-			);
-
-			if (!response.ok) {
-				throw new Error(`Move "${moveName}" not found.`);
-			}
+			const response = await moveEndPoint(moveName);
 
 			// Parse the response as JSON
-			const data: MoveData = (await response.json()) as MoveData;
+			const data: MoveData = response as MoveData;
 
 			// Extract key info
 			const name = data.name.toUpperCase();
@@ -88,7 +62,7 @@ module.exports = {
 					{ name: 'Type', value: type, inline: true }
 				)
 				.setFooter({
-					text: `Powered by Pokenode. Requested by ${interaction.user.username}`,
+					text: `Powered by PokeAPI. Requested by ${interaction.user.username}`,
 					iconURL: interaction.user.displayAvatarURL(),
 				});
 

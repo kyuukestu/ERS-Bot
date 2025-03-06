@@ -1,3 +1,4 @@
+const { pokemonEndPoint } = require('../../components/apis/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
 	EmbedBuilder,
@@ -6,21 +7,7 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-const { fetch } = require('node-fetch');
-
-// Define the structure of the Pokémon data
-interface PokemonData {
-	name: string;
-	sprites: { front_default: string };
-	moves: {
-		move: { name: string };
-		version_group_details: {
-			level_learned_at: number;
-			move_learn_method: { name: string };
-			version_group: { name: string };
-		}[];
-	}[];
-}
+import type { PokemonData } from '../../components/interface/pokemonData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -41,21 +28,7 @@ module.exports = {
 			// Defer the reply to avoid interaction timeouts
 			await interaction.deferReply();
 
-			// Format the move name (lowercase, replace spaces with hyphens, remove apostrophes)
-			const formattedPokeName = pokemonName
-				.toLowerCase()
-				.replace(/\s+/g, '-')
-				.replace(/'/g, '');
-
-			// Fetch Pokémon data from PokeAPI
-			const response = await fetch(
-				`https://pokeapi.co/api/v2/pokemon/${formattedPokeName}`
-			);
-			if (!response.ok) {
-				throw new Error(`Pokémon not found: ${formattedPokeName}`);
-			}
-
-			const data: PokemonData = await response.json();
+			const data: PokemonData = await pokemonEndPoint(pokemonName);
 
 			// Extract Pokémon details
 			const name = data.name.toUpperCase();
