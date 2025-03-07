@@ -1,4 +1,4 @@
-const { pokemonEndPoint } = require('../../components/apis/pokeapi.ts');
+const { pokemonEndPoint } = require('../../components/api/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
 	EmbedBuilder,

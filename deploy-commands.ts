@@ -1,5 +1,5 @@
 import { REST, Routes } from 'discord.js';
-const { clientId, guildId, token } = require('./tsconfig.json');
+const { clientId, guildId, token } = require('./config.json');
 import fs from 'node:fs';
 import path from 'node:path';
 

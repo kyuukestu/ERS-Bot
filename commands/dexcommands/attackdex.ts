@@ -1,4 +1,4 @@
-const { moveEndPoint } = require('../../components/apis/pokeapi.ts');
+const { moveEndPoint } = require('../../components/api/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';

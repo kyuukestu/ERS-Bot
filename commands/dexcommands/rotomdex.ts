@@ -1,4 +1,4 @@
-const { pokemonEndPoint } = require('../../components/apis/pokeapi.ts');
+const { pokemonEndPoint } = require('../../components/api/pokeapi.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
@@ -6,18 +6,17 @@ import type { PokemonData } from '../../components/interface/pokemonData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('pokedex')
+		.setName('rotomdex')
 		.setDescription('Search for a Pokémon by name and get its information.')
 		.addStringOption((option: any) =>
 			option
-				.setName('pokemon')
+				.setName('name')
 				.setDescription('Enter the Pokémon name.')
 				.setRequired(true)
 		),
 
 	async execute(interaction: CommandInteraction) {
-		const pokemonName = interaction.options.get('pokemon', true)
-			.value as string;
+		const pokemonName = interaction.options.get('name', true).value as string;
 
 		try {
 			// Defer the reply to avoid interaction timeouts
@@ -41,7 +40,6 @@ module.exports = {
 			const officialArtwork =
 				data.sprites.other['official-artwork'].front_default;
 
-			// Create an embed with Pokémon details
 			const embed = new EmbedBuilder()
 				.setColor('#FFCC00') // Set the embed color
 				.setTitle(`📖 Pokédex Entry: ${name}`)
@@ -59,24 +57,22 @@ module.exports = {
 					iconURL: interaction.user.displayAvatarURL(),
 				});
 
-			// Edit the deferred reply with the embed
 			await interaction.editReply({ embeds: [embed] });
 
-			// Optionally, send additional sprites in a follow-up message
 			await interaction.followUp({
 				content: `**Sprites:**\n- [Default Front](${defaultSprite})\n- [Shiny Front](${shinySprite})`,
 			});
 		} catch (error) {
-			console.error('Error fetching Pokémon data:', error);
+			console.error('Error fetching move data:', error);
 
 			// Check if the interaction has already been acknowledged
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(
-					`❌ Error: ${pokemonName} not found. Please check the name.`
+					`❌ Error: Move "${pokemonName}" not found. Please check the name and try again.`
 				);
 			} else {
 				await interaction.reply(
-					`❌ Error: ${pokemonName} not found. Please check the name.`
+					`❌ Error: Move "${pokemonName}" not found. Please check the name and try again.`
 				);
 			}
 		}

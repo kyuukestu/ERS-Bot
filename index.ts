@@ -7,7 +7,7 @@ import {
 	MessageFlags,
 	type Interaction,
 } from 'discord.js';
-import { token } from './tsconfig.json';
+import { token } from './config.json';
 import fs from 'node:fs';
 import path from 'node:path';
 
