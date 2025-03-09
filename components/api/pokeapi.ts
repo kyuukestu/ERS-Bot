@@ -36,22 +36,41 @@ const moveEndPoint = async (moveName: string) => {
 	return await response.json();
 };
 
-const berryEndPoint = async (berryName: string) => {
-	// Format the berry name (lowercase, replace spaces with hyphens, remove apostrophes)
-	const formattedBerryName = berryName
+const itemEndPoint = async (itemName: string) => {
+	// Format the item name (lowercase, replace spaces with hyphens, remove apostrophes)
+	const formattedItemName = itemName
 		.toLowerCase()
 		.replace(/\s+/g, '-')
 		.replace(/'/g, '');
 
-	// Fetch berry data from PokeAPI
+	// Fetch item data from PokeAPI
 	const response = await fetch(
-		`https://pokeapi.co/api/v2/berry/${formattedBerryName}`
+		`https://pokeapi.co/api/v2/item/${formattedItemName}`
 	);
+
 	if (!response.ok) {
-		throw new Error(`Berry not found: ${formattedBerryName}`);
+		throw new Error(`Item not found: ${formattedItemName}`);
 	}
 
-	return response.toJSON();
+	return await response.json();
 };
 
-export { pokemonEndPoint, moveEndPoint };
+const abilityEndPoint = async (abilityName: string) => {
+	// Format the ability name (lowercase, replace spaces with hyphens, remove apostrophes)
+	const formattedAbilityName = abilityName
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/'/g, '');
+
+	// Fetch ability data from PokeAPI
+	const response = await fetch(
+		`https://pokeapi.co/api/v2/ability/${formattedAbilityName}`
+	);
+	if (!response.ok) {
+		throw new Error(`Berry not found: ${formattedAbilityName}`);
+	}
+
+	return await response.json();
+};
+
+export { pokemonEndPoint, moveEndPoint, abilityEndPoint, itemEndPoint };
