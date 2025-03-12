@@ -1,5 +1,5 @@
 import { REST, Routes } from 'discord.js';
-const { clientId, guildId, token } = require('./config.json');
+const { clientId, guildId, outbackguildId, token } = require('./config.json');
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -46,8 +46,15 @@ const rest = new REST().setToken(token);
 			{ body: commands }
 		);
 
+		// The put method is used to fully refresh all commands in the guild with the current set
+		const dataO: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, outbackguildId),
+			{ body: commands }
+		);
+
 		console.log(
-			`Successfully reloaded ${data.length} application (/) commands.`
+			`Successfully reloaded ${data.length} application (/) commands.\n
+			Successfully reloaded ${dataO.length} application (/) commands.`
 		);
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
