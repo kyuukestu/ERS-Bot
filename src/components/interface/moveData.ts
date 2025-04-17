@@ -6,7 +6,15 @@ interface MoveData {
 	power?: number;
 	damage_class: { name: string };
 	type: { name: string };
-	flavor_text_entries: { flavor_text: string }[];
+	flavor_text_entries: {
+		flavor_text: string;
+		language: {
+			name: string;
+		};
+		version_group: {
+			name: string;
+		};
+	}[];
 }
 
 export type { MoveData };

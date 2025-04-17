@@ -1,0 +1,8 @@
+services:
+  ers-bot:
+    build: .
+    container_name: ers-bot
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/usr/src/app/config.json
+    # Add other environment variables as needed

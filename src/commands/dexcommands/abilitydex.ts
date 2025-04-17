@@ -1,4 +1,5 @@
 const { abilityEndPoint } = require('../../components/api/pokeapi.ts');
+const { formatUserInput } = require('../utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
@@ -16,8 +17,9 @@ module.exports = {
 		),
 
 	async execute(interaction: CommandInteraction) {
-		const abilityName = interaction.options.get('ability', true)
-			.value as string;
+		const abilityName = formatUserInput(
+			interaction.options.get('ability', true).value as string
+		);
 
 		try {
 			// Defer the reply to avoid interaction timeouts

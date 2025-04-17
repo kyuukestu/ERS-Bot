@@ -1,4 +1,5 @@
 const { pokemonEndPoint } = require('../../components/api/pokeapi.ts');
+const { formatUserInput } = require('../utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
@@ -16,7 +17,9 @@ module.exports = {
 		),
 
 	async execute(interaction: CommandInteraction) {
-		const pokemonName = interaction.options.get('name', true).value as string;
+		const pokemonName = formatUserInput(
+			interaction.options.get('name', true).value as string
+		);
 
 		try {
 			// Defer the reply to avoid interaction timeouts
