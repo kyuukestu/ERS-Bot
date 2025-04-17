@@ -255,7 +255,7 @@ function groupAndSortMoves(
 			const levelDisplay = move.level > 0 ? ` (Lv. ${move.level})` : '';
 			const otherMethodsDisplay =
 				move.otherMethods.length > 0
-					? ` • Also by: ${move.otherMethods.join(', ')}`
+					? ` | **Also by:** ${move.otherMethods.join(', ')}`
 					: '';
 			return `**${move.name}**:${levelDisplay}${otherMethodsDisplay} [${move.version}]`;
 		});
@@ -268,7 +268,7 @@ function groupAndSortMoves(
 		result[method] = grouped[method].map((move) => {
 			const otherMethodsDisplay =
 				move.otherMethods.length > 0
-					? ` • Also by: ${move.otherMethods.join(', ')}`
+					? ` • **Also by:** ${move.otherMethods.join(', ')}`
 					: '';
 			return `**${move.name}**:${otherMethodsDisplay} [${move.version}]`;
 		});
