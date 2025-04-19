@@ -12,6 +12,17 @@ const pokemonEndPoint = async (pokemonName: string) => {
 	return await response.json();
 };
 
+const speciesEndPoint = async (speciesName: string) => {
+	const response = await fetch(
+		`https://pokeapi.co/api/v2/pokemon-species/${speciesName}`
+	);
+	if (!response.ok) {
+		throw new Error(`Pokémon not found: ${speciesName}`);
+	}
+
+	return await response.json();
+};
+
 const moveEndPoint = async (moveName: string) => {
 	// Fetch moved data from PokeAPI
 	const response = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
@@ -45,4 +56,10 @@ const abilityEndPoint = async (abilityName: string) => {
 	return await response.json();
 };
 
-export { pokemonEndPoint, moveEndPoint, abilityEndPoint, itemEndPoint };
+export {
+	pokemonEndPoint,
+	speciesEndPoint,
+	moveEndPoint,
+	abilityEndPoint,
+	itemEndPoint,
+};
