@@ -1,7 +1,12 @@
 const { moveEndPoint } = require('../../components/api/pokeapi.ts');
 const { formatUserInput } = require('../utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+const {
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+} = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
 import type { MoveData } from '../../components/interface/moveData.ts';
 
@@ -38,16 +43,15 @@ module.exports = {
 			const priority = data.priority;
 			const power = data.power;
 			const damageClass = data.damage_class.name;
-			// const flavorText = data.flavor_text_entries[0].flavor_text;
 			const flavorText =
-				data.flavor_text_entries
-					.filter((ft) => ft.language.name === 'en') // Filter English entries
-					.pop()?.flavor_text || // Get last element
-				'No English description available';
+				data.flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
+					?.flavor_text || 'No English description available';
 
 			const flavorTextVer =
 				data.flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
 					?.version_group.name || 'No English version';
+
+			const learnedby = data.learned_by_pokemon.map((p) => p.name);
 
 			// Create an embed with move details
 			const embed = embedFormat(
@@ -65,6 +69,9 @@ module.exports = {
 
 			// Edit the deferred reply with the embed
 			await interaction.editReply({ embeds: [embed] });
+
+			// Send the paginated list of Pokémon
+			await sendPaginatedList(interaction, name, learnedby);
 		} catch (error) {
 			console.error('Error fetching move data:', error);
 
@@ -135,4 +142,111 @@ function embedFormat(
 			text: `Powered by PokeAPI. Requested by ${interaction.user.username}`,
 			iconURL: interaction.user.displayAvatarURL(),
 		});
+}
+
+async function sendPaginatedList(
+	interaction: CommandInteraction,
+	moveName: string,
+	learnedby: string[]
+) {
+	const monsPerPage = 15;
+	let currentPage = 0;
+
+	// Sort the Pokémon names alphabetically
+	const sortedLearnedBy = [...learnedby].sort((a, b) =>
+		a.localeCompare(b, undefined, { sensitivity: 'base' })
+	);
+
+	const totalPages = Math.ceil(sortedLearnedBy.length / monsPerPage);
+
+	const formattedMoveName = moveName
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+
+	const generateEmbed = (page: number) => {
+		const start = page * monsPerPage;
+		const end = start + monsPerPage;
+		const currentMons = sortedLearnedBy
+			.slice(start, end)
+			.map((name) => `• ${name.charAt(0).toUpperCase() + name.slice(1)}`)
+			.join('\n');
+
+		return new EmbedBuilder()
+			.setTitle(`${formattedMoveName} is learned by:`)
+			.setDescription(currentMons || 'No Pokémon found.')
+			.setFooter({
+				text: `Page ${page + 1}/${totalPages} | Total: ${
+					sortedLearnedBy.length
+				} Pokémon`,
+			});
+	};
+
+	// Create buttons
+	const row = new ActionRowBuilder().addComponents(
+		new ButtonBuilder()
+			.setCustomId('previous')
+			.setLabel('Previous')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(currentPage === 0),
+		new ButtonBuilder()
+			.setCustomId('next')
+			.setLabel('Next')
+			.setStyle(ButtonStyle.Primary)
+			.setDisabled(currentPage >= totalPages - 1)
+	);
+
+	const message = await interaction.followUp({
+		embeds: [generateEmbed(currentPage)],
+		components: [row],
+		fetchReply: true,
+	});
+
+	// Create a collector for button interactions
+	const collector = message.createMessageComponentCollector({
+		time: 60000, // 1 minute timeout
+	});
+
+	collector.on('collect', async (buttonInteraction) => {
+		if (buttonInteraction.customId === 'previous') currentPage--;
+		if (buttonInteraction.customId === 'next') currentPage++;
+		collector.resetTimer();
+
+		// Update the buttons
+		const updatedRow = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId('previous')
+				.setLabel('Previous')
+				.setStyle(ButtonStyle.Primary)
+				.setDisabled(currentPage === 0),
+			new ButtonBuilder()
+				.setCustomId('next')
+				.setLabel('Next')
+				.setStyle(ButtonStyle.Primary)
+				.setDisabled(currentPage >= totalPages - 1)
+		);
+
+		await buttonInteraction.update({
+			embeds: [generateEmbed(currentPage)],
+			components: [updatedRow],
+		});
+	});
+
+	collector.on('end', () => {
+		// Disable buttons when collector ends
+		const disabledRow = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId('previous')
+				.setLabel('Previous')
+				.setStyle(ButtonStyle.Primary)
+				.setDisabled(true),
+			new ButtonBuilder()
+				.setCustomId('next')
+				.setLabel('Next')
+				.setStyle(ButtonStyle.Primary)
+				.setDisabled(true)
+		);
+
+		message.edit({ components: [disabledRow] }).catch(console.error);
+	});
 }

@@ -15,6 +15,9 @@ interface MoveData {
 			name: string;
 		};
 	}[];
+	learned_by_pokemon: {
+		name: string;
+	}[];
 }
 
 export type { MoveData };
