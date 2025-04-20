@@ -1,5 +1,5 @@
 const { moveEndPoint } = require('../../components/api/pokeapi.ts');
-const { formatUserInput } = require('../utility/formatUserInput.ts');
+const { formatUserInput } = require('../../components/utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
 	EmbedBuilder,

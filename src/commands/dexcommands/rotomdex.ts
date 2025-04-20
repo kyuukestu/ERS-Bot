@@ -2,7 +2,9 @@ const {
 	pokemonEndPoint,
 	speciesEndPoint,
 } = require('../../components/api/pokeapi.ts');
-const { formatUserInput } = require('../utility/formatUserInput.ts');
+const {
+	formatUserInput,
+} = require('../../components/utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
 	EmbedBuilder,
@@ -23,6 +25,12 @@ module.exports = {
 				.setName('name')
 				.setDescription('Enter the Pokémon name.')
 				.setRequired(true)
+		)
+		.addStringOption((option: any) =>
+			option
+				.setName('form')
+				.setDescription(`Enter the pokémon's form.`)
+				.setRequired(false)
 		),
 
 	async execute(interaction: CommandInteraction) {
@@ -30,11 +38,17 @@ module.exports = {
 			interaction.options.get('name', true).value as string
 		);
 
+		let formName = interaction.options.get('form', false)
+			? formatUserInput(interaction.options.get('form')?.value as string)
+			: '';
+
+		const searchName = formatUserInput(`${pokemonName} ${formName}`);
+
 		try {
 			// Defer the reply to avoid interaction timeouts
 			await interaction.deferReply();
 
-			const data: PokemonData = await pokemonEndPoint(pokemonName);
+			const data: PokemonData = await pokemonEndPoint(searchName);
 			const species: speciesData = await speciesEndPoint(pokemonName);
 
 			// Extract key info
@@ -193,11 +207,11 @@ module.exports = {
 			// Check if the interaction has already been acknowledged
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(
-					`❌ Error: "${pokemonName}" not found. Please check the name and try again.`
+					`❌ Error: "${searchName}" not found. Please check the name and try again.`
 				);
 			} else {
 				await interaction.reply(
-					`❌ Error: "${pokemonName}" not found. Please check the name and try again.`
+					`❌ Error: "${searchName}" not found. Please check the name and try again.`
 				);
 			}
 		}
