@@ -67,8 +67,8 @@ module.exports = {
 			// Extract evolution info
 			const evolveFrom = species.evolves_from_species
 				? `Evolves from: ${
-						species.evolves_from_species.charAt(0).toUpperCase() +
-						species.evolves_from_species.slice(1)
+						species.evolves_from_species.name.charAt(0).toUpperCase() +
+						species.evolves_from_species.name.slice(1)
 				  }`
 				: 'No pre-evolution';
 
