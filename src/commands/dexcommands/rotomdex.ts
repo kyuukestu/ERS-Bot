@@ -1,7 +1,7 @@
 const {
 	pokemonEndPoint,
 	speciesEndPoint,
-} = require('../../components/api/pokeapi.ts');
+} = require('../../components/api/PokeApi.ts');
 const {
 	formatUserInput,
 } = require('../../components/utility/formatUserInput.ts');
@@ -13,8 +13,8 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/pokemonData.ts';
-import type { speciesData } from '../../components/interface/speciesData.ts';
+import type { PokemonData } from '../../components/interface/PokemonData.ts';
+import type { SpeciesData } from '../../components/interface/SpeciesData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -49,7 +49,7 @@ module.exports = {
 			await interaction.deferReply();
 
 			const data: PokemonData = await pokemonEndPoint(searchName);
-			const species: speciesData = await speciesEndPoint(pokemonName);
+			const species: SpeciesData = await speciesEndPoint(pokemonName);
 
 			// Extract key info
 			const name = data.name.toUpperCase();

@@ -5,7 +5,7 @@ const {
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { ItemData } from '../../components/interface/itemData.ts';
+import type { ItemData } from '../../components/interface/ItemData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()

@@ -1,11 +1,11 @@
-const { abilityEndPoint } = require('../../components/api/pokeapi.ts');
+const { abilityEndPoint } = require('../../components/api/PokeApi.ts');
 const {
 	formatUserInput,
 } = require('../../components/utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { AbilityData } from '../../components/interface/abilityData.ts';
+import type { AbilityData } from '../../components/interface/AbilityData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()

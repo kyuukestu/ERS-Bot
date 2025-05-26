@@ -1,4 +1,4 @@
-const { pokemonEndPoint } = require('../../components/api/pokeapi.ts');
+const { pokemonEndPoint } = require('../../components/api/PokeApi.ts');
 const {
 	formatUserInput,
 } = require('../../components/utility/formatUserInput.ts');
@@ -10,7 +10,7 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/pokemonData.ts';
+import type { PokemonData } from '../../components/interface/PokemonData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -265,7 +265,10 @@ function groupAndSortMoves(
 
 	// Sort other methods alphabetically
 	const otherMethods = Object.keys(grouped).filter((m) => m !== levelUpKey);
-	otherMethods.sort().forEach((method) => {
+	const sortedOtherMethods = otherMethods.toSorted((a, b) =>
+		a.localeCompare(b)
+	);
+	sortedOtherMethods.forEach((method) => {
 		grouped[method].sort((a, b) => a.name.localeCompare(b.name));
 		result[method] = grouped[method].map((move) => {
 			const otherMethodsDisplay =

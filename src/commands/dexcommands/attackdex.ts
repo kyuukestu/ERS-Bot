@@ -1,5 +1,7 @@
-const { moveEndPoint } = require('../../components/api/pokeapi.ts');
-const { formatUserInput } = require('../../components/utility/formatUserInput.ts');
+const { moveEndPoint } = require('../../components/api/PokeApi.ts');
+const {
+	formatUserInput,
+} = require('../../components/utility/formatUserInput.ts');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const {
 	EmbedBuilder,
@@ -8,7 +10,7 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { MoveData } from '../../components/interface/moveData.ts';
+import type { MoveData } from '../../components/interface/MoveData.ts';
 
 module.exports = {
 	data: new SlashCommandBuilder()

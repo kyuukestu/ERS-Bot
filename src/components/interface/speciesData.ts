@@ -1,4 +1,4 @@
-interface speciesData {
+interface SpeciesData {
 	egg_groups: {
 		name: string;
 	}[];
@@ -22,4 +22,4 @@ interface speciesData {
 	}[];
 }
 
-export type { speciesData };
+export type { SpeciesData };
