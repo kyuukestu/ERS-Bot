@@ -1,5 +1,7 @@
 interface ItemData {
 	name: string;
+	category: { name: string };
+	cost: number;
 	fling_power: number;
 	fling_effect: { name?: string };
 	effect_entries: {
