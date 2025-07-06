@@ -23,14 +23,23 @@ const speciesEndPoint = async (speciesName: string) => {
 	return await response.json();
 };
 
-const moveEndPoint = async (moveName: string) => {
-	// Fetch moved data from PokeAPI
-	const response = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
-	if (!response.ok) {
-		throw new Error(`Move not found: ${moveName}`);
-	}
+const moveEndPoint = async (moveName?: string) => {
+	if (moveName) {
+		// Fetch moved data from PokeAPI
+		const response = await fetch(`https://pokeapi.co/api/v2/move/${moveName}`);
+		if (!response.ok) {
+			throw new Error(`Move not found: ${moveName}`);
+		}
 
-	return await response.json();
+		return await response.json();
+	} else {
+		const response = await fetch(`https://pokeapi.co/api/v2/move/`);
+		if (!response.ok) {
+			throw new Error(`Move not found: ${moveName}`);
+		}
+
+		return await response.json();
+	}
 };
 
 const itemEndPoint = async (itemName: string) => {

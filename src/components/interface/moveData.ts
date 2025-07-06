@@ -15,5 +15,9 @@ interface MoveData {
 		version_group: { name: string };
 	}[];
 	learned_by_pokemon: { name: string }[];
+	machines: {
+		machine: { url: string };
+		version_group: { name: string };
+	}[];
 }
 export type { MoveData };
