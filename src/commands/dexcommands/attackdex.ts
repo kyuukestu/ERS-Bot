@@ -10,7 +10,7 @@ const {
 	ButtonStyle,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { MoveData } from '../../components/interface/MoveData.ts';
+import type { MoveData } from '../../components/interface/moveData.ts';
 
 // Move type colors for aesthetic enhancement
 const typeColors: { [key: string]: number } = {

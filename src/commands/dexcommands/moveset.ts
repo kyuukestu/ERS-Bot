@@ -11,7 +11,7 @@ const {
 	StringSelectMenuBuilder,
 } = require('discord.js');
 import type { CommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/PokemonData.ts';
+import type { PokemonData } from '../../components/interface/pokemonData.ts';
 
 // ADD THIS: Enhanced styling configuration
 const methodConfig = {
