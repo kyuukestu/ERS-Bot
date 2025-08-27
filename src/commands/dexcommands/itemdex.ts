@@ -1,31 +1,15 @@
-const { itemEndPoint } = require('../../components/api/pokeapi.ts');
-const {
-	formatUserInput,
-} = require('../../components/utility/formatUserInput.ts');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
-import type { CommandInteraction } from 'discord.js';
-import type { ItemData } from '../../components/interface/ItemData.ts';
+import { itemEndPoint } from '../../components/api/pokeapi.ts';
+import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import {
+	SlashCommandBuilder,
+	EmbedBuilder,
+	type ChatInputCommandInteraction,
+} from 'discord.js';
+import type { ItemData } from '../../components/interface/apiData.ts';
+import { itemCategoryColors } from '../../components/ui/colors.ts';
+import { extractItemInfo } from '../../components/utility/dataExtraction.ts';
 
-// Item category colors for aesthetic enhancement
-const categoryColors: { [key: string]: number } = {
-	medicine: 0x4caf50,
-	held_item: 0x2196f3,
-	berry: 0x8bc34a,
-	tm: 0xff9800,
-	other: 0x9e9e9e,
-};
-
-// Emojis for visual appeal
-const itemEmojis: { [key: string]: string } = {
-	medicine: '💊',
-	held_item: '🎒',
-	berry: '🍇',
-	tm: '📜',
-	other: '❓',
-};
-
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('itemdex')
 		.setDescription('Search for an item by name and get its information.')
@@ -36,7 +20,7 @@ module.exports = {
 				.setRequired(true)
 		),
 
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		const itemName = formatUserInput(
 			interaction.options.get('item', true).value as string
 		);
@@ -46,69 +30,47 @@ module.exports = {
 
 			const response = await itemEndPoint(itemName);
 			const data: ItemData = response as ItemData;
-
-			// Extract key info with fallback values
-			const name = data.name
-				.split('-')
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
-			const category = data.category?.name || 'other';
-			const cost = data.cost || 0;
-			const effect =
-				data.effect_entries
-					.filter((entry) => entry.language.name === 'en')
-					.pop()?.effect || 'No English description available';
-			const flavorText =
-				data.flavor_text_entries
-					.filter((entry) => entry.language.name === 'en')
-					.pop()?.text || 'No English description available';
-			const flavorTextVer =
-				data.flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
-					?.version_group.name || 'Unknown';
-			const sprite = data.sprites.default || '';
-			const flingPower = data.fling_power || 0;
-			const flingEffect = data.fling_effect?.name
-				? data.fling_effect.name
-						.split('-')
-						.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-						.join(' ')
-				: 'None';
+			const itemInfo = extractItemInfo(data);
 
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()
-				.setColor(categoryColors[category] || categoryColors['other'])
-				.setTitle(`${itemEmojis[category] || '❓'} **${name}**`)
-				.setDescription(flavorText.replace(/\r?\n|\r/g, ' '))
-				.setThumbnail(sprite)
+				.setColor(
+					itemCategoryColors[itemInfo.category] || itemCategoryColors['other']
+				)
+				.setTitle(`${itemInfo.item_emoji || '❓'} **${itemInfo.name}**`)
+				.setDescription(itemInfo.flavor_text_entries.replace(/\r?\n|\r/g, ' '))
+				.setThumbnail(itemInfo.sprite)
 				.addFields(
 					{
 						name: '📌 Category',
-						value: category.charAt(0).toUpperCase() + category.slice(1),
+						value:
+							itemInfo.category.charAt(0).toUpperCase() +
+							itemInfo.category.slice(1),
 						inline: true,
 					},
 					{
 						name: '💰 Cost',
-						value: cost.toLocaleString() + ' Pokédollars',
+						value: itemInfo.cost.toLocaleString() + ' ₱',
 						inline: true,
 					},
 					{
 						name: '⚡ Fling Power',
-						value: flingPower.toString(),
+						value: itemInfo.fling_power.toString(),
 						inline: true,
 					},
 					{
 						name: '🎯 Fling Effect',
-						value: flingEffect,
+						value: itemInfo.fling_effect,
 						inline: true,
 					},
 					{
 						name: '📝 Effect',
-						value: effect.replace(/\r?\n|\r/g, ' '),
+						value: itemInfo.effect.replace(/\r?\n|\r/g, ' '),
 						inline: false,
 					},
 					{
 						name: '📅 Version',
-						value: flavorTextVer,
+						value: itemInfo.flavor_text_ver,
 						inline: false,
 					}
 				)

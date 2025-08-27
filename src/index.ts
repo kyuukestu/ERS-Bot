@@ -1,4 +1,4 @@
-// Require the necessary discord.js classes
+// index.ts
 import {
 	Client,
 	Collection,
@@ -8,8 +8,8 @@ import {
 	type Interaction,
 } from 'discord.js';
 import { token } from '../config.json';
-import fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs/promises'; // Use promises for async
+import * as path from 'node:path';
 
 class ExtendedClient extends Client {
 	commands: Collection<string, any>;
@@ -19,45 +19,53 @@ class ExtendedClient extends Client {
 		this.commands = new Collection();
 	}
 }
+
 // Create a new client instance
 const client = new ExtendedClient();
 
-// When the client is ready, run this code (only once).
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
-client.once(Events.ClientReady, (readyClient: Client<true>) => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
+// Load commands dynamically
+async function loadCommands() {
+	const foldersPath = path.join(__dirname, 'commands');
+	const commandFolders = await fs.readdir(foldersPath);
 
-client.commands = new Collection();
+	for (const folder of commandFolders) {
+		const commandsPath = path.join(foldersPath, folder);
+		const commandFiles = (await fs.readdir(commandsPath)).filter(
+			(file: string) => file.endsWith('.ts')
+		);
 
-const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath);
-
-for (const folder of commandFolders) {
-	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = fs
-		.readdirSync(commandsPath)
-		.filter((file) => file.endsWith('.ts'));
-
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		// Set a new item in the Collection with the key as the command name and the value as the exported module.
-		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command);
-		} else {
-			console.log(
-				`[WARNING] The command ${filePath} is missing a required "data" or "execute" property.`
-			);
+		for (const file of commandFiles) {
+			const filePath = path.join(commandsPath, file);
+			try {
+				const command = await import(filePath); // Dynamic import for ES Modules
+				// Access the default export
+				const commandModule = command.default;
+				if ('data' in commandModule && 'execute' in commandModule) {
+					client.commands.set(commandModule.data.name, commandModule);
+					console.log(`Loaded command: ${commandModule.data.name}`);
+				} else {
+					console.warn(
+						`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+					);
+				}
+			} catch (error) {
+				console.error(`[ERROR] Failed to load command at ${filePath}:`, error);
+			}
 		}
 	}
 }
 
-client.on(Events.InteractionCreate, async (interaction) => {
+// Load commands when the client is ready
+client.once(Events.ClientReady, async (readyClient: Client<true>) => {
+	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	await loadCommands(); // Load commands after client is ready
+});
+
+// Handle interactions
+client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
-	const command = (interaction.client as ExtendedClient).commands.get(
+	const command = (interaction.client as any).commands.get(
 		interaction.commandName
 	);
 
@@ -69,7 +77,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	try {
 		await command.execute(interaction);
 	} catch (error) {
-		console.error(error);
+		console.error(`Error executing ${interaction.commandName}:`, error);
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
 				content: 'There was an error while executing this command!',
@@ -82,18 +90,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			});
 		}
 	}
-
-	console.log(interaction);
 });
 
-client.on('interactionCreate', async (interaction: Interaction) => {
-	if (!interaction.isChatInputCommand()) return;
-
-	if (interaction.commandName === 'pokedex') {
-		const userInput = interaction.options.getString('message', true); // Get required string input
-		await interaction.reply(`You searched for: ${userInput}`);
-	}
-});
-
-// Log in to Discord with your client's token
+// Log in to Discord
 client.login(token);

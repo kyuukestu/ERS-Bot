@@ -1,69 +1,31 @@
-const {
+import {
 	pokemonEndPoint,
 	speciesEndPoint,
-} = require('../../components/api/PokeApi.ts');
-const {
-	formatUserInput,
-} = require('../../components/utility/formatUserInput.ts');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const {
+} from '../../components/api/pokeapi.ts';
+import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import {
+	SlashCommandBuilder,
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	StringSelectMenuBuilder,
 	ComponentType,
-} = require('discord.js');
-import type { CommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/PokemonData.ts';
-import type { SpeciesData } from '../../components/interface/SpeciesData.ts';
+	type ChatInputCommandInteraction,
+} from 'discord.js';
+import type {
+	PokemonData,
+	SpeciesData,
+} from '../../components/interface/apiData.ts';
+import { typeColors } from '../../components/ui/colors.ts';
+import { PokemonStatsCanvas } from '../../components/utility/statsCanvas.ts';
+import { PokemonStats } from '../../components/interface/canvasData.ts';
+import {
+	extractPokemonInfo,
+	extractSpeciesInfo,
+} from '../../components/utility/dataExtraction.ts';
 
-// Type effectiveness mapping for better visual representation
-const typeColors: { [key: string]: number } = {
-	normal: 0xa8a878,
-	fire: 0xf08030,
-	water: 0x6890f0,
-	electric: 0xf8d030,
-	grass: 0x78c850,
-	ice: 0x98d8d8,
-	fighting: 0xc03028,
-	poison: 0xa040a0,
-	ground: 0xe0c068,
-	flying: 0xa890f0,
-	psychic: 0xf85888,
-	bug: 0xa8b820,
-	rock: 0xb8a038,
-	ghost: 0x705898,
-	dragon: 0x7038f8,
-	dark: 0x705848,
-	steel: 0xb8b8d0,
-	fairy: 0xee99ac,
-};
-
-// Stat emojis for better visual appeal
-const statEmojis: { [key: string]: string } = {
-	hp: '❤️',
-	attack: '⚔️',
-	defense: '🛡️',
-	'special-attack': '✨',
-	'special-defense': '🔮',
-	speed: '💨',
-};
-
-// Generation emojis
-const generationEmojis: { [key: number]: string } = {
-	1: '1️⃣',
-	2: '2️⃣',
-	3: '3️⃣',
-	4: '4️⃣',
-	5: '5️⃣',
-	6: '6️⃣',
-	7: '7️⃣',
-	8: '8️⃣',
-	9: '9️⃣',
-};
-
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('rotomdex')
 		.setDescription(
@@ -87,8 +49,7 @@ module.exports = {
 				.setDescription('Show shiny variant by default.')
 				.setRequired(false)
 		),
-
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		const pokemonName = formatUserInput(
 			interaction.options.get('name', true).value as string
 		);
@@ -107,103 +68,10 @@ module.exports = {
 			const data: PokemonData = await pokemonEndPoint(searchName);
 			const species: SpeciesData = await speciesEndPoint(pokemonName);
 
-			// Enhanced data extraction
-			const name = data.name
-				.split('-')
-				.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-				.join(' ');
+			const pokemonInfo = extractPokemonInfo(data);
+			const speciesInfo = extractSpeciesInfo(species);
 
-			const types = data.types.map(
-				(t) =>
-					`${getTypeEmoji(t.type.name)} ${
-						t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)
-					}`
-			);
-
-			const abilities = data.abilities.map((a) => {
-				const abilityName = a.ability.name
-					.split('-')
-					.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-					.join(' ');
-				return a.is_hidden ? `*${abilityName}* (Hidden)` : abilityName;
-			});
-
-			const height = (data.height / 10).toFixed(1);
-			const weight = (data.weight / 10).toFixed(1);
-
-			// Aligned stats with emojis and bars starting from the same position
-			const maxStatNameLength = Math.max(
-				...data.stats.map(
-					(s) =>
-						s.stat.name
-							.split('-')
-							.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-							.join(' ').length
-				)
-			);
-			const maxValueLength = 3; // Fixed width for stat values (e.g., 100)
-			const statsFormatted = data.stats
-				.map((s) => {
-					const statName = s.stat.name
-						.split('-')
-						.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-						.join(' ');
-					const emoji = statEmojis[s.stat.name] || '📊';
-					const statValue = s.base_stat
-						.toString()
-						.padStart(maxValueLength, ' ');
-					const statBar = createStatBar(s.base_stat);
-					const padding = ' '.repeat(
-						maxStatNameLength - statName.length + maxValueLength + 2
-					); // Extra space after value
-					return `${emoji} **${statName}:** ${statValue}${padding}${statBar}`;
-				})
-				.join('\n');
-
-			const totalStats = data.stats.reduce(
-				(sum, stat) => sum + stat.base_stat,
-				0
-			);
-
-			const pokedexNumber =
-				species.pokedex_numbers.filter(
-					(pe) => pe.pokedex.name === 'national'
-				)[0]?.entry_number || 'Unknown';
-
-			// Enhanced evolution info
-			const evolveFrom = species.evolves_from_species
-				? `⬅️ Evolves from: **${
-						species.evolves_from_species.name.charAt(0).toUpperCase() +
-						species.evolves_from_species.name.slice(1)
-				  }**`
-				: '🥚 Base form';
-
-			// Aligned breeding and capture info
-			const eggGroups =
-				species.egg_groups.length > 0
-					? species.egg_groups
-							.map((eg) => eg.name.charAt(0).toUpperCase() + eg.name.slice(1))
-							.join(', ')
-					: 'Unknown';
-
-			const generation =
-				species.generation?.name.replace('generation-', '') || 'unknown';
-			const genNumber = parseInt(generation.split('-')[0]) || 0;
-			const genEmoji = generationEmojis[genNumber] || '❓';
-
-			const habitat = species.habitat
-				? species.habitat.name.charAt(0).toUpperCase() +
-				  species.habitat.name.slice(1)
-				: 'Unknown';
-
-			const growthRate =
-				species.growth_rate?.name
-					.split('-')
-					.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-					.join(' ') || 'Unknown';
-
-			const captureRate = species.capture_rate || 0;
-			const captureRatePercentage = ((captureRate / 255) * 100).toFixed(1);
+			// TODO: Implement check for cases in which the pokemon endpoint passes but the speceis end-point does not.
 
 			// Aligned breeding and capture fields
 			const maxLabelLength = Math.max(
@@ -213,15 +81,18 @@ module.exports = {
 				'Habitat:'.length
 			);
 			const breedingFormatted = [
-				`**${'Egg Groups:'.padEnd(maxLabelLength, ' ')}** ${eggGroups}`,
-				`**${'Growth Rate:'.padEnd(maxLabelLength, ' ')}** ${growthRate}`,
+				`**${'Egg Groups:'.padEnd(maxLabelLength, ' ')}** ${
+					speciesInfo.egg_groups
+				}`,
+				`**${'Growth Rate:'.padEnd(maxLabelLength, ' ')}** ${
+					speciesInfo.growth_rate
+				}`,
 			].join('\n');
 			const captureFormatted = [
-				`**${'Capture Rate:'.padEnd(
-					maxLabelLength,
-					' '
-				)}** ${captureRate}/255 (${captureRatePercentage}%)`,
-				`**${'Habitat:'.padEnd(maxLabelLength, ' ')}** ${habitat}`,
+				`**${'Capture Rate:'.padEnd(maxLabelLength, ' ')}** ${
+					speciesInfo.capture_rate
+				}/255 (${speciesInfo.capture_percentage}%)`,
+				`**${'Habitat:'.padEnd(maxLabelLength, ' ')}** ${speciesInfo.habitat}`,
 			].join('\n');
 
 			// Enhanced sprite selection
@@ -241,55 +112,87 @@ module.exports = {
 			const primaryType = data.types[0].type.name;
 			const embedColor = typeColors[primaryType] || 0xffcc00;
 
+			const stats: PokemonStats = {
+				hp: data.stats.find((s: any) => s.stat.name === 'hp')?.base_stat || 0,
+				attack:
+					data.stats.find((s: any) => s.stat.name === 'attack')?.base_stat || 0,
+				defense:
+					data.stats.find((s: any) => s.stat.name === 'defense')?.base_stat ||
+					0,
+				specialAttack:
+					data.stats.find((s: any) => s.stat.name === 'special-attack')
+						?.base_stat || 0,
+				specialDefense:
+					data.stats.find((s: any) => s.stat.name === 'special-defense')
+						?.base_stat || 0,
+				speed:
+					data.stats.find((s: any) => s.stat.name === 'speed')?.base_stat || 0,
+			};
+
+			// Create stats visualization
+			const statsImage = PokemonStatsCanvas.createStatsImage(stats, {
+				backgroundColor: '#36393F',
+				borderColor: '#72767D',
+				width: 500,
+				height: 280,
+			});
+
+			// Calculate total stats
+			const totalStats = Object.values(stats).reduce(
+				(sum, stat) => sum + stat,
+				0
+			);
+
 			// Create main embed with aligned layout
 			const mainEmbed = new EmbedBuilder()
 				.setColor(embedColor)
 				.setTitle(
-					`${genEmoji} **${name}** ${showShiny ? '✨' : ''} (#${pokedexNumber})`
+					`${speciesInfo.gen_emoji} **${pokemonInfo.name}** ${
+						showShiny ? '✨' : ''
+					} (#${speciesInfo.pokedex_numbers})`
 				)
 				.setThumbnail(sprites.default || sprites.officialArtwork)
 				.setImage(sprites.officialArtwork || sprites.default)
 				.addFields(
 					{
 						name: '🏷️ Types',
-						value: types.join(' '),
+						value: pokemonInfo.types.join(' '),
 						inline: true,
 					},
 					{
 						name: '🎯 Abilities',
-						value: abilities.join('\n'),
+						value: pokemonInfo.abilities.join('\n'),
 						inline: true,
 					},
 					{
 						name: '📏 Physical',
-						value: `**Height:** ${height} m\n**Weight:** ${weight} kg`,
+						value: `**Height:** ${pokemonInfo.height}\n**Weight:** ${pokemonInfo.weight}`,
 						inline: true,
 					},
 					{
-						name: '📊 Base Stats',
-						value: `${statsFormatted}\n**Total:** ${totalStats
-							.toString()
-							.padStart(3, ' ')}`,
+						name: '📊 Base Stat Total',
+						value: totalStats.toString(),
 						inline: false,
 					},
 					{
 						name: '🥚 Breeding',
 						value: breedingFormatted,
-						inline: true,
+						inline: false,
 					},
 					{
 						name: '🎣 Capture Info',
 						value: captureFormatted,
-						inline: true,
+						inline: false,
 					},
 					{
 						name: '🧬 Evolution',
-						value: evolveFrom,
-						inline: true,
+						value: speciesInfo.evolves_from_species,
+						inline: false,
 					}
 				)
+				.setImage('attachment://pokemon-stats.png')
 				.setFooter({
-					text: `Requested by ${interaction.user.username} • Generation ${genNumber}`,
+					text: `Requested by ${interaction.user.username} • Generation ${speciesInfo.generation_num}`,
 					iconURL: interaction.user.displayAvatarURL(),
 				})
 				.setTimestamp();
@@ -324,7 +227,7 @@ module.exports = {
 						emoji: '🗺️',
 					},
 					{
-						label: '🔄 Move Learnset',
+						label: '🔄 Move Learn-set',
 						description: 'Moves this Pokémon can learn',
 						value: 'moves',
 						emoji: '⚡',
@@ -335,7 +238,8 @@ module.exports = {
 
 			await interaction.editReply({
 				embeds: [mainEmbed],
-				components: [actionRow],
+				components: [actionRow.toJSON()],
+				files: [statsImage],
 			});
 
 			// Handle menu interactions
@@ -350,24 +254,32 @@ module.exports = {
 
 				switch (selectInteraction.values[0]) {
 					case 'pokedex_entries':
-						await handlePokedexEntries(selectInteraction, species, name);
+						await handlePokedexEntries(
+							selectInteraction,
+							species,
+							pokemonInfo.name
+						);
 						break;
 					case 'sprite_gallery':
 						await handleSpriteGallery(
 							selectInteraction,
 							sprites,
-							name,
+							pokemonInfo.name,
 							showShiny
 						);
 						break;
 					case 'type_effectiveness':
-						await handleTypeEffectiveness(selectInteraction, data.types, name);
+						await handleTypeEffectiveness(
+							selectInteraction,
+							data.types,
+							pokemonInfo.name
+						);
 						break;
 					case 'locations':
-						await handleLocations(selectInteraction, data.id, name);
+						await handleLocations(selectInteraction, data.id, pokemonInfo.name);
 						break;
 					case 'moves':
-						await handleMoves(selectInteraction, data.moves, name);
+						await handleMoves(selectInteraction, data.moves, pokemonInfo.name);
 						break;
 				}
 			});
@@ -387,7 +299,7 @@ module.exports = {
 				.addFields({
 					name: '💡 Tips',
 					value:
-						'• Try using the exact Pokémon name\n• For forms, use: `pikachu` with form: `alola`\n• Check for typos in the name',
+						'• Try using the exact Pokémon name\n• For forms, use: `Pikachu` with form: `Alola`\n• Check for typos in the name',
 				});
 
 			if (interaction.replied || interaction.deferred) {
@@ -400,38 +312,6 @@ module.exports = {
 };
 
 // Helper functions
-function getTypeEmoji(type: string): string {
-	const typeEmojis: { [key: string]: string } = {
-		normal: '⚪',
-		fire: '🔥',
-		water: '💧',
-		electric: '⚡',
-		grass: '🌿',
-		ice: '❄️',
-		fighting: '👊',
-		poison: '☠️',
-		ground: '🌍',
-		flying: '🌪️',
-		psychic: '🔮',
-		bug: '🐛',
-		rock: '🗿',
-		ghost: '👻',
-		dragon: '🐉',
-		dark: '🌑',
-		steel: '⚙️',
-		fairy: '🧚',
-	};
-	return typeEmojis[type] || '❓';
-}
-
-function createStatBar(stat: number): string {
-	const maxStat = 255; // Approximate max base stat
-	const percentage = Math.min(stat / maxStat, 1);
-	const filledBars = Math.floor(percentage * 10);
-	const emptyBars = 10 - filledBars;
-	return '█'.repeat(filledBars) + '░'.repeat(emptyBars);
-}
-
 async function handlePokedexEntries(
 	interaction: any,
 	species: SpeciesData,
@@ -521,8 +401,10 @@ async function handlePokedexEntries(
 		}
 
 		// Update button states
-		row.components[0].setDisabled(currentPage === 0);
-		row.components[1].setDisabled(currentPage === pages.length - 1);
+		(row.components[0] as ButtonBuilder).setDisabled(currentPage === 0);
+		(row.components[1] as ButtonBuilder).setDisabled(
+			currentPage === pages.length - 1
+		);
 
 		await buttonInteraction.update({
 			embeds: [createEntriesEmbed(currentPage)],
@@ -629,15 +511,7 @@ async function handleTypeEffectiveness(
 		.setTitle(`⚔️ Type Effectiveness for ${name}`)
 		.setDescription(
 			'This feature requires additional type effectiveness data from the API.'
-		)
-		.addFields({
-			name: 'Types',
-			value: types
-				.map((t) => `${getTypeEmoji(t.type.name)} ${t.type.name}`)
-				.join(' '),
-			inline: true,
-		});
-
+		);
 	await interaction.followUp({ embeds: [typeEmbed], ephemeral: true });
 }
 

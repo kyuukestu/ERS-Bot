@@ -1,17 +1,15 @@
-const { pokemonEndPoint } = require('../../components/api/PokeApi.ts');
-const {
-	formatUserInput,
-} = require('../../components/utility/formatUserInput.ts');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const {
+import { pokemonEndPoint } from '../../components/api/pokeapi.ts';
+import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import {
 	EmbedBuilder,
 	ActionRowBuilder,
+	SlashCommandBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	StringSelectMenuBuilder,
-} = require('discord.js');
-import type { CommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/pokemonData.ts';
+} from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import type { PokemonData } from '../../components/interface/apiData.ts';
 
 // ADD THIS: Enhanced styling configuration
 const methodConfig = {
@@ -44,7 +42,7 @@ function createLevelProgressBar(level: number, maxLevel: number = 100): string {
 	return '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
 }
 
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('moveset')
 		.setDescription('Get information about a Pokémon and their moves.')
@@ -55,7 +53,7 @@ module.exports = {
 				.setRequired(true)
 		),
 
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		const pokemonName = formatUserInput(
 			interaction.options.get('pokemon', true).value as string
 		);
@@ -211,7 +209,9 @@ module.exports = {
 
 			const message = await interaction.editReply({
 				embeds: [generateEmbed(currentMethodIndex, currentPageInMethod)],
-				components: [createButtons(currentMethodIndex, currentPageInMethod)],
+				components: [
+					createButtons(currentMethodIndex, currentPageInMethod).toJSON(),
+				],
 			});
 
 			// MODIFIED: Enhanced collector logic with proper pagination
@@ -222,12 +222,6 @@ module.exports = {
 			collector.on('collect', async (buttonInteraction) => {
 				if (buttonInteraction.isButton()) {
 					if (buttonInteraction.customId === 'previous') {
-						const currentMethod = methods[currentMethodIndex];
-						const methodMoves = groupedMoves[currentMethod];
-						const totalPagesInMethod = Math.ceil(
-							methodMoves.length / movesPerPage
-						);
-
 						if (currentPageInMethod > 0) {
 							// Go to previous page within current method
 							currentPageInMethod--;
@@ -264,8 +258,8 @@ module.exports = {
 						await buttonInteraction.update({
 							embeds: [generateEmbed(currentMethodIndex, currentPageInMethod)],
 							components: [
-								createButtons(currentMethodIndex, currentPageInMethod),
-								createJumpMenu(),
+								createButtons(currentMethodIndex, currentPageInMethod).toJSON(),
+								createJumpMenu().toJSON(),
 							],
 						});
 						return;
@@ -282,30 +276,34 @@ module.exports = {
 
 				await buttonInteraction.update({
 					embeds: [generateEmbed(currentMethodIndex, currentPageInMethod)],
-					components: [createButtons(currentMethodIndex, currentPageInMethod)],
+					components: [
+						createButtons(currentMethodIndex, currentPageInMethod).toJSON(),
+					],
 				});
 			});
 
 			collector.on('end', () => {
 				interaction.editReply({
 					components: [
-						new ActionRowBuilder().addComponents(
-							new ButtonBuilder()
-								.setCustomId('previous')
-								.setLabel('◀ Previous')
-								.setStyle(ButtonStyle.Secondary)
-								.setDisabled(true),
-							new ButtonBuilder()
-								.setCustomId('next')
-								.setLabel('Next ▶')
-								.setStyle(ButtonStyle.Secondary)
-								.setDisabled(true),
-							new ButtonBuilder()
-								.setCustomId('jump_menu')
-								.setLabel('📋 Expired')
-								.setStyle(ButtonStyle.Danger)
-								.setDisabled(true)
-						),
+						new ActionRowBuilder()
+							.addComponents(
+								new ButtonBuilder()
+									.setCustomId('previous')
+									.setLabel('◀ Previous')
+									.setStyle(ButtonStyle.Secondary)
+									.setDisabled(true),
+								new ButtonBuilder()
+									.setCustomId('next')
+									.setLabel('Next ▶')
+									.setStyle(ButtonStyle.Secondary)
+									.setDisabled(true),
+								new ButtonBuilder()
+									.setCustomId('jump_menu')
+									.setLabel('📋 Expired')
+									.setStyle(ButtonStyle.Danger)
+									.setDisabled(true)
+							)
+							.toJSON(),
 					],
 				});
 			});

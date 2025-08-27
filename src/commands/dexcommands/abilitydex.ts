@@ -1,42 +1,30 @@
-const { abilityEndPoint } = require('../../components/api/PokeApi.ts');
-const {
-	formatUserInput,
-} = require('../../components/utility/formatUserInput.ts');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
-import type { CommandInteraction } from 'discord.js';
-import type { AbilityData } from '../../components/interface/AbilityData.ts';
+import {
+	EmbedBuilder,
+	SlashCommandBuilder,
+	type ChatInputCommandInteraction,
+} from 'discord.js';
+import { abilityEndPoint } from '../../components/api/pokeapi.ts';
+import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import { extractAbilityInfo } from '../../components/utility/dataExtraction.ts';
+import type { AbilityData } from '../../components/interface/apiData.ts';
 
-// Color scheme for aesthetic enhancement (default based on ability utility)
-const abilityColors: { [key: string]: number } = {
-	offensive: 0xff4444,
-	defensive: 0x44ff44,
-	utility: 0x4444ff,
-	other: 0xcccccc,
-};
-
-// Emojis for visual appeal
-const abilityEmojis: { [key: string]: string } = {
-	offensive: '⚔️',
-	defensive: '🛡️',
-	utility: '🔧',
-	other: '❓',
-};
-
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('abilitydex')
-		.setDescription('Get information about a Pokémon ability.')
-		.addStringOption((option: any) =>
+		.setDescription(
+			'Provides information about a Pokémon ability, e.g. Speed Boost, Immunity, Huge Power, etc.'
+		)
+		.addStringOption((option) =>
 			option
 				.setName('ability')
-				.setDescription('The name of the ability.')
+				.setDescription("The Ability's name.")
 				.setRequired(true)
 		),
 
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
+		// Use the newer getString method instead of get
 		const abilityName = formatUserInput(
-			interaction.options.get('ability', true).value as string
+			interaction.options.getString('ability', true)
 		);
 
 		try {
@@ -44,57 +32,29 @@ module.exports = {
 
 			const response = await abilityEndPoint(abilityName);
 			const data: AbilityData = response as AbilityData;
-
-			// Extract key info with fallback values from PokeAPI ability endpoint
-			const name = data.name
-				.split('-')
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
-			const effect =
-				data.effect_entries
-					.filter((e) => e.language.name === 'en')
-					.map((e) => e.effect)
-					.join('\n') || 'No English description available';
-			const generation =
-				data.generation?.name.replace('generation-', '') || 'Unknown'; // Generation from PokeAPI
-			const pokemon =
-				data.pokemon
-					.slice(0, 3)
-					.map(
-						(p) =>
-							p.pokemon.name.charAt(0).toUpperCase() + p.pokemon.name.slice(1)
-					)
-					.join(', ') + (data.pokemon.length > 3 ? '...' : ''); // Top 3 Pokémon with ellipsis if more
-			const effectChance =
-				data.effect_entries.filter((e) => e.language.name === 'en').pop()
-					?.effect_chance || 'N/A'; // Effect chance if available
-
-			// Determine ability category for color and emoji (simplified categorization)
-			const category = data.effect_entries.some(
-				(e) => e.effect.includes('attack') || e.effect.includes('damage')
-			)
-				? 'offensive'
-				: data.effect_entries.some(
-						(e) => e.effect.includes('defense') || e.effect.includes('reduce')
-				  )
-				? 'defensive'
-				: data.effect_entries.some(
-						(e) => e.effect.includes('status') || e.effect.includes('boost')
-				  )
-				? 'utility'
-				: 'other';
-			const color = abilityColors[category] || abilityColors['other'];
-			const emoji = abilityEmojis[category] || abilityEmojis['other'];
+			const abilityInfo = extractAbilityInfo(data);
 
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()
-				.setColor(color)
-				.setTitle(`${emoji} **${name}**`)
-				.setDescription(effect.replace(/\r?\n|\r/g, ' '))
+				.setColor(abilityInfo.color)
+				.setTitle(`${abilityInfo.emoji} **${abilityInfo.name}**`)
+				.setDescription(abilityInfo.effect.replace(/\r?\n|\r/g, ' '))
 				.addFields(
-					{ name: '📌 Generation', value: generation, inline: true },
-					{ name: '🎯 Effect Chance', value: effectChance, inline: true },
-					{ name: '🐾 Pokémon', value: pokemon || 'N/A', inline: false }
+					{
+						name: '📌 Generation',
+						value: abilityInfo.generation,
+						inline: true,
+					},
+					{
+						name: '🎯 Effect Chance',
+						value: abilityInfo.effectChance,
+						inline: true,
+					},
+					{
+						name: '🐾 Pokémon',
+						value: abilityInfo.pokemon || 'N/A',
+						inline: false,
+					}
 				)
 				.setFooter({
 					text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,

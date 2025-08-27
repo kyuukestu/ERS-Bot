@@ -1,46 +1,19 @@
-const { moveEndPoint } = require('../../components/api/PokeApi.ts');
-const {
-	formatUserInput,
-} = require('../../components/utility/formatUserInput.ts');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const {
+import { moveEndPoint } from '../../components/api/pokeapi.ts';
+import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import {
+	SlashCommandBuilder,
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-} = require('discord.js');
-import type { CommandInteraction } from 'discord.js';
-import type { MoveData } from '../../components/interface/moveData.ts';
+	type ChatInputCommandInteraction,
+} from 'discord.js';
+import type { MoveData } from '../../components/interface/apiData.ts';
+import { typeColors } from '../../components/ui/colors.ts';
+import { moveEmojis } from '../../components/ui/emojis.ts';
+import { extractMoveInfo } from '../../components/utility/dataExtraction.ts';
 
-// Move type colors for aesthetic enhancement
-const typeColors: { [key: string]: number } = {
-	normal: 0xa8a878,
-	fire: 0xf08030,
-	water: 0x6890f0,
-	electric: 0xf8d030,
-	grass: 0x78c850,
-	ice: 0x98d8d8,
-	fighting: 0xc03028,
-	poison: 0xa040a0,
-	ground: 0xe0c068,
-	flying: 0xa890f0,
-	psychic: 0xf85888,
-	bug: 0xa8b820,
-	rock: 0xb8a038,
-	ghost: 0x705898,
-	dragon: 0x7038f8,
-	dark: 0x705848,
-	steel: 0xb8b8d0,
-	fairy: 0xee99ac,
-};
-
-// Emojis for visual appeal
-const moveEmojis: { [key: string]: string } = {
-	physical: '⚔️',
-	special: '✨',
-	status: '🔮',
-};
-module.exports = {
+export default {
 	data: new SlashCommandBuilder()
 		.setName('attackdex')
 		.setDescription('Search for a move by name and get its information.')
@@ -51,9 +24,9 @@ module.exports = {
 				.setRequired(true)
 		),
 
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		const moveName = formatUserInput(
-			interaction.options.get('move', true).value as string
+			interaction.options.getString('move', true)
 		);
 
 		try {
@@ -61,73 +34,45 @@ module.exports = {
 
 			const response = await moveEndPoint(moveName);
 			const data: MoveData = response as MoveData;
-
-			// Extract key info with fallback values from PokeAPI move endpoint
-			const name = data.name
-				.split('-')
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
-			const type = data.type.name;
-			const accuracy =
-				data.accuracy !== null && data.accuracy !== undefined
-					? `${data.accuracy}%`
-					: 'N/A';
-			const effectChance =
-				data.effect_chance !== null && data.effect_chance !== undefined
-					? `${data.effect_chance}%`
-					: 'N/A';
-			const priority = data.priority.toString();
-			const power =
-				data.power !== null && data.power !== undefined
-					? data.power.toString()
-					: 'N/A';
-			const pp =
-				data.pp !== null && data.pp !== undefined ? data.pp.toString() : 'N/A';
-			const damageClass = data.damage_class.name;
-			const target = data.target?.name
-				? data.target.name.charAt(0).toUpperCase() + data.target.name.slice(1)
-				: 'N/A';
-			const generation =
-				data.generation?.name.replace('generation-', '') || 'Unknown';
-			const flavorText =
-				data.flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
-					?.flavor_text || 'No English description available';
-			const flavorTextVer =
-				data.flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
-					?.version_group.name || 'Unknown';
-			const learnedBy = Array.isArray(data.learned_by_pokemon)
-				? data.learned_by_pokemon.map(
-						(p) => p.name.charAt(0).toUpperCase() + p.name.slice(1)
-				  )
-				: [];
+			const moveInfo = extractMoveInfo(data);
 
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()
-				.setColor(typeColors[type] || typeColors['normal'])
-				.setTitle(`${moveEmojis[damageClass] || '❓'} **${name}**`)
-				.setDescription(flavorText.replace(/\r?\n|\r/g, ' '))
+				.setColor(typeColors[moveInfo.type] || typeColors['normal'])
+				.setTitle(
+					`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
+				)
+				.setDescription(moveInfo.flavor_text.replace(/\r?\n|\r/g, ' '))
 				.addFields(
 					{
 						name: '📌 Type',
-						value: type.charAt(0).toUpperCase() + type.slice(1),
+						value:
+							moveInfo.type.charAt(0).toUpperCase() + moveInfo.type.slice(1),
 						inline: true,
 					},
 					{
 						name: '🏹 Damage Class',
-						value: damageClass.charAt(0).toUpperCase() + damageClass.slice(1),
+						value:
+							moveInfo.damage_class.charAt(0).toUpperCase() +
+							moveInfo.damage_class.slice(1),
 						inline: true,
 					},
-					{ name: '💪 Power', value: power, inline: true },
-					{ name: '🎯 Accuracy', value: accuracy, inline: true },
-					{ name: '🎲 Effect Chance', value: effectChance, inline: true },
-					{ name: '⏱️ Priority', value: priority, inline: true },
-					{ name: '🔋 PP', value: pp, inline: true },
-					{ name: '🎯 Target', value: target, inline: true },
-					{ name: '🌍 Generation', value: generation, inline: true },
+					{ name: '💪 Power', value: moveInfo.power, inline: true },
+					{ name: '🎯 Accuracy', value: moveInfo.accuracy, inline: true },
+					{
+						name: '🎲 Effect Chance',
+						value: moveInfo.effect_chance,
+						inline: true,
+					},
+					{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
+					{ name: '🔋 PP', value: moveInfo.pp, inline: true },
+					{ name: '🎯 Target', value: moveInfo.target, inline: true },
+					{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
 					{
 						name: '📅 Version',
 						value:
-							flavorTextVer.charAt(0).toUpperCase() + flavorTextVer.slice(1),
+							moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
+							moveInfo.flavor_text_ver.slice(1),
 						inline: true,
 					}
 				)
@@ -140,7 +85,11 @@ module.exports = {
 			await interaction.editReply({ embeds: [embed] });
 
 			// Send the paginated list of Pokémon
-			await sendPaginatedList(interaction, name, learnedBy);
+			await sendPaginatedList(
+				interaction,
+				moveInfo.name,
+				moveInfo.learned_by_pokemon
+			);
 		} catch (error) {
 			console.error('Error fetching move data:', error);
 
@@ -167,7 +116,7 @@ module.exports = {
 };
 
 async function sendPaginatedList(
-	interaction: CommandInteraction,
+	interaction: ChatInputCommandInteraction,
 	moveName: string,
 	learnedBy: string[]
 ) {
@@ -222,7 +171,7 @@ async function sendPaginatedList(
 
 	const message = await interaction.followUp({
 		embeds: [generateEmbed(currentPage)],
-		components: [row],
+		components: [row.toJSON()],
 		fetchReply: true,
 	});
 
@@ -252,7 +201,7 @@ async function sendPaginatedList(
 
 		await buttonInteraction.update({
 			embeds: [generateEmbed(currentPage)],
-			components: [updatedRow],
+			components: [updatedRow.toJSON()],
 		});
 	});
 
@@ -270,6 +219,6 @@ async function sendPaginatedList(
 				.setDisabled(true)
 		);
 
-		message.edit({ components: [disabledRow] }).catch(console.error);
+		message.edit({ components: [disabledRow.toJSON()] }).catch(console.error);
 	});
 }

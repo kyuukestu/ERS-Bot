@@ -1,0 +1,160 @@
+interface AbilityData {
+	name: string;
+	effect_entries: {
+		effect: string;
+		language: { name: string };
+		effect_chance?: string;
+	}[];
+	pokemon: {
+		is_hidden: boolean;
+		pokemon: {
+			name: string;
+		};
+	}[];
+	generation: {
+		name: string;
+	};
+}
+
+interface ItemData {
+	name: string;
+	category: { name: string };
+	cost: number;
+	fling_power: number;
+	fling_effect: { name?: string };
+	effect_entries: {
+		effect: string;
+		language: {
+			name: string;
+		};
+	}[];
+	flavor_text_entries: {
+		language: {
+			name: string;
+		};
+		text: string;
+		version_group: {
+			name: string;
+		};
+	}[];
+	sprites: {
+		default: string;
+	};
+}
+
+interface ItemData {
+	name: string;
+	category: { name: string };
+	cost: number;
+	fling_power: number;
+	fling_effect: { name?: string };
+	effect_entries: {
+		effect: string;
+		language: {
+			name: string;
+		};
+	}[];
+	flavor_text_entries: {
+		language: {
+			name: string;
+		};
+		text: string;
+		version_group: {
+			name: string;
+		};
+	}[];
+	sprites: {
+		default: string;
+	};
+}
+
+interface MoveData {
+	name: string;
+	accuracy?: number | null;
+	effect_chance?: number | null;
+	priority: number;
+	power?: number | null;
+	pp?: number | null;
+	damage_class: { name: string };
+	type: { name: string };
+	target?: { name: string } | null;
+	generation?: { name: string } | null;
+	flavor_text_entries: {
+		flavor_text: string;
+		language: { name: string };
+		version_group: { name: string };
+	}[];
+	learned_by_pokemon: { name: string }[];
+	machines: {
+		machine: { url: string };
+		version_group: { name: string };
+	}[];
+}
+
+interface PokemonData {
+	id: number;
+	name: string;
+	types: { type: { name: string } }[];
+	abilities: {
+		ability: { name: string };
+		is_hidden: boolean;
+	}[];
+	height: number;
+	weight: number;
+	stats: { stat: { name: string }; base_stat: number }[];
+	sprites: {
+		front_default: string; // Default front sprite
+		front_shiny: string; // Shiny front sprite
+		back_default: string; // Default back sprite
+		back_shiny: string; // Shiny back sprite
+		other: {
+			dream_world: { front_default: string };
+			'official-artwork': {
+				front_default: string; // Official artwork sprite
+				front_shiny: string; // Shiny official artwork sprite
+			};
+		};
+	};
+	moves: {
+		move: { name: string };
+		version_group_details: {
+			level_learned_at: number;
+			move_learn_method: { name: string };
+			version_group: { name: string };
+		}[];
+	}[];
+}
+
+interface SpeciesData {
+	egg_groups: {
+		name: string;
+	}[];
+	evolves_from_species?: {
+		name: string;
+	};
+	habitat?: { name: string };
+	generation: {
+		name: string;
+	};
+	flavor_text_entries: {
+		flavor_text: string;
+		language: {
+			name: string;
+		};
+		version: {
+			name: string;
+		};
+	}[];
+	pokedex_numbers: {
+		entry_number: number;
+		pokedex: {
+			name: string;
+		};
+	}[];
+	growth_rate: {
+		name: string;
+	};
+	capture_rate: number;
+}
+
+export type { AbilityData, ItemData, MoveData, PokemonData, SpeciesData };

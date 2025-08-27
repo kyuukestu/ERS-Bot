@@ -1,31 +1,35 @@
+// deploy-commands.ts
 import { REST, Routes } from 'discord.js';
-const { clientId, guildId, outbackguildId, token } = require('./config.json');
-import fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { clientId, guildId, outbackguildId, token } from './config.json';
 
-const commands = [];
+const commands: any[] = [];
 
-// Grab all the command folders from the commands directory you created earlier
-const foldersPath = path.join(__dirname, './src/commands');
-const commandFolders = fs.readdirSync(foldersPath);
+// Grab all the command folders from the commands directory
+const foldersPath = path.join(__dirname, './src/commands'); // Align with index.ts
+const commandFolders = await fs.readdir(foldersPath);
 
 for (const folder of commandFolders) {
-	// Grab all the command files from the commands directory you created earlier
 	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = fs
-		.readdirSync(commandsPath)
-		.filter((file) => file.endsWith('.ts'));
+	const commandFiles = (await fs.readdir(commandsPath)).filter((file: string) =>
+		file.endsWith('.ts')
+	);
 
-	// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
-		if ('data' in command && 'execute' in command) {
-			commands.push(command.data.toJSON());
-		} else {
-			console.log(
-				`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
-			);
+		try {
+			const command = await import(filePath); // Use dynamic import for ES Modules
+			if ('data' in command.default && 'execute' in command.default) {
+				commands.push(command.default.data.toJSON());
+				console.log(`Prepared command: ${command.default.data.name}`);
+			} else {
+				console.warn(
+					`[WARNING] The command at ${filePath} is missing "data" or "execute".`
+				);
+			}
+		} catch (error) {
+			console.error(`[ERROR] Failed to load command at ${filePath}:`, error);
 		}
 	}
 }
@@ -33,31 +37,32 @@ for (const folder of commandFolders) {
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
 
-// and deploy your commands!
+// Deploy commands
 (async () => {
 	try {
 		console.log(
 			`Started refreshing ${commands.length} application (/) commands.`
 		);
 
-		// The put method is used to fully refresh all commands in the guild with the current set
+		// Deploy to first guild
 		const data: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commands }
+			{
+				body: commands,
+			}
 		);
 
-		// The put method is used to fully refresh all commands in the guild with the current set
+		// Deploy to second guild (outbackguildId)
 		const dataO: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, outbackguildId),
 			{ body: commands }
 		);
 
 		console.log(
-			`Successfully reloaded ${data.length} application (/) commands.\n
-			Successfully reloaded ${dataO.length} application (/) commands.`
+			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
+				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.`
 		);
 	} catch (error) {
-		// And of course, make sure you catch and log any errors!
-		console.error(error);
+		console.error('Error deploying commands:', error);
 	}
 })();
