@@ -2,7 +2,13 @@
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { clientId, guildId, outbackguildId, token } from './src/config.json';
+import {
+	clientId,
+	guildId,
+	outbackguildId,
+	syncId,
+	token,
+} from './src/config.json';
 
 const commands: any[] = [];
 
@@ -58,9 +64,16 @@ const rest = new REST().setToken(token);
 			{ body: commands }
 		);
 
+		// Deploy to third guild (syncId)
+		const data1: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, syncId),
+			{ body: commands }
+		);
+
 		console.log(
 			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
-				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.`
+				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
+				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.`
 		);
 	} catch (error) {
 		console.error('Error deploying commands:', error);

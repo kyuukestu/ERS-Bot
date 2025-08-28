@@ -1,5 +1,8 @@
-const formatUserInput = (input: string) => {
-	// Format the move name (lowercase, replace spaces with hyphens, remove apostrophes)
+const formatUserInput = (input?: string) => {
+	if (!input) {
+		return '';
+	}
+	// Format the name (lowercase, replace spaces with hyphens, remove apostrophes)
 	const formatted = input
 		.toLowerCase()
 		.trim()
