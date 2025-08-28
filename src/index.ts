@@ -7,7 +7,7 @@ import {
 	MessageFlags,
 	type Interaction,
 } from 'discord.js';
-import { token } from '../config.json';
+import { token } from './config.json';
 import * as fs from 'node:fs/promises'; // Use promises for async
 import * as path from 'node:path';
 
@@ -93,4 +93,4 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 });
 
 // Log in to Discord
-client.login(token);
+client.login(token || import.meta.env.token);

@@ -2,7 +2,7 @@
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { clientId, guildId, outbackguildId, token } from './config.json';
+import { clientId, guildId, outbackguildId, token } from './src/config.json';
 
 const commands: any[] = [];
 
