@@ -9,7 +9,7 @@ import {
 	type ButtonInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../components/utility/formatUserInput';
-import { SpeciesData } from '../../components/interface/apiData';
+import { type SpeciesData } from '../../components/interface/apiData';
 import { speciesEndPoint } from '../../components/api/pokeapi';
 import { extractSpeciesInfo } from '../../components/utility/dataExtraction';
 import { calculateCatchRate } from '../../components/utility/catchRateCalculator';
@@ -28,11 +28,18 @@ const createEmbed = (
 					: `Aww, ${pokemon} just got away!`
 			}`
 		)
-		.addFields({
-			name: 'Attempts',
-			value: attempts.toString(),
-			inline: true,
-		})
+		.addFields(
+			{
+				name: 'Attempts',
+				value: attempts.toString(),
+				inline: true,
+			},
+			{
+				name: 'Details',
+				value: `You rolled **${catch_data.roll}** and the threshold is **${catch_data.catch_rate}**. Your chance of catching this pokemon is **${catch_data.chance}%**.`,
+				inline: false,
+			}
+		)
 		.setTimestamp();
 };
 

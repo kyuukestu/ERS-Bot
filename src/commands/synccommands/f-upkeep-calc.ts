@@ -4,8 +4,8 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../components/utility/formatUserInput';
-import { PokemonData } from '../../components/interface/apiData';
-import { PokemonStats } from '../../components/interface/canvasData.ts';
+import { type PokemonData } from '../../components/interface/apiData';
+import { type PokemonStats } from '../../components/interface/canvasData.ts';
 import { pokemonEndPoint } from '../../components/api/pokeapi';
 import { extractPokemonInfo } from '../../components/utility/dataExtraction';
 import { calculateUpkeep } from '../../components/utility/pokeUpkeepCalc.ts';

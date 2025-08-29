@@ -4,7 +4,7 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../components/utility/formatUserInput';
-import { MoveData } from '../../components/interface/apiData';
+import { type MoveData } from '../../components/interface/apiData';
 import { moveEndPoint } from '../../components/api/pokeapi';
 import { extractMoveInfo } from '../../components/utility/dataExtraction';
 import { calculateMoveCost } from '../../components/utility/moveCostCalc.ts';
@@ -121,7 +121,10 @@ export default {
 						value:
 							'• Use the exact move name\n• Check for typos\n• Example: "tackle" or "hyper-beam"',
 					},
-					{ name: '⚠️ Error', value: error.message }
+					{
+						name: '⚠️ Error',
+						value: error instanceof Error ? error.message : String(error),
+					}
 				)
 				.setTimestamp();
 

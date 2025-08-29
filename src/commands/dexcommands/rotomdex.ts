@@ -19,7 +19,7 @@ import type {
 } from '../../components/interface/apiData.ts';
 import { typeColors } from '../../components/ui/colors.ts';
 import { PokemonStatsCanvas } from '../../components/utility/statsCanvas.ts';
-import { PokemonStats } from '../../components/interface/canvasData.ts';
+import { type PokemonStats } from '../../components/interface/canvasData.ts';
 import {
 	extractPokemonInfo,
 	extractSpeciesInfo,

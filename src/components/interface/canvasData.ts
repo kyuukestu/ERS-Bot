@@ -22,4 +22,4 @@ interface ProgressBarConfig {
 	padding: number; // Padding around the canvas
 }
 
-export { PokemonStats, ProgressBarConfig };
+export type { PokemonStats, ProgressBarConfig };

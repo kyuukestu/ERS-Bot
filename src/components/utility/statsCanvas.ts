@@ -3,7 +3,10 @@
 
 import { createCanvas, CanvasRenderingContext2D } from 'canvas';
 import { AttachmentBuilder, EmbedBuilder } from 'discord.js';
-import { PokemonStats, ProgressBarConfig } from '../interface/canvasData';
+import {
+	type PokemonStats,
+	type ProgressBarConfig,
+} from '../interface/canvasData';
 export class PokemonStatsCanvas {
 	private static readonly DEFAULT_CONFIG: ProgressBarConfig = {
 		width: 400,
