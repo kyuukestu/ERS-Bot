@@ -36,7 +36,13 @@ const createEmbed = (
 			},
 			{
 				name: 'Details',
-				value: `You rolled **${catch_data.roll}** and the threshold is **${catch_data.catch_rate}**. Your chance of catching this pokemon is **${catch_data.chance}%**.`,
+				value: `You rolled **${
+					catch_data.catch_roll
+				}** and the threshold is **${
+					catch_data.catch_rate
+				}**. Your chance of catching this pokemon ${
+					catch_data.caught ? 'was' : 'is'
+				} **${catch_data.chance}%**.`,
 				inline: false,
 			}
 		)
