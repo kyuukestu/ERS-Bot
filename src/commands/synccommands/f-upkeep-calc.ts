@@ -20,6 +20,12 @@ export default {
 				.setDescription('Enter the pokemon name.')
 				.setRequired(true)
 		)
+		.addStringOption((option: any) =>
+			option
+				.setName('form')
+				.setDescription(`Enter the pokémon's form (e.g., alolan, galar).`)
+				.setRequired(false)
+		)
 		.addBooleanOption((option: any) =>
 			option
 				.setName('alpha')
@@ -54,11 +60,15 @@ export default {
 		const inBox = interaction.options.getBoolean('box');
 		const isShiny =
 			(interaction.options.get('shiny', false)?.value as boolean) || false;
+		const formName = interaction.options.get('form', false)
+			? formatUserInput(interaction.options.get('form')?.value as string)
+			: '';
+		const searchName = formatUserInput(`${pokemonName} ${formName}`);
 
 		try {
 			await interaction.deferReply();
 
-			const data: PokemonData = await pokemonEndPoint(pokemonName);
+			const data: PokemonData = await pokemonEndPoint(searchName);
 			const pokemonInfo = extractPokemonInfo(data);
 
 			const stats: PokemonStats = {

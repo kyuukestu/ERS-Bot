@@ -90,7 +90,6 @@ export default {
 						inline: true,
 					},
 					{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-					{ name: '🔋 PP', value: moveInfo.pp, inline: true },
 					{ name: 'Fortitude Cost', value: cost.toString(), inline: false },
 					{ name: '🎯 Target', value: moveInfo.target, inline: true },
 					{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
