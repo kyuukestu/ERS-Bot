@@ -5,8 +5,12 @@
 	"type": "module",
 	"private": true,
 	"devDependencies": {
+		"@eslint/js": "^9.34.0",
 		"@types/bun": "latest",
-		"eslint": "^9.34.0"
+		"eslint": "^9.34.0",
+		"globals": "^16.3.0",
+		"jiti": "^2.5.1",
+		"typescript-eslint": "^8.41.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5.8.2"
@@ -21,6 +25,7 @@
 		"fetch": "^1.1.0",
 		"node-fetch": "^3.3.2",
 		"pokenode-ts": "^1.20.0",
-		"sharp": "^0.34.3"
+		"sharp": "^0.34.3",
+		"zod": "^4.1.5"
 	}
 }

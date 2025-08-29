@@ -1,6 +1,9 @@
 import {
 	EmbedBuilder,
 	SlashCommandBuilder,
+	SlashCommandStringOption,
+	SlashCommandBooleanOption,
+	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../components/utility/formatUserInput';
@@ -14,37 +17,37 @@ export default {
 	data: new SlashCommandBuilder()
 		.setName('pokemon-upkeep')
 		.setDescription('Calculates the Fortitude Upkeep of a pokemon.')
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('pokemon')
 				.setDescription('Enter the pokemon name.')
 				.setRequired(true)
 		)
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
 				.setDescription(`Enter the pokémon's form (e.g., alolan, galar).`)
 				.setRequired(false)
 		)
-		.addBooleanOption((option: any) =>
+		.addBooleanOption((option: SlashCommandBooleanOption) =>
 			option
 				.setName('alpha')
 				.setDescription('Is this an alpha pokemon?')
 				.setRequired(false)
 		)
-		.addNumberOption((option: any) =>
+		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('extra-abilities')
 				.setDescription('Enter the pokeball name.')
 				.setRequired(false)
 		)
-		.addBooleanOption((option: any) =>
+		.addBooleanOption((option: SlashCommandBooleanOption) =>
 			option
 				.setName('box')
 				.setDescription('Is this pokemon in the PC box?')
 				.setRequired(false)
 		)
-		.addBooleanOption((option: any) =>
+		.addBooleanOption((option: SlashCommandBooleanOption) =>
 			option
 				.setName('shiny')
 				.setDescription('Show shiny variant.')
@@ -71,21 +74,32 @@ export default {
 			const data: PokemonData = await pokemonEndPoint(searchName);
 			const pokemonInfo = extractPokemonInfo(data);
 
+			interface StatObject {
+				base_stat: number;
+				stat: {
+					name: string;
+				};
+			}
+
 			const stats: PokemonStats = {
-				hp: data.stats.find((s: any) => s.stat.name === 'hp')?.base_stat || 0,
-				attack:
-					data.stats.find((s: any) => s.stat.name === 'attack')?.base_stat || 0,
-				defense:
-					data.stats.find((s: any) => s.stat.name === 'defense')?.base_stat ||
+				hp:
+					data.stats.find((s: StatObject) => s.stat.name === 'hp')?.base_stat ||
 					0,
+				attack:
+					data.stats.find((s: StatObject) => s.stat.name === 'attack')
+						?.base_stat || 0,
+				defense:
+					data.stats.find((s: StatObject) => s.stat.name === 'defense')
+						?.base_stat || 0,
 				specialAttack:
-					data.stats.find((s: any) => s.stat.name === 'special-attack')
+					data.stats.find((s: StatObject) => s.stat.name === 'special-attack')
 						?.base_stat || 0,
 				specialDefense:
-					data.stats.find((s: any) => s.stat.name === 'special-defense')
+					data.stats.find((s: StatObject) => s.stat.name === 'special-defense')
 						?.base_stat || 0,
 				speed:
-					data.stats.find((s: any) => s.stat.name === 'speed')?.base_stat || 0,
+					data.stats.find((s: StatObject) => s.stat.name === 'speed')
+						?.base_stat || 0,
 			};
 
 			const totalStats = Object.values(stats).reduce(

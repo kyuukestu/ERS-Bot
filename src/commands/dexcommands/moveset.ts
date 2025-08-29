@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { pokemonEndPoint } from '../../components/api/pokeapi.ts';
 import { formatUserInput } from '../../components/utility/formatUserInput.ts';
 import {
@@ -20,7 +21,7 @@ const methodConfig = {
 	Other: { emoji: '⚡', color: 0x99aab5 },
 };
 
-function getMethodConfig(method: string) {
+const getMethodConfig = (method: string) => {
 	const normalizedMethod = method.toLowerCase();
 	if (normalizedMethod.includes('level')) return methodConfig['Level Up'];
 	if (
@@ -33,14 +34,17 @@ function getMethodConfig(method: string) {
 	if (normalizedMethod.includes('breed') || normalizedMethod.includes('egg'))
 		return methodConfig['Breeding'];
 	return methodConfig['Other'];
-}
+};
 
-function createLevelProgressBar(level: number, maxLevel: number = 100): string {
+const createLevelProgressBar = (
+	level: number,
+	maxLevel: number = 100
+): string => {
 	const progress = Math.min(level / maxLevel, 1);
 	const filledBlocks = Math.floor(progress * 10);
 	const emptyBlocks = 10 - filledBlocks;
 	return '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
-}
+};
 
 export default {
 	data: new SlashCommandBuilder()
@@ -320,7 +324,7 @@ export default {
 };
 
 // KEEP EXISTING: processMoveData function
-function processMoveData(data: PokemonData) {
+const processMoveData = (data: PokemonData) => {
 	return data.moves.map((moveData) => {
 		const moveName = moveData.move.name;
 		const methods = moveData.version_group_details.map((detail) => ({
@@ -346,25 +350,25 @@ function processMoveData(data: PokemonData) {
 			allMethods: methods,
 		};
 	});
-}
+};
 
 // KEEP EXISTING: Helper functions
-function formatMethodName(method: string): string {
+const formatMethodName = (method: string): string => {
 	return method
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
-}
+};
 
-function formatMoveName(moveName: string): string {
+const formatMoveName = (moveName: string): string => {
 	return moveName
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
-}
+};
 
 // REPLACED: Enhanced grouping function
-function groupAndSortMovesEnhanced(moves: any[]): { [key: string]: any[] } {
+const groupAndSortMovesEnhanced = (moves: any[]): { [key: string]: any[] } => {
 	const grouped: { [key: string]: any[] } = {};
 
 	moves.forEach((move) => {
@@ -400,10 +404,10 @@ function groupAndSortMovesEnhanced(moves: any[]): { [key: string]: any[] } {
 	});
 
 	return grouped;
-}
+};
 
 // ADD THIS: Enhanced move formatting
-function formatEnhancedMove(move: any, method: string): string {
+const formatEnhancedMove = (move: any, method: string): string => {
 	const config = getMethodConfig(method);
 
 	if (method === 'Level Up') {
@@ -420,4 +424,4 @@ function formatEnhancedMove(move: any, method: string): string {
 				: '';
 		return `${config.emoji} **${move.name}**${otherMethodsDisplay} [${move.version}]`;
 	}
-}
+};

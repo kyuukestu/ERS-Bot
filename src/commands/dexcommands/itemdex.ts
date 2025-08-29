@@ -2,6 +2,7 @@ import { itemEndPoint } from '../../components/api/pokeapi.ts';
 import { formatUserInput } from '../../components/utility/formatUserInput.ts';
 import {
 	SlashCommandBuilder,
+	SlashCommandStringOption,
 	EmbedBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
@@ -12,8 +13,10 @@ import { extractItemInfo } from '../../components/utility/dataExtraction.ts';
 export default {
 	data: new SlashCommandBuilder()
 		.setName('itemdex')
-		.setDescription('Search for an item by name and get its information.')
-		.addStringOption((option: any) =>
+		.setDescription(
+			'Provides information about an item e.g. Flame Orb, Pinap Berry, Thunder Stone, etc.'
+		)
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('item')
 				.setDescription('Enter the item name.')

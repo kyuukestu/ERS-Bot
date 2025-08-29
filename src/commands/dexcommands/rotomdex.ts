@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	pokemonEndPoint,
 	speciesEndPoint,
@@ -5,6 +6,8 @@ import {
 import { formatUserInput } from '../../components/utility/formatUserInput.ts';
 import {
 	SlashCommandBuilder,
+	SlashCommandStringOption,
+	SlashCommandBooleanOption,
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -31,19 +34,19 @@ export default {
 		.setDescription(
 			'Search for a Pokémon by name and get comprehensive information.'
 		)
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('name')
 				.setDescription('Enter the Pokémon name.')
 				.setRequired(true)
 		)
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
 				.setDescription(`Enter the pokémon's form (e.g., alolan, galar).`)
 				.setRequired(false)
 		)
-		.addBooleanOption((option: any) =>
+		.addBooleanOption((option: SlashCommandBooleanOption) =>
 			option
 				.setName('shiny')
 				.setDescription('Show shiny variant by default.')
@@ -54,7 +57,7 @@ export default {
 			interaction.options.get('name', true).value as string
 		);
 
-		let formName = interaction.options.get('form', false)
+		const formName = interaction.options.get('form', false)
 			? formatUserInput(interaction.options.get('form')?.value as string)
 			: '';
 
@@ -113,20 +116,36 @@ export default {
 			const embedColor = typeColors[primaryType] || 0xffcc00;
 
 			const stats: PokemonStats = {
-				hp: data.stats.find((s: any) => s.stat.name === 'hp')?.base_stat || 0,
+				hp:
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'hp'
+					)?.base_stat || 0,
 				attack:
-					data.stats.find((s: any) => s.stat.name === 'attack')?.base_stat || 0,
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'attack'
+					)?.base_stat || 0,
 				defense:
-					data.stats.find((s: any) => s.stat.name === 'defense')?.base_stat ||
-					0,
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'defense'
+					)?.base_stat || 0,
 				specialAttack:
-					data.stats.find((s: any) => s.stat.name === 'special-attack')
-						?.base_stat || 0,
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'special-attack'
+					)?.base_stat || 0,
 				specialDefense:
-					data.stats.find((s: any) => s.stat.name === 'special-defense')
-						?.base_stat || 0,
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'special-defense'
+					)?.base_stat || 0,
 				speed:
-					data.stats.find((s: any) => s.stat.name === 'speed')?.base_stat || 0,
+					data.stats.find(
+						(s: { stat: { name: string }; base_stat: number }) =>
+							s.stat.name === 'speed'
+					)?.base_stat || 0,
 			};
 
 			// Create stats visualization

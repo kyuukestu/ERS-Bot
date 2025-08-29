@@ -1,6 +1,8 @@
 import {
 	EmbedBuilder,
 	SlashCommandBuilder,
+	SlashCommandStringOption,
+	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../components/utility/formatUserInput';
@@ -15,25 +17,25 @@ export default {
 	data: new SlashCommandBuilder()
 		.setName('move-cost')
 		.setDescription('Calculates the cost of a move.')
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('move')
 				.setDescription('Name of the move.')
 				.setRequired(true)
 		)
-		.addNumberOption((option: any) =>
+		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('secondary-effects')
 				.setDescription('Is this an alpha pokemon?')
 				.setRequired(false)
 		)
-		.addNumberOption((option: any) =>
+		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('stat-changes')
 				.setDescription('Enter the pokeball name.')
 				.setRequired(false)
 		)
-		.addNumberOption((option: any) =>
+		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('field-effects')
 				.setDescription('Is this pokemon in the PC box?')

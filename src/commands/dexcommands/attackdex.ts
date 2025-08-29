@@ -2,6 +2,7 @@ import { moveEndPoint } from '../../components/api/pokeapi.ts';
 import { formatUserInput } from '../../components/utility/formatUserInput.ts';
 import {
 	SlashCommandBuilder,
+	SlashCommandStringOption,
 	EmbedBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -16,8 +17,10 @@ import { extractMoveInfo } from '../../components/utility/dataExtraction.ts';
 export default {
 	data: new SlashCommandBuilder()
 		.setName('attackdex')
-		.setDescription('Search for a move by name and get its information.')
-		.addStringOption((option: any) =>
+		.setDescription(
+			'Provides information about a Pokémon move e.g. Glaciate, Searing Shot, Toxic Thread, etc.'
+		)
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('move')
 				.setDescription('Enter the move name.')
