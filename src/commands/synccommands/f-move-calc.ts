@@ -16,7 +16,7 @@ import { moveEmojis } from '../../components/ui/emojis.ts';
 export default {
 	data: new SlashCommandBuilder()
 		.setName('move-cost')
-		.setDescription('Calculates the cost of a move.')
+		.setDescription('Calculates the fortitude cost of a move.')
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('move')

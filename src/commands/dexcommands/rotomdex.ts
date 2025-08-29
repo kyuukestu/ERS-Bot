@@ -31,9 +31,7 @@ import {
 export default {
 	data: new SlashCommandBuilder()
 		.setName('rotomdex')
-		.setDescription(
-			'Search for a Pokémon by name and get comprehensive information.'
-		)
+		.setDescription('Provides pokedex-like information about a Pokémon.')
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('name')
@@ -287,19 +285,6 @@ export default {
 							showShiny
 						);
 						break;
-					case 'type_effectiveness':
-						await handleTypeEffectiveness(
-							selectInteraction,
-							data.types,
-							pokemonInfo.name
-						);
-						break;
-					case 'locations':
-						await handleLocations(selectInteraction, data.id, pokemonInfo.name);
-						break;
-					case 'moves':
-						await handleMoves(selectInteraction, data.moves, pokemonInfo.name);
-						break;
 				}
 			});
 
@@ -516,63 +501,4 @@ async function handleSpriteGallery(
 	spriteCollector.on('end', () => {
 		spriteMessage.edit({ components: [] }).catch(console.error);
 	});
-}
-
-// Additional helper functions for type effectiveness, locations, and moves
-async function handleTypeEffectiveness(
-	interaction: any,
-	types: any[],
-	name: string
-) {
-	// Placeholder for type effectiveness chart
-	const typeEmbed = new EmbedBuilder()
-		.setColor(0x9b59b6)
-		.setTitle(`⚔️ Type Effectiveness for ${name}`)
-		.setDescription(
-			'This feature requires additional type effectiveness data from the API.'
-		);
-	await interaction.followUp({ embeds: [typeEmbed], ephemeral: true });
-}
-
-async function handleLocations(
-	interaction: any,
-	pokemonId: number,
-	name: string
-) {
-	// Placeholder for location data
-	const locationEmbed = new EmbedBuilder()
-		.setColor(0x27ae60)
-		.setTitle(`📍 Locations for ${name}`)
-		.setDescription(
-			'This feature requires additional location data from the API.'
-		);
-
-	await interaction.followUp({ embeds: [locationEmbed], ephemeral: true });
-}
-
-async function handleMoves(interaction: any, moves: any[], name: string) {
-	// Placeholder for move data with basic info
-	const moveCount = moves.length;
-	const moveEmbed = new EmbedBuilder()
-		.setColor(0xf39c12)
-		.setTitle(`⚡ Moves for ${name}`)
-		.setDescription(`${name} can learn ${moveCount} different moves.`)
-		.addFields({
-			name: 'Sample Moves',
-			value:
-				moves
-					.slice(0, 10)
-					.map((m) =>
-						m.move.name
-							.split('-')
-							.map(
-								(part: string) => part.charAt(0).toUpperCase() + part.slice(1)
-							)
-							.join(' ')
-					)
-					.join(', ') + (moveCount > 10 ? '...' : ''),
-			inline: false,
-		});
-
-	await interaction.followUp({ embeds: [moveEmbed], ephemeral: true });
 }
