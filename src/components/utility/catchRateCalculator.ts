@@ -7,10 +7,6 @@ const calculateCatchRate = (
 	let pokeball_multi = 0;
 	let pokeball_max_roll = 0;
 
-	if (!['Burn', 'Poison', 'Paralysis', 'Sleep', 'Freeze'].includes(status)) {
-		status = 'None';
-	}
-
 	// Catch rate/Threshold, the number to beat
 	catch_rate = catch_rate / 2;
 
@@ -35,9 +31,6 @@ const calculateCatchRate = (
 	let status_bonus = 0;
 
 	switch (status) {
-		case 'None':
-			status_bonus = 0;
-			break;
 		case 'Burn':
 			status_bonus = 120;
 			break;
@@ -52,6 +45,9 @@ const calculateCatchRate = (
 			break;
 		case 'Freeze':
 			status_bonus = 250;
+			break;
+		default:
+			status_bonus = 0;
 			break;
 	}
 
