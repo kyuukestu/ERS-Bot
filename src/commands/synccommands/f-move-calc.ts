@@ -26,19 +26,25 @@ export default {
 		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('secondary-effects')
-				.setDescription('Is this an alpha pokemon?')
+				.setDescription(
+					'Does this move have a secondary effect? e.g. burn, freeze, increase crit.'
+				)
 				.setRequired(false)
 		)
 		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('stat-changes')
-				.setDescription('Enter the pokeball name.')
+				.setDescription(
+					'Does this move effect stat changes? Positive for user, negative for foe.'
+				)
 				.setRequired(false)
 		)
 		.addNumberOption((option: SlashCommandNumberOption) =>
 			option
 				.setName('field-effects')
-				.setDescription('Is this pokemon in the PC box?')
+				.setDescription(
+					'Does this move have a field effect? e.g. Trick Room, sets Hazards, etc.'
+				)
 				.setRequired(false)
 		),
 

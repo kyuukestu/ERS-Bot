@@ -21,6 +21,7 @@ import {
 	MessageFlags,
 } from 'discord.js';
 
+// TODO Splt field condition to allow attack & defender distinction.
 // Store user selections
 interface UserSelections {
 	generation: string;
@@ -397,22 +398,41 @@ const weatherReply = (stepIndex: number, userSelections: UserSelections) => {
 		new StringSelectMenuBuilder()
 			.setCustomId('field_conditions')
 			.setPlaceholder('Select field conditions (optional)')
-			.setMaxValues(5)
+			.setMaxValues(29)
 			.addOptions(
-				{ label: 'Reflect', value: 'reflect' },
-				{ label: 'Light Screen', value: 'light screen' },
-				{ label: 'Aurora Veil', value: 'aurora veil' },
-				{ label: 'Stealth Rock', value: 'stealth rock' },
-				{ label: 'Spikes', value: 'spikes' },
-				{ label: 'Toxic Spikes', value: 'toxic spikes' },
-				{ label: 'Sticky Web', value: 'sticky web' },
-				{ label: 'Tailwind', value: 'tailwind' },
-				{ label: 'Trick Room', value: 'trick room' },
+				{ label: 'Gravity', value: 'gravity' },
 				{ label: 'Magic Room', value: 'magic room' },
 				{ label: 'Wonder Room', value: 'wonder room' },
-				{ label: 'Gravity', value: 'gravity' }
+				{ label: 'Aura Break', value: 'aura break' },
+				{ label: 'Fairy Aura', value: 'fairy aura' },
+				{ label: 'Dark Aura', value: 'dark aura' },
+				{ label: 'Beads of Ruin', value: 'beads of ruin' },
+				{ label: 'Sword of Ruin', value: 'sword of ruin' },
+				{ label: 'Tablets of Ruin', value: 'tablets of ruin' },
+				{ label: 'Vessel of Ruin', value: 'vessel of ruin' },
+				{ label: 'Stealth Rock', value: 'stealth rock' },
+				{ label: 'Spikes', value: 'spikes' },
+				{ label: 'Tailwind', value: 'tailwind' },
+				{ label: 'Steelsurge', value: 'steelsurge' },
+				{ label: 'Vinelash', value: 'vinelash' },
+				{ label: 'Wildfire', value: 'wildfire' },
+				{ label: 'Cannonade', value: 'cannonade' },
+				{ label: 'Volcalith', value: 'volcalith' },
+				{ label: 'Reflect', value: 'reflect' },
+				{ label: 'Light Screen', value: 'light screen' },
+				{ label: 'Flower Gift', value: 'flower gift' },
+				{ label: 'Seeded', value: 'seeded' },
+				{ label: 'Aurora Veil', value: 'aurora veil' },
+				{ label: 'Battery', value: 'battery' },
+				{ label: 'Friend Guard', value: 'friend guard' },
+				{ label: 'Helping Hand', value: 'helping hand' },
+				{ label: 'Power Spot', value: 'power spot' },
+				{ label: 'Protected', value: 'protected' },
+				{ label: 'Foresight', value: 'foresight' }
 			)
 	);
+
+	console.log(userSelections.fieldConditions);
 
 	return {
 		embeds: [weatherEmbed],
@@ -544,11 +564,24 @@ const calcReply = (stepIndex: number, userSelections: UserSelections) => {
 			isGravity: userSelections.fieldConditions.includes('gravity'),
 			isMagicRoom: userSelections.fieldConditions.includes('magic room'),
 			isWonderRoom: userSelections.fieldConditions.includes('wonder room'),
+			isAuraBreak: userSelections.fieldConditions.includes('aura break'),
+			isFairyAura: userSelections.fieldConditions.includes('fairy aura'),
+			isDarkAura: userSelections.fieldConditions.includes('dark aura'),
+			isBeadsOfRuin: userSelections.fieldConditions.includes('beads of ruin'),
+			isSwordOfRuin: userSelections.fieldConditions.includes('sword of ruin'),
+			isTabletsOfRuin:
+				userSelections.fieldConditions.includes('tablets of ruin'),
+			isVesselOfRuin: userSelections.fieldConditions.includes('vessel of ruin'),
 			// Handle Stealth Rock and Spikes per side
 			attackerSide: {
 				isSR: userSelections.fieldConditions.includes('stealth rock'),
 				spikes: userSelections.fieldConditions.includes('spikes') ? 1 : 0,
 				isTailwind: userSelections.fieldConditions.includes('tailwind'),
+				steelsurge: userSelections.fieldConditions.includes('steelsurge'),
+				vinelash: userSelections.fieldConditions.includes('vinelash'),
+				wildfire: userSelections.fieldConditions.includes('wildfire'),
+				cannonade: userSelections.fieldConditions.includes('cannonade'),
+				volcalith: userSelections.fieldConditions.includes('volcalith'),
 				isReflect: userSelections.fieldConditions.includes('reflect'),
 				isLightScreen: userSelections.fieldConditions.includes('lightscreen'),
 				isFlowerGift: userSelections.fieldConditions.includes('flower gift'),
@@ -565,6 +598,11 @@ const calcReply = (stepIndex: number, userSelections: UserSelections) => {
 				isSR: userSelections.fieldConditions.includes('stealth rock'),
 				spikes: userSelections.fieldConditions.includes('spikes') ? 1 : 0,
 				isTailwind: userSelections.fieldConditions.includes('tailwind'),
+				steelsurge: userSelections.fieldConditions.includes('steelsurge'),
+				vinelash: userSelections.fieldConditions.includes('vinelash'),
+				wildfire: userSelections.fieldConditions.includes('wildfire'),
+				cannonade: userSelections.fieldConditions.includes('cannonade'),
+				volcalith: userSelections.fieldConditions.includes('volcalith'),
 				isReflect: userSelections.fieldConditions.includes('reflect'),
 				isLightScreen: userSelections.fieldConditions.includes('lightscreen'),
 				isFlowerGift: userSelections.fieldConditions.includes('flower gift'),
@@ -578,6 +616,8 @@ const calcReply = (stepIndex: number, userSelections: UserSelections) => {
 				isProtected: userSelections.fieldConditions.includes('protected'),
 			},
 		});
+
+		console.log('Field: ', field);
 
 		// Calculate damage
 		const result = calculate(gen, attacker, defender, move, field);
