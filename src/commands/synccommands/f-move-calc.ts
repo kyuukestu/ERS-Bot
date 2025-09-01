@@ -27,7 +27,7 @@ export default {
 			option
 				.setName('secondary-effects')
 				.setDescription(
-					'Does this move have a secondary effect? e.g. burn, freeze, increase crit. Add 1 for each effect.'
+					'Does this move have a secondary effect? e.g. burn, freeze, increase crit. +1/effect.'
 				)
 				.setRequired(false)
 		)
@@ -35,7 +35,7 @@ export default {
 			option
 				.setName('stat-changes')
 				.setDescription(
-					'Does this move effect stat changes? Positive for user, negative for foe. Add 1 for each stage of boost.'
+					'Does this move effect stat changes? Positive for user, negative for foe. +1/boost.'
 				)
 				.setRequired(false)
 		)

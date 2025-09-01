@@ -714,7 +714,7 @@ const calcReply = (stepIndex: number, userSelections: UserSelections) => {
 	}
 };
 
-const replyArray = (userSelections: UserSelections) => {
+const createReplyArray = (userSelections: UserSelections) => {
 	const replyArray: any = [];
 	replyArray.push(introReply(replyArray.length));
 	replyArray.push(genReply(replyArray.length, userSelections.generation));
@@ -915,7 +915,7 @@ export default {
 			let stepIndex = 0;
 
 			const updateMessage = async () => {
-				const replies = replyArray(userSelections);
+				const replies = createReplyArray(userSelections);
 				await interaction.editReply(replies[stepIndex]);
 			};
 
@@ -941,7 +941,7 @@ export default {
 
 					if (
 						buttonInteraction.customId === 'next' &&
-						stepIndex < replyArray(userSelections).length - 1
+						stepIndex < createReplyArray(userSelections).length - 1
 					) {
 						stepIndex++;
 						await updateMessage();
@@ -1111,7 +1111,7 @@ export default {
 
 			collector.on('end', async () => {
 				// Disable all components when collector ends
-				const replies = replyArray(userSelections);
+				const replies = createReplyArray(userSelections);
 				const finalReply = replies[stepIndex];
 
 				// Disable all components

@@ -35,20 +35,20 @@ const calculateCatchRate = (
 	}
 	let status_bonus = 0;
 
-	switch (status) {
-		case 'Burn':
+	switch (status.toLowerCase()) {
+		case 'burn':
 			status_bonus = 120;
 			break;
-		case 'Poison':
+		case 'poison':
 			status_bonus = 120;
 			break;
-		case 'Paralysis':
+		case 'paralysis':
 			status_bonus = 120;
 			break;
-		case 'Sleep':
+		case 'sleep':
 			status_bonus = 250;
 			break;
-		case 'Freeze':
+		case 'freeze':
 			status_bonus = 250;
 			break;
 		default:

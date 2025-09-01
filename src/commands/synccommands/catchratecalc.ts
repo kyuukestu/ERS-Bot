@@ -73,6 +73,20 @@ export default {
 			option
 				.setName('pokeball')
 				.setDescription('Enter the Type of Pokeball.')
+				.addChoices(
+					{
+						name: 'Pokeball',
+						value: 'pokeball',
+					},
+					{
+						name: 'Greatball',
+						value: 'greatball',
+					},
+					{
+						name: 'Ultra Ball',
+						value: 'ultraball',
+					}
+				)
 				.setRequired(true)
 		)
 
@@ -88,6 +102,32 @@ export default {
 			option
 				.setName('status-effect')
 				.setDescription('Enter the Status Effect name.')
+				.addChoices(
+					{
+						name: 'Healthy',
+						value: 'healthy',
+					},
+					{
+						name: 'Burn',
+						value: 'burn',
+					},
+					{
+						name: 'Freeze',
+						value: 'freeze',
+					},
+					{
+						name: 'Paralysis',
+						value: 'paralysis',
+					},
+					{
+						name: 'Poison',
+						value: 'poison',
+					},
+					{
+						name: 'Sleep',
+						value: 'sleep',
+					}
+				)
 				.setRequired(false)
 		),
 
