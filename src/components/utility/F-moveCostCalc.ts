@@ -1,4 +1,4 @@
-const calculateMoveCost = (
+const f_calculate_move_cost = (
 	basePower: number,
 	statChanges: number,
 	secondaryEffects: number,
@@ -21,4 +21,4 @@ const calculateMoveCost = (
 	return cost;
 };
 
-export { calculateMoveCost };
+export { f_calculate_move_cost };

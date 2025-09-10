@@ -108,7 +108,9 @@ const extractAbilityInfo = (data: AbilityData) => {
 const extractMoveInfo = (data: MoveData) => {
 	const {
 		name,
+		stat_changes,
 		accuracy,
+		effect_entries,
 		effect_chance,
 		priority,
 		power,
@@ -120,6 +122,7 @@ const extractMoveInfo = (data: MoveData) => {
 		flavor_text_entries,
 		learned_by_pokemon,
 		machines,
+		meta,
 	} = data;
 
 	const formattedName = formatName(name);
@@ -139,7 +142,9 @@ const extractMoveInfo = (data: MoveData) => {
 
 	return {
 		name: formattedName,
+		stat_changes: stat_changes,
 		accuracy: accuracyPercentage,
+		effect_entries: effect_entries,
 		effect_chance: effectChance,
 		priority: priority.toString(),
 		power: pasrsedPower,
@@ -161,6 +166,7 @@ const extractMoveInfo = (data: MoveData) => {
 			) ?? 'N/A',
 		machines:
 			machines.map((machine) => machine.machine.url).join(', ') ?? 'N/A',
+		meta: meta,
 	};
 };
 

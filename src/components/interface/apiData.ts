@@ -70,8 +70,14 @@ interface ItemData {
 
 interface MoveData {
 	name: string;
+	stat_changes: { change: number; stat: { name: string } }[];
 	accuracy?: number | null;
 	effect_chance?: number | null;
+	effect_entries: {
+		effect: string;
+		short_effect: string;
+		language: { name: string };
+	}[];
 	priority: number;
 	power?: number | null;
 	pp?: number | null;
@@ -89,6 +95,19 @@ interface MoveData {
 		machine: { url: string };
 		version_group: { name: string };
 	}[];
+	meta: {
+		ailment: { name: string };
+		stat_chance: number;
+		ailment_chance: number;
+		flinch_chance: number;
+		crit_rate: number;
+		drain: number;
+		healing: number;
+		min_hits: number | null;
+		max_hits: number | null;
+		min_turns: number | null;
+		max_turns: number | null;
+	};
 }
 
 interface PokemonData {

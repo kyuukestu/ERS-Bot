@@ -9,17 +9,20 @@ import { formatUserInput } from '../../components/utility/formatUserInput';
 import { type MoveData } from '../../components/interface/apiData';
 import { moveEndPoint } from '../../components/api/pokeapi';
 import { extractMoveInfo } from '../../components/utility/dataExtraction';
-import { f_calculate_move_cost } from '../../components/utility/F-moveCostCalc.ts';
-import { typeColors } from '../../components/ui/colors.ts';
-import { moveEmojis } from '../../components/ui/emojis.ts';
+import { calculateMovePrice } from '../../components/utility/movePriceCalc';
+import { typeColors } from '../../components/ui/colors';
+import { moveEmojis } from '../../components/ui/emojis';
+import { formatCurrency } from '../../components/utility/formatCurrency';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('move-cost')
-		.setDescription('Calculates the fortitude cost of a move.')
+		.setName('calculate-tr-price')
+		.setDescription(
+			'Calculates the price to purchase a move from the PokeMart.'
+		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
-				.setName('move')
+				.setName('move-name')
 				.setDescription('Name of the move.')
 				.setRequired(true)
 		)
@@ -47,10 +50,9 @@ export default {
 				)
 				.setRequired(false)
 		),
-
 	async execute(interaction: ChatInputCommandInteraction) {
 		const moveName = formatUserInput(
-			interaction.options.getString('move', true)
+			interaction.options.getString('move-name', true)
 		);
 		const secOverride = interaction.options.getNumber('sec-override');
 		const statOverride = interaction.options.getNumber('stat-override');
@@ -136,15 +138,14 @@ export default {
 				});
 			}
 
-			const cost = f_calculate_move_cost(
+			const cost = calculateMovePrice(
 				parseInt(moveInfo.power) || 0,
 				statOverride ? statOverride : statChanges,
 				secOverride ? secOverride : secondaryEffects,
 				fieldOverride ? fieldOverride : field_effect_count
 			);
 
-			// Create an embed with enhanced layout
-			const embed = new EmbedBuilder()
+			const costEmbed = new EmbedBuilder()
 				.setColor(typeColors[moveInfo.type] || typeColors['normal'])
 				.setTitle(
 					`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
@@ -172,7 +173,7 @@ export default {
 						inline: true,
 					},
 					{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-					{ name: 'Fortitude Cost', value: cost.toString(), inline: false },
+					{ name: 'Price', value: formatCurrency(cost), inline: false },
 					{ name: '🎯 Target', value: moveInfo.target, inline: true },
 					{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
 					{
@@ -181,15 +182,14 @@ export default {
 							moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
 							moveInfo.flavor_text_ver.slice(1),
 						inline: true,
+					},
+					{
+						name: 'Debugging',
+						value: `Stat Changes: ${statChanges}\nSecondary Effects: ${secondaryEffects}\nField Effects: ${field_effect_count}`,
 					}
-				)
-				.setFooter({
-					text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
-					iconURL: interaction.user.displayAvatarURL(),
-				})
-				.setTimestamp();
+				);
 
-			await interaction.editReply({ embeds: [embed] });
+			await interaction.editReply({ embeds: [costEmbed] });
 		} catch (error) {
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
