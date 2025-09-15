@@ -1,4 +1,4 @@
-const formatCurrency = (
+export const formatCurrency = (
 	amount: number,
 	locale: string = 'ja-JP',
 	currencyCode: string = 'JPY'
@@ -12,5 +12,3 @@ const formatCurrency = (
 
 	return formatted;
 };
-
-export { formatCurrency };

@@ -6,12 +6,12 @@ import {
 	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { formatUserInput } from '../../components/utility/formatUserInput';
-import { type PokemonData } from '../../components/interface/apiData';
-import { type PokemonStats } from '../../components/interface/canvasData.ts';
-import { pokemonEndPoint } from '../../components/api/pokeapi';
-import { extractPokemonInfo } from '../../components/utility/dataExtraction';
-import { calculateUpkeep } from '../../components/utility/pokeUpkeepCalc.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { type PokemonData } from '../../interface/apiData.ts';
+import { type PokemonStats } from '../../interface/canvasData.ts';
+import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
+import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
+import { calculateUpkeep } from '../../utility/pokeUpkeepCalc.ts';
 
 export default {
 	data: new SlashCommandBuilder()

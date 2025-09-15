@@ -3,10 +3,9 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { abilityEndPoint } from '../../components/api/pokeapi.ts';
-import { formatUserInput } from '../../components/utility/formatUserInput.ts';
-import { extractAbilityInfo } from '../../components/utility/dataExtraction.ts';
-import type { AbilityData } from '../../components/interface/apiData.ts';
+import { abilityEndPoint } from '../../utility/api/pokeapi.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { extractAbilityInfo } from '../../utility/dataExtraction/extractAbilityInfo.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -30,9 +29,9 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const response = await abilityEndPoint(abilityName);
-			const data: AbilityData = response as AbilityData;
-			const abilityInfo = extractAbilityInfo(data);
+			const abilityInfo = extractAbilityInfo(
+				await abilityEndPoint(abilityName)
+			);
 
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()

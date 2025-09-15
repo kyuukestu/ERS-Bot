@@ -6,7 +6,7 @@
       "dependencies": {
         "@smogon/calc": "^0.10.0",
         "@types/node-fetch": "^2.6.13",
-        "axios": "^1.11.0",
+        "axios": "^1.12.1",
         "axios-cache-interceptor": "^1.8.2",
         "canvas": "^3.2.0",
         "discord.js": "^14.22.1",
@@ -181,7 +181,7 @@
 
     "asynckit": ["asynckit@0.4.0", "", {}, "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="],
 
-    "axios": ["axios@1.11.0", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.4", "proxy-from-env": "^1.1.0" } }, "sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA=="],
+    "axios": ["axios@1.12.1", "", { "dependencies": { "follow-redirects": "^1.15.6", "form-data": "^4.0.4", "proxy-from-env": "^1.1.0" } }, "sha512-Kn4kbSXpkFHCGE6rBFNwIv0GQs4AvDT80jlveJDKFxjbTYMUeB4QtsdPCv6H8Cm19Je7IU6VFtRl2zWZI0rudQ=="],
 
     "axios-cache-interceptor": ["axios-cache-interceptor@1.8.2", "", { "dependencies": { "cache-parser": "1.2.5", "fast-defer": "1.1.8", "object-code": "1.3.3" }, "peerDependencies": { "axios": "^1" } }, "sha512-NadGy8D06MrkpY+vlR5yTt1kGsmhSfON8mbriTpt7diByh81Vj3tViBrtPjGTwIvZxH9CUll2dZaWmGd9qQOiA=="],
 

@@ -5,13 +5,13 @@ import {
 	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { formatUserInput } from '../../components/utility/formatUserInput';
-import { type MoveData } from '../../components/interface/apiData';
-import { moveEndPoint } from '../../components/api/pokeapi';
-import { extractMoveInfo } from '../../components/utility/dataExtraction';
-import { f_calculate_move_cost } from '../../components/utility/F-moveCostCalc.ts';
-import { typeColors } from '../../components/ui/colors.ts';
-import { moveEmojis } from '../../components/ui/emojis.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { type MoveData } from '../../interface/apiData.ts';
+import { moveEndPoint } from '../../utility/api/pokeapi.ts';
+import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
+import { f_calculate_move_cost } from '../../utility/F-moveCostCalc.ts';
+import { typeColors } from '../../ui/colors.ts';
+import { moveEmojis } from '../../ui/emojis.ts';
 
 export default {
 	data: new SlashCommandBuilder()

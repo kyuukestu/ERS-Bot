@@ -1,5 +1,3 @@
-import { moveEndPoint } from '../../components/api/pokeapi.ts';
-import { formatUserInput } from '../../components/utility/formatUserInput.ts';
 import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
@@ -9,10 +7,11 @@ import {
 	ButtonStyle,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import type { MoveData } from '../../components/interface/apiData.ts';
-import { typeColors } from '../../components/ui/colors.ts';
-import { moveEmojis } from '../../components/ui/emojis.ts';
-import { extractMoveInfo } from '../../components/utility/dataExtraction.ts';
+import { typeColors } from '../../ui/colors.ts';
+import { moveEmojis } from '../../ui/emojis.ts';
+import { moveEndPoint } from '../../utility/api/pokeapi.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -35,9 +34,7 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const response = await moveEndPoint(moveName);
-			const data: MoveData = response as MoveData;
-			const moveInfo = extractMoveInfo(data);
+			const moveInfo = extractMoveInfo(await moveEndPoint(moveName));
 
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()

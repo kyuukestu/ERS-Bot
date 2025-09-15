@@ -1,9 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-	pokemonEndPoint,
-	speciesEndPoint,
-} from '../../components/api/pokeapi.ts';
-import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+
 import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
@@ -16,17 +12,18 @@ import {
 	ComponentType,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import type {
-	PokemonData,
-	SpeciesData,
-} from '../../components/interface/apiData.ts';
-import { typeColors } from '../../components/ui/colors.ts';
-import { PokemonStatsCanvas } from '../../components/utility/statsCanvas.ts';
-import { type PokemonStats } from '../../components/interface/canvasData.ts';
 import {
-	extractPokemonInfo,
-	extractSpeciesInfo,
-} from '../../components/utility/dataExtraction.ts';
+	SpeciesDataSchema,
+	type SpeciesData,
+} from '../../schemas/apiSchemas.ts';
+// import type { PokemonData, SpeciesData } from '../../interface/apiData.ts';
+import { typeColors } from '../../ui/colors.ts';
+import { pokemonEndPoint, speciesEndPoint } from '../../utility/api/pokeapi.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { PokemonStatsCanvas } from '../../utility/statsCanvas.ts';
+import { type PokemonStats } from '../../interface/canvasData.ts';
+import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
+import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -66,11 +63,10 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const data: PokemonData = await pokemonEndPoint(searchName);
-			const species: SpeciesData = await speciesEndPoint(pokemonName);
-
-			const pokemonInfo = extractPokemonInfo(data);
-			const speciesInfo = extractSpeciesInfo(species);
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+			const speciesInfo = extractSpeciesInfo(
+				await speciesEndPoint(pokemonName)
+			);
 
 			// TODO: Implement check for cases in which the pokemon endpoint passes but the speceis end-point does not.
 
@@ -99,48 +95,52 @@ export default {
 			// Enhanced sprite selection
 			const sprites = {
 				default: showShiny
-					? data.sprites.front_shiny
-					: data.sprites.front_default,
-				shiny: data.sprites.front_shiny,
-				back: showShiny ? data.sprites.back_shiny : data.sprites.back_default,
-				backShiny: data.sprites.back_shiny,
-				officialArtwork: data.sprites.other['official-artwork']?.front_default,
-				shinyArtwork: data.sprites.other['official-artwork']?.front_shiny,
-				dreamWorld: data.sprites.other.dream_world?.front_default,
+					? pokemonInfo.sprites.front_shiny
+					: pokemonInfo.sprites.front_default,
+				shiny: pokemonInfo.sprites.front_shiny,
+				back: showShiny
+					? pokemonInfo.sprites.back_shiny
+					: pokemonInfo.sprites.back_default,
+				backShiny: pokemonInfo.sprites.back_shiny,
+				officialArtwork:
+					pokemonInfo.sprites.other['official-artwork']?.front_default,
+				shinyArtwork:
+					pokemonInfo.sprites.other['official-artwork']?.front_shiny,
+				dreamWorld: pokemonInfo.sprites.other.dream_world?.front_default,
 			};
 
 			// Main color based on primary type
-			const primaryType = data.types[0].type.name;
+			const primaryType = pokemonInfo.types[0];
 			const embedColor = typeColors[primaryType] || 0xffcc00;
 
 			const stats: PokemonStats = {
 				hp:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'hp'
 					)?.base_stat || 0,
 				attack:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'attack'
 					)?.base_stat || 0,
 				defense:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'defense'
 					)?.base_stat || 0,
 				specialAttack:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'special-attack'
 					)?.base_stat || 0,
 				specialDefense:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'special-defense'
 					)?.base_stat || 0,
 				speed:
-					data.stats.find(
+					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'speed'
 					)?.base_stat || 0,
@@ -273,7 +273,7 @@ export default {
 					case 'pokedex_entries':
 						await handlePokedexEntries(
 							selectInteraction,
-							species,
+							speciesInfo,
 							pokemonInfo.name
 						);
 						break;
@@ -318,10 +318,12 @@ export default {
 // Helper functions
 async function handlePokedexEntries(
 	interaction: any,
-	species: SpeciesData,
+	species: unknown,
 	name: string
 ) {
-	const allFlavorTexts = species.flavor_text_entries
+	const parseSpecies: SpeciesData = SpeciesDataSchema.parse(species);
+
+	const allFlavorTexts = parseSpecies.flavor_text_entries
 		.filter((ft) => ft.language.name === 'en')
 		.map((entry) => {
 			const versionName = entry.version.name.toUpperCase().replace('-', ' ');

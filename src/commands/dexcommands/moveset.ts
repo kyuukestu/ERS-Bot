@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { pokemonEndPoint } from '../../components/api/pokeapi.ts';
-import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+
 import {
 	EmbedBuilder,
 	ActionRowBuilder,
@@ -10,7 +9,13 @@ import {
 	StringSelectMenuBuilder,
 } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import type { PokemonData } from '../../components/interface/apiData.ts';
+import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
+import {
+	PokemonDataSchema,
+	type PokemonData,
+} from '../../schemas/apiSchemas.ts';
+import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 
 // ADD THIS: Enhanced styling configuration
 const methodConfig = {
@@ -67,10 +72,12 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const data: PokemonData = await pokemonEndPoint(pokemonName);
-			const name = data.name.toUpperCase();
-			const sprite = data.sprites.front_default;
-			const moves = processMoveData(data);
+			const PokemonInfo = extractPokemonInfo(
+				await pokemonEndPoint(pokemonName)
+			);
+			const name = PokemonInfo.name.toUpperCase();
+			const sprite = PokemonInfo.sprites.front_default;
+			const moves = processMoveData(PokemonInfo);
 
 			// MODIFIED: Use enhanced grouping
 			const groupedMoves = groupAndSortMovesEnhanced(moves);
@@ -326,8 +333,10 @@ export default {
 };
 
 // KEEP EXISTING: processMoveData function
-const processMoveData = (data: PokemonData) => {
-	return data.moves.map((moveData) => {
+const processMoveData = (data: unknown) => {
+	const parsePokemon: PokemonData = PokemonDataSchema.parse(data);
+
+	return parsePokemon.moves.map((moveData) => {
 		const moveName = moveData.move.name;
 		const methods = moveData.version_group_details.map((detail) => ({
 			method: detail.move_learn_method.name,

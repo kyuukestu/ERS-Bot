@@ -1,14 +1,14 @@
-import { itemEndPoint } from '../../components/api/pokeapi.ts';
-import { formatUserInput } from '../../components/utility/formatUserInput.ts';
+import { itemEndPoint } from '../../utility/api/pokeapi.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
 	EmbedBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import type { ItemData } from '../../components/interface/apiData.ts';
-import { itemCategoryColors } from '../../components/ui/colors.ts';
-import { extractItemInfo } from '../../components/utility/dataExtraction.ts';
+import type { ItemData } from '../../interface/apiData.ts';
+import { itemCategoryColors } from '../../ui/colors.ts';
+import { extractItemInfo } from '../../utility/dataExtraction/extractItemInfo.ts';
 
 export default {
 	data: new SlashCommandBuilder()

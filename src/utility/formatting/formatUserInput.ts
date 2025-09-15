@@ -1,4 +1,4 @@
-const formatUserInput = (input?: string) => {
+export const formatUserInput = (input?: string) => {
 	if (!input) {
 		return '';
 	}
@@ -12,5 +12,3 @@ const formatUserInput = (input?: string) => {
 
 	return formatted;
 };
-
-export { formatUserInput };

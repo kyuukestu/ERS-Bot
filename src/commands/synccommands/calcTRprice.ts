@@ -5,14 +5,13 @@ import {
 	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { formatUserInput } from '../../components/utility/formatUserInput';
-import { type MoveData } from '../../components/interface/apiData';
-import { moveEndPoint } from '../../components/api/pokeapi';
-import { extractMoveInfo } from '../../components/utility/dataExtraction';
-import { calculateMovePrice } from '../../components/utility/movePriceCalc';
-import { typeColors } from '../../components/ui/colors';
-import { moveEmojis } from '../../components/ui/emojis';
-import { formatCurrency } from '../../components/utility/formatCurrency';
+import { formatUserInput } from '../../utility/formatting/formatUserInput';
+import { moveEndPoint } from '../../utility/api/pokeapi';
+import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo';
+import { calculateMovePrice } from '../../utility/movePriceCalc';
+import { formatCurrency } from '../../utility/formatting/formatCurrency';
+import { typeColors } from '../../ui/colors';
+import { moveEmojis } from '../../ui/emojis';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -61,8 +60,8 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const data: MoveData = await moveEndPoint(moveName);
-			const moveInfo = extractMoveInfo(data);
+			// const data: MoveData = await moveEndPoint(moveName);
+			const moveInfo = extractMoveInfo(await moveEndPoint(moveName));
 			const move = moveInfo;
 
 			let statChanges = 0;

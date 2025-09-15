@@ -9,11 +9,10 @@ import {
 	ComponentType,
 	type ButtonInteraction,
 } from 'discord.js';
-import { formatUserInput } from '../../components/utility/formatUserInput';
-import { type SpeciesData } from '../../components/interface/apiData';
-import { speciesEndPoint } from '../../components/api/pokeapi';
-import { extractSpeciesInfo } from '../../components/utility/dataExtraction';
-import { calculateCatchRate } from '../../components/utility/catchRateCalculator';
+import { formatUserInput } from '../../utility/formatting/formatUserInput';
+import { speciesEndPoint } from '../../utility/api/pokeapi';
+import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo';
+import { calculateCatchRate } from '../../utility/catchRateCalculator';
 
 const createEmbed = (
 	pokemon: string,
@@ -146,8 +145,7 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const data: SpeciesData = await speciesEndPoint(pokemon);
-			const speciesInfo = extractSpeciesInfo(data);
+			const speciesInfo = extractSpeciesInfo(await speciesEndPoint(pokemon));
 
 			let attempts = 1;
 			let catch_data = calculateCatchRate(
