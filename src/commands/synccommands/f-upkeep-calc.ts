@@ -11,7 +11,7 @@ import { type PokemonData } from '../../interface/apiData.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
-import { calculateUpkeep } from '../../utility/pokeUpkeepCalc.ts';
+import { calculateUpkeep } from '../../utility/calculators/pokeUpkeepCalc.ts';
 
 export default {
 	data: new SlashCommandBuilder()

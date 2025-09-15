@@ -12,7 +12,7 @@ import {
 import { formatUserInput } from '../../utility/formatting/formatUserInput';
 import { speciesEndPoint } from '../../utility/api/pokeapi';
 import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo';
-import { calculateCatchRate } from '../../utility/catchRateCalculator';
+import { calculateCatchRate } from '../../utility/calculators/catchRateCalculator';
 
 const createEmbed = (
 	pokemon: string,

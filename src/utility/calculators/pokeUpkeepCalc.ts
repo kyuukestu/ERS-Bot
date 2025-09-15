@@ -15,7 +15,7 @@ const calculateUpkeep = (
 		(isAlpha ? alphaModifier : 0) +
 		additionalAbilities * additionalAbilitiesModifier;
 
-	let upkeep = inBox
+	const upkeep = inBox
 		? Math.round(Math.pow(final_base, bst / 100) / 4)
 		: Math.round(Math.pow(final_base, bst / 100));
 
