@@ -11,13 +11,10 @@ export const extractPokemonInfo = (rawData: unknown) => {
 	return {
 		id,
 		name: formatName(name),
-		weight: (weight / 10).toFixed(2) + 'kg',
-		height: (height / 10).toFixed(2) + 'm',
+		weight: (Number(weight) / 10).toFixed(2) + 'kg',
+		height: (Number(height) / 10).toFixed(2) + 'm',
 		types: types.map(
-			(t) =>
-				`${getTypeEmoji(t.type.name)} ${
-					t.type.name.charAt(0).toUpperCase() + t.type.name.slice(1)
-				}`
+			(t) => `${getTypeEmoji(t)} ${t.charAt(0).toUpperCase() + t.slice(1)}`
 		),
 		abilities: abilities.map((a) => {
 			const abilityName = a.ability.name

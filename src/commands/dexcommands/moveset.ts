@@ -322,7 +322,7 @@ export default {
 			});
 		} catch (error) {
 			console.error('Error:', error);
-			const errorMsg = `❌ Error: Pokémon "${pokemonName}" not found.`;
+			const errorMsg = `❌ Error: Pokémon "${pokemonName}" not found. ${error}`;
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(errorMsg);
 			} else {

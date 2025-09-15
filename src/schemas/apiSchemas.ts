@@ -27,7 +27,7 @@ export const ItemDataSchema = z.object({
 	category: z.object({ name: z.string() }),
 	cost: z.number(),
 	fling_power: z.number(),
-	fling_effect: z.object({ name: z.string().optional() }),
+	fling_effect: z.object({ name: z.string().optional() }).nullable(),
 	effect_entries: z.array(
 		z.object({
 			effect: z.string(),
@@ -41,9 +41,11 @@ export const ItemDataSchema = z.object({
 			version_group: z.object({ name: z.string() }),
 		})
 	),
-	sprites: z.object({
-		default: z.string(),
-	}),
+	sprites: z
+		.object({
+			default: z.string(),
+		})
+		.nullable(),
 });
 
 export type ItemData = z.infer<typeof ItemDataSchema>;
@@ -108,15 +110,32 @@ export type MoveData = z.infer<typeof MoveDataSchema>;
 export const PokemonDataSchema = z.object({
 	id: z.number(),
 	name: z.string(),
-	types: z.array(z.object({ type: z.object({ name: z.string() }) })),
-	abilities: z.array(
-		z.object({
-			ability: z.object({ name: z.string() }),
-			is_hidden: z.boolean(),
-		})
+	types: z.array(
+		z
+			.union([z.string(), z.object({ type: z.object({ name: z.string() }) })])
+			.transform((t) => t.toString())
 	),
-	height: z.number(),
-	weight: z.number(),
+	abilities: z
+		.array(
+			z.union([
+				z.string(),
+				z.object({
+					ability: z.object({ name: z.string() }),
+					is_hidden: z.boolean(),
+				}),
+			])
+		)
+		.transform((arr) =>
+			arr.map((a) =>
+				typeof a === 'string' ? { ability: { name: a }, is_hidden: false } : a
+			)
+		),
+	height: z.union([z.number(), z.string()]).transform((h) => {
+		return Number(h);
+	}),
+	weight: z.union([z.number(), z.string()]).transform((w) => {
+		return Number(w);
+	}),
 	stats: z.array(
 		z.object({ stat: z.object({ name: z.string() }), base_stat: z.number() })
 	),
@@ -152,8 +171,8 @@ export type PokemonData = z.infer<typeof PokemonDataSchema>;
 /* ---------------------------- Species Schema ---------------------------- */
 export const SpeciesDataSchema = z.object({
 	egg_groups: z.array(z.object({ name: z.string() })),
-	evolves_from_species: z.object({ name: z.string() }).optional(),
-	habitat: z.object({ name: z.string() }).optional(),
+	evolves_from_species: z.object({ name: z.string() }).optional().nullable(),
+	habitat: z.object({ name: z.string() }).optional().nullable(),
 	generation: z.object({ name: z.string() }),
 	flavor_text_entries: z.array(
 		z.object({
