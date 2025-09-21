@@ -6,6 +6,51 @@ import {
 import { abilityEndPoint } from '../../utility/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { extractAbilityInfo } from '../../utility/dataExtraction/extractAbilityInfo.ts';
+import z from 'zod';
+
+const abilitySchema = z.object({
+	name: z.string(),
+	color: z.number(),
+	emoji: z.string(),
+	generation: z.string(),
+	effect: z.string(),
+	effectChance: z.string(),
+	pokemon: z.string().optional(),
+});
+
+type AbilityInfo = z.infer<typeof abilitySchema>;
+
+const createAbilityEmbed = (
+	interaction: ChatInputCommandInteraction,
+	abilityInfo: AbilityInfo
+): EmbedBuilder => {
+	return new EmbedBuilder()
+		.setColor(abilityInfo.color)
+		.setTitle(`${abilityInfo.emoji} **${abilityInfo.name}**`)
+		.setDescription(abilityInfo.effect.replace(/\r?\n|\r/g, ' '))
+		.addFields(
+			{
+				name: '📌 Generation',
+				value: abilityInfo.generation,
+				inline: true,
+			},
+			{
+				name: '🎯 Effect Chance',
+				value: abilityInfo.effectChance,
+				inline: true,
+			},
+			{
+				name: '🐾 Pokémon',
+				value: abilityInfo.pokemon || 'N/A',
+				inline: false,
+			}
+		)
+		.setFooter({
+			text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
+			iconURL: interaction.user.displayAvatarURL(),
+		})
+		.setTimestamp();
+};
 
 export default {
 	data: new SlashCommandBuilder()
@@ -21,7 +66,6 @@ export default {
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
-		// Use the newer getString method instead of get
 		const abilityName = formatUserInput(
 			interaction.options.getString('ability', true)
 		);
@@ -33,33 +77,7 @@ export default {
 				await abilityEndPoint(abilityName)
 			);
 
-			// Create an embed with enhanced layout
-			const embed = new EmbedBuilder()
-				.setColor(abilityInfo.color)
-				.setTitle(`${abilityInfo.emoji} **${abilityInfo.name}**`)
-				.setDescription(abilityInfo.effect.replace(/\r?\n|\r/g, ' '))
-				.addFields(
-					{
-						name: '📌 Generation',
-						value: abilityInfo.generation,
-						inline: true,
-					},
-					{
-						name: '🎯 Effect Chance',
-						value: abilityInfo.effectChance,
-						inline: true,
-					},
-					{
-						name: '🐾 Pokémon',
-						value: abilityInfo.pokemon || 'N/A',
-						inline: false,
-					}
-				)
-				.setFooter({
-					text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
-					iconURL: interaction.user.displayAvatarURL(),
-				})
-				.setTimestamp();
+			const embed = createAbilityEmbed(interaction, abilityInfo);
 
 			await interaction.editReply({ embeds: [embed] });
 		} catch (error) {

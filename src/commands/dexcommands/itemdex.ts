@@ -10,6 +10,60 @@ import type { ItemData } from '../../interface/apiData.ts';
 import { itemCategoryColors } from '../../ui/colors.ts';
 import { extractItemInfo } from '../../utility/dataExtraction/extractItemInfo.ts';
 
+const createItemEmbed = (
+	interaction: ChatInputCommandInteraction,
+	itemInfo: any
+) => {
+	const embed = new EmbedBuilder()
+		.setColor(
+			itemCategoryColors[itemInfo.category] || itemCategoryColors['other']
+		)
+		.setTitle(`${itemInfo.item_emoji || '❓'} **${itemInfo.name}**`)
+		.setDescription(itemInfo.flavor_text_entries.replace(/\r?\n|\r/g, ' '))
+		.setThumbnail(itemInfo.sprite)
+		.addFields(
+			{
+				name: '📌 Category',
+				value:
+					itemInfo.category.charAt(0).toUpperCase() +
+					itemInfo.category.slice(1),
+				inline: true,
+			},
+			{
+				name: '💰 Cost',
+				value: itemInfo.cost.toLocaleString() + ' ₱',
+				inline: true,
+			},
+			{
+				name: '⚡ Fling Power',
+				value: itemInfo.fling_power.toString(),
+				inline: true,
+			},
+			{
+				name: '🎯 Fling Effect',
+				value: itemInfo.fling_effect,
+				inline: true,
+			},
+			{
+				name: '📝 Effect',
+				value: itemInfo.effect.replace(/\r?\n|\r/g, ' '),
+				inline: false,
+			},
+			{
+				name: '📅 Version',
+				value: itemInfo.flavor_text_ver,
+				inline: false,
+			}
+		)
+		.setFooter({
+			text: `Requested by ${interaction.user.username}`,
+			iconURL: interaction.user.displayAvatarURL(),
+		})
+		.setTimestamp();
+
+	return embed;
+};
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('itemdex')
@@ -36,52 +90,7 @@ export default {
 			const itemInfo = extractItemInfo(data);
 
 			// Create an embed with enhanced layout
-			const embed = new EmbedBuilder()
-				.setColor(
-					itemCategoryColors[itemInfo.category] || itemCategoryColors['other']
-				)
-				.setTitle(`${itemInfo.item_emoji || '❓'} **${itemInfo.name}**`)
-				.setDescription(itemInfo.flavor_text_entries.replace(/\r?\n|\r/g, ' '))
-				.setThumbnail(itemInfo.sprite)
-				.addFields(
-					{
-						name: '📌 Category',
-						value:
-							itemInfo.category.charAt(0).toUpperCase() +
-							itemInfo.category.slice(1),
-						inline: true,
-					},
-					{
-						name: '💰 Cost',
-						value: itemInfo.cost.toLocaleString() + ' ₱',
-						inline: true,
-					},
-					{
-						name: '⚡ Fling Power',
-						value: itemInfo.fling_power.toString(),
-						inline: true,
-					},
-					{
-						name: '🎯 Fling Effect',
-						value: itemInfo.fling_effect,
-						inline: true,
-					},
-					{
-						name: '📝 Effect',
-						value: itemInfo.effect.replace(/\r?\n|\r/g, ' '),
-						inline: false,
-					},
-					{
-						name: '📅 Version',
-						value: itemInfo.flavor_text_ver,
-						inline: false,
-					}
-				)
-				.setFooter({
-					text: `Requested by ${interaction.user.username}`,
-					iconURL: interaction.user.displayAvatarURL(),
-				})
-				.setTimestamp();
+			const embed = createItemEmbed(interaction, itemInfo);
 
 			await interaction.editReply({ embeds: [embed] });
 		} catch (error) {

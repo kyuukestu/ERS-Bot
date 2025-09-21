@@ -13,6 +13,57 @@ import { moveEndPoint } from '../../utility/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
 
+const createAttackEmbed = (
+	interaction: ChatInputCommandInteraction,
+	moveInfo: any
+) => {
+	const embed = new EmbedBuilder()
+		.setColor(typeColors[moveInfo.type] || typeColors['normal'])
+		.setTitle(
+			`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
+		)
+		.setDescription(moveInfo.flavor_text.replace(/\r?\n|\r/g, ' '))
+		.addFields(
+			{
+				name: '📌 Type',
+				value: moveInfo.type.charAt(0).toUpperCase() + moveInfo.type.slice(1),
+				inline: true,
+			},
+			{
+				name: '🏹 Damage Class',
+				value:
+					moveInfo.damage_class.charAt(0).toUpperCase() +
+					moveInfo.damage_class.slice(1),
+				inline: true,
+			},
+			{ name: '💪 Power', value: moveInfo.power, inline: true },
+			{ name: '🎯 Accuracy', value: moveInfo.accuracy, inline: true },
+			{
+				name: '🎲 Effect Chance',
+				value: moveInfo.effect_chance,
+				inline: true,
+			},
+			{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
+			{ name: '🔋 PP', value: moveInfo.pp, inline: true },
+			{ name: '🎯 Target', value: moveInfo.target, inline: true },
+			{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
+			{
+				name: '📅 Version',
+				value:
+					moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
+					moveInfo.flavor_text_ver.slice(1),
+				inline: true,
+			}
+		)
+		.setFooter({
+			text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
+			iconURL: interaction.user.displayAvatarURL(),
+		})
+		.setTimestamp();
+
+	return embed;
+};
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('attackdex')
@@ -37,50 +88,7 @@ export default {
 			const moveInfo = extractMoveInfo(await moveEndPoint(moveName));
 
 			// Create an embed with enhanced layout
-			const embed = new EmbedBuilder()
-				.setColor(typeColors[moveInfo.type] || typeColors['normal'])
-				.setTitle(
-					`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
-				)
-				.setDescription(moveInfo.flavor_text.replace(/\r?\n|\r/g, ' '))
-				.addFields(
-					{
-						name: '📌 Type',
-						value:
-							moveInfo.type.charAt(0).toUpperCase() + moveInfo.type.slice(1),
-						inline: true,
-					},
-					{
-						name: '🏹 Damage Class',
-						value:
-							moveInfo.damage_class.charAt(0).toUpperCase() +
-							moveInfo.damage_class.slice(1),
-						inline: true,
-					},
-					{ name: '💪 Power', value: moveInfo.power, inline: true },
-					{ name: '🎯 Accuracy', value: moveInfo.accuracy, inline: true },
-					{
-						name: '🎲 Effect Chance',
-						value: moveInfo.effect_chance,
-						inline: true,
-					},
-					{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-					{ name: '🔋 PP', value: moveInfo.pp, inline: true },
-					{ name: '🎯 Target', value: moveInfo.target, inline: true },
-					{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
-					{
-						name: '📅 Version',
-						value:
-							moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
-							moveInfo.flavor_text_ver.slice(1),
-						inline: true,
-					}
-				)
-				.setFooter({
-					text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
-					iconURL: interaction.user.displayAvatarURL(),
-				})
-				.setTimestamp();
+			const embed = createAttackEmbed(interaction, moveInfo);
 
 			await interaction.editReply({ embeds: [embed] });
 
