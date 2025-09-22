@@ -6,6 +6,7 @@ import {
 	clientId,
 	guildId,
 	outbackguildId,
+	KalosId,
 	syncId,
 	token,
 } from './src/config.json';
@@ -70,10 +71,17 @@ const rest = new REST().setToken(token);
 			{ body: commands }
 		);
 
+		// Deploy to foruth guild (syncId)
+		const data2: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, KalosId),
+			{ body: commands }
+		);
+
 		console.log(
 			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
 				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
-				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.`
+				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.` +
+				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.`
 		);
 	} catch (error) {
 		console.error('Error deploying commands:', error);
