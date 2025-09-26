@@ -27,14 +27,9 @@ export const extractAbilityInfo = (rawData: unknown) => {
 		generation.name.replace('generation-', '') ?? 'Unknown';
 
 	// Get top 3 Pokémon names
-	const pokemonList =
-		pokemon
-			.slice(0, 3)
-			.map(
-				({ pokemon: { name } }) => name.charAt(0).toUpperCase() + name.slice(1)
-			)
-			.join(', ') + (pokemon.length > 3 ? '...' : '');
-
+	const pokemonList = pokemon.map(
+		({ pokemon: { name } }) => name.charAt(0).toUpperCase() + name.slice(1)
+	);
 	// Determine ability category
 	const category = effect_entries.some(
 		(e) => e.effect.includes('attack') ?? e.effect.includes('damage')
