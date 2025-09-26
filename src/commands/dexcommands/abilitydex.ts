@@ -82,7 +82,7 @@ export default {
 			await sendPaginatedList(
 				interaction,
 				abilityInfo.name,
-				abilityInfo.pokemon
+				abilityInfo.pokemon ?? []
 			);
 		} catch (error) {
 			console.error('Error fetching ability data:', error);

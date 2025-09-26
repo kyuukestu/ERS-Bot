@@ -26,7 +26,6 @@ export const extractAbilityInfo = (rawData: unknown) => {
 	const formattedGeneration =
 		generation.name.replace('generation-', '') ?? 'Unknown';
 
-	// Get top 3 Pokémon names
 	const pokemonList = pokemon.map(
 		({ pokemon: { name } }) => name.charAt(0).toUpperCase() + name.slice(1)
 	);
