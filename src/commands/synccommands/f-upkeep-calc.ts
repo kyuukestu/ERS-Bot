@@ -12,6 +12,7 @@ import { type PokemonStats } from '../../interface/canvasData.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '../../utility/calculators/pokeUpkeepCalc.ts';
+import { PokemonDataSchema } from '../../schemas/apiSchemas.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -71,8 +72,7 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const data: PokemonData = await pokemonEndPoint(searchName);
-			const pokemonInfo = extractPokemonInfo(data);
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
 
 			interface StatObject {
 				base_stat: number;
@@ -83,22 +83,24 @@ export default {
 
 			const stats: PokemonStats = {
 				hp:
-					data.stats.find((s: StatObject) => s.stat.name === 'hp')?.base_stat ||
-					0,
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'hp')
+						?.base_stat || 0,
 				attack:
-					data.stats.find((s: StatObject) => s.stat.name === 'attack')
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'attack')
 						?.base_stat || 0,
 				defense:
-					data.stats.find((s: StatObject) => s.stat.name === 'defense')
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'defense')
 						?.base_stat || 0,
 				specialAttack:
-					data.stats.find((s: StatObject) => s.stat.name === 'special-attack')
-						?.base_stat || 0,
+					pokemonInfo.stats.find(
+						(s: StatObject) => s.stat.name === 'special-attack'
+					)?.base_stat || 0,
 				specialDefense:
-					data.stats.find((s: StatObject) => s.stat.name === 'special-defense')
-						?.base_stat || 0,
+					pokemonInfo.stats.find(
+						(s: StatObject) => s.stat.name === 'special-defense'
+					)?.base_stat || 0,
 				speed:
-					data.stats.find((s: StatObject) => s.stat.name === 'speed')
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'speed')
 						?.base_stat || 0,
 			};
 
@@ -116,14 +118,18 @@ export default {
 
 			const sprites = {
 				default: isShiny
-					? data.sprites.front_shiny
-					: data.sprites.front_default,
-				shiny: data.sprites.front_shiny,
-				back: isShiny ? data.sprites.back_shiny : data.sprites.back_default,
-				backShiny: data.sprites.back_shiny,
-				officialArtwork: data.sprites.other['official-artwork']?.front_default,
-				shinyArtwork: data.sprites.other['official-artwork']?.front_shiny,
-				dreamWorld: data.sprites.other.dream_world?.front_default,
+					? pokemonInfo.sprites.front_shiny
+					: pokemonInfo.sprites.front_default,
+				shiny: pokemonInfo.sprites.front_shiny,
+				back: isShiny
+					? pokemonInfo.sprites.back_shiny
+					: pokemonInfo.sprites.back_default,
+				backShiny: pokemonInfo.sprites.back_shiny,
+				officialArtwork:
+					pokemonInfo.sprites.other['official-artwork']?.front_default,
+				shinyArtwork:
+					pokemonInfo.sprites.other['official-artwork']?.front_shiny,
+				dreamWorld: pokemonInfo.sprites.other.dream_world?.front_default,
 			};
 
 			const embed = new EmbedBuilder()

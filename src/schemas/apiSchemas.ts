@@ -140,15 +140,15 @@ export const PokemonDataSchema = z.object({
 		z.object({ stat: z.object({ name: z.string() }), base_stat: z.number() })
 	),
 	sprites: z.object({
-		front_default: z.string(),
-		front_shiny: z.string(),
-		back_default: z.string(),
-		back_shiny: z.string(),
+		front_default: z.string().nullable(),
+		front_shiny: z.string().nullable(),
+		back_default: z.string().nullable(),
+		back_shiny: z.string().nullable(),
 		other: z.object({
-			dream_world: z.object({ front_default: z.string() }),
+			dream_world: z.object({ front_default: z.string().nullable() }),
 			'official-artwork': z.object({
-				front_default: z.string(),
-				front_shiny: z.string(),
+				front_default: z.string().nullable(),
+				front_shiny: z.string().nullable(),
 			}),
 		}),
 	}),
