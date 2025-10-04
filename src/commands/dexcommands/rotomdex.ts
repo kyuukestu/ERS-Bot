@@ -13,8 +13,8 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import {
-	SpeciesDataSchema,
-	type SpeciesData,
+	ParsedSpeciesDataSchema,
+	type ParsedSpeciesData,
 } from '../../schemas/apiSchemas.ts';
 // import type { PokemonData, SpeciesData } from '../../interface/apiData.ts';
 import { typeColors } from '../../ui/colors.ts';
@@ -164,46 +164,79 @@ export default {
 			const mainEmbed = new EmbedBuilder()
 				.setColor(embedColor)
 				.setTitle(
-					`${speciesInfo.gen_emoji} **${pokemonInfo.name}** ${
+					`# ${speciesInfo.gen_emoji} **${pokemonInfo.name}** ${
 						showShiny ? '✨' : ''
 					} (#${speciesInfo.pokedex_numbers})`
 				)
 				.setThumbnail(sprites.default || sprites.officialArtwork)
 				.setImage(sprites.officialArtwork || sprites.default)
 				.addFields(
+					// Row 1: Types and Abilities (inline, 2 per row)
 					{
-						name: '🏷️ Types',
-						value: pokemonInfo.types.join(' '),
+						name: '** 🏷️ TYPES**',
+						value:
+							pokemonInfo.types.length > 0
+								? pokemonInfo.types
+										.map((t) => `**${t.charAt(0).toUpperCase() + t.slice(1)}**`)
+										.join(' | ')
+								: 'Unknown',
 						inline: true,
 					},
 					{
-						name: '🎯 Abilities',
-						value: pokemonInfo.abilities.join('\n'),
+						name: '** 🎯 ABILITIES**',
+						value:
+							pokemonInfo.abilities.length > 0
+								? pokemonInfo.abilities
+										.map((a) => `> ${a.charAt(0).toUpperCase() + a.slice(1)}`)
+										.join('\n')
+								: 'None',
 						inline: true,
 					},
+
+					// Row 2: Physical stats (full width)
 					{
-						name: '📏 Physical',
-						value: `**Height:** ${pokemonInfo.height}\n**Weight:** ${pokemonInfo.weight}`,
-						inline: true,
-					},
-					{
-						name: '📊 Base Stat Total',
-						value: totalStats.toString(),
+						name: '**📏 PHYSICAL **',
+						value: `> **Height:** ${pokemonInfo.height} m\n**Weight:** ${pokemonInfo.weight} kg`,
 						inline: false,
 					},
+
+					// Row 4: Breeding info (full width, bullet style)
 					{
-						name: '🥚 Breeding',
-						value: breedingFormatted,
+						name: '** 🥚 BREEDING **',
+						value:
+							breedingFormatted.length > 0
+								? breedingFormatted
+										.split('\n')
+										.map((line) => `> ${line}`)
+										.join('\n')
+								: 'Unknown',
 						inline: false,
 					},
+
+					// Row 5: Capture info (full width, bullet style)
 					{
-						name: '🎣 Capture Info',
-						value: captureFormatted,
+						name: '** 🎣 CAPTURE INFO**',
+						value:
+							captureFormatted.length > 0
+								? captureFormatted
+										.split('\n')
+										.map((line) => `> ${line}`)
+										.join('\n')
+								: 'Unknown',
 						inline: false,
 					},
+
+					// Row 6: Evolution (full width)
 					{
-						name: '🧬 Evolution',
+						name: '** 🧬 EVOLUTION**',
 						value: speciesInfo.evolves_from_species,
+						inline: false,
+					},
+
+					// Row 3: Base Stat Total (full width)
+					{
+						name: '** 📊 BASE STAT TOTAL**',
+						value: `**🎯 ${totalStats}**`,
 						inline: false,
 					}
 				)
@@ -321,9 +354,10 @@ async function handlePokedexEntries(
 	species: unknown,
 	name: string
 ) {
-	const parseSpecies: SpeciesData = SpeciesDataSchema.parse(species);
+	const parsedSpecies: ParsedSpeciesData =
+		ParsedSpeciesDataSchema.parse(species);
 
-	const allFlavorTexts = parseSpecies.flavor_text_entries
+	const allFlavorTexts = parsedSpecies.flavor_text_entries
 		.filter((ft) => ft.language.name === 'en')
 		.map((entry) => {
 			const versionName = entry.version.name.toUpperCase().replace('-', ' ');

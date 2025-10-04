@@ -113,7 +113,7 @@ export const PokemonDataSchema = z.object({
 	types: z.array(
 		z
 			.union([z.string(), z.object({ type: z.object({ name: z.string() }) })])
-			.transform((t) => t.toString())
+			.transform((t) => (typeof t === 'string' ? t : t.type.name))
 	),
 	abilities: z
 		.array(
@@ -193,6 +193,28 @@ export const SpeciesDataSchema = z.object({
 
 export type SpeciesData = z.infer<typeof SpeciesDataSchema>;
 
+export const ParsedSpeciesDataSchema = z.object({
+	egg_groups: z.string(),
+	evolves_from_species: z.string(),
+	habitat: z.string(),
+	generation: z.string(),
+	generation_num: z.number(),
+	gen_emoji: z.string(),
+	flavor_text_entries: z.array(
+		z.object({
+			flavor_text: z.string(),
+			language: z.object({ name: z.string() }),
+			version: z.object({ name: z.string() }),
+		})
+	),
+	pokedex_numbers: z.union([z.number(), z.string()]),
+	growth_rate: z.string(),
+	capture_rate: z.number(),
+	capture_percentage: z.string(),
+});
+
+export type ParsedSpeciesData = z.infer<typeof ParsedSpeciesDataSchema>;
+
 /* --------------------------- Export Collection -------------------------- */
 export const Schemas = {
 	AbilityData: AbilityDataSchema,
@@ -200,4 +222,5 @@ export const Schemas = {
 	MoveData: MoveDataSchema,
 	PokemonData: PokemonDataSchema,
 	SpeciesData: SpeciesDataSchema,
+	ParsedSpeciesData: ParsedSpeciesDataSchema,
 };

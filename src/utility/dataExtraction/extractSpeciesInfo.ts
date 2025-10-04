@@ -28,7 +28,7 @@ export const extractSpeciesInfo = (rawData: unknown) => {
 						.join(', ')
 				: 'Unknown',
 		evolves_from_species: evolves_from_species
-			? `⬅️ Evolves from: **${
+			? `⬅️ Evolves from: \n **${
 					evolves_from_species.name.charAt(0).toUpperCase() +
 					evolves_from_species.name.slice(1)
 			  }**`
