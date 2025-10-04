@@ -1,8 +1,8 @@
 const config: { apps: any[] } = {
 	apps: [
 		{
-			name: 'mybot',
-			script: 'src/bot.ts',
+			name: 'ERS-bot',
+			script: 'src/index.ts',
 			interpreter: 'ts-node',
 			cron_restart: '0 6 * * *',
 			restart_delay: 10000,
