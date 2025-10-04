@@ -49,7 +49,7 @@ const legendaryGroups: LegendaryGroup[] = [
 		members: ['Regirock', 'Regice', 'Registeel', 'Regieleki', 'Regidrago'],
 	},
 	{
-		group: 'Legendary Giants',
+		group: 'Lord of Giants',
 		status: 'Banned',
 		members: ['Regigigas'],
 	},
@@ -99,7 +99,6 @@ const legendaryGroups: LegendaryGroup[] = [
 			'Celesteela',
 			'Kartana',
 			'Guzzlord',
-			'Marshadow',
 			'Poipole',
 			'Naganadel',
 			'Stakataka',
@@ -182,6 +181,7 @@ const legendaryGroups: LegendaryGroup[] = [
 			'Zarude',
 			'Genesect',
 			'Magearna',
+			'Marshadow',
 			'Ogerpon',
 			'Meloetta',
 			'Diancie',
@@ -217,7 +217,7 @@ export default {
 	data: new SlashCommandBuilder()
 		.setName('restricted')
 		.setDescription(
-			"Enter a Pokemon's name to check its restricted stats. (e.g. Restricted, Banned, Allowed"
+			"Enter a Pokemon's name to check its restricted stats. (e.g. Restricted or Banned)"
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option.setName('pokemon').setDescription('Pokemon Name').setRequired(true)
@@ -232,7 +232,7 @@ export default {
 			const results = fuse.search(query);
 
 			if (results.length === 0) {
-				await interaction.reply(
+				await interaction.editReply(
 					`❌ No legendary or mythical Pokémon found for **${query}**.\n\n Only Legendary, Mythicals, Megas, Battle Bond, and Paradox are Restricted.`
 				);
 				return;
@@ -259,7 +259,7 @@ export default {
 				.setColor(0xff0000)
 				.setTitle('❌ Pokémon Not Found')
 				.setDescription(
-					`Could not find a Pokémon named "${query}". Please check the spelling and try again.`
+					`An error occured while searching for "${query}". Please @kyuukestu.`
 				)
 				.addFields({
 					name: '💡 Error Details',
