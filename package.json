@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@smogon/calc": "^0.10.0",
+		"@types/node": "^24.6.2",
 		"@types/node-fetch": "^2.6.13",
 		"axios": "^1.12.1",
 		"axios-cache-interceptor": "^1.8.2",
@@ -26,8 +27,10 @@
 		"fetch": "^1.1.0",
 		"fuse.js": "^7.1.0",
 		"node-fetch": "^3.3.2",
+		"pm2": "^6.0.13",
 		"pokenode-ts": "^1.20.0",
 		"sharp": "^0.34.3",
+		"ts-node": "^10.9.2",
 		"zod": "^4.1.5"
 	}
 }
