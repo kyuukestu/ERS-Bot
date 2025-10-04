@@ -7,7 +7,7 @@ import {
 	MessageFlags,
 	type Interaction,
 } from 'discord.js';
-import { token } from './config.json';
+import { token } from './config.json' assert { type: 'json' };
 import * as fs from 'node:fs/promises'; // Use promises for async
 import * as path from 'node:path';
 
