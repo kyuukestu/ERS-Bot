@@ -7,12 +7,10 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { type PokemonData } from '../../interface/apiData.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '../../utility/calculators/pokeUpkeepCalc.ts';
-import { PokemonDataSchema } from '../../schemas/apiSchemas.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -146,6 +144,15 @@ export default {
 			await interaction.editReply({ embeds: [embed] });
 		} catch (err) {
 			console.error(err);
+
+			const errorEmbed = new EmbedBuilder()
+				.setColor('#ff0000')
+				.setTitle('❌ Error')
+				.setDescription(
+					`An error occurred while fetching data for \`${searchName}\`.\nError: ${err}`
+				);
+
+			await interaction.editReply({ embeds: [errorEmbed] });
 		}
 	},
 };
