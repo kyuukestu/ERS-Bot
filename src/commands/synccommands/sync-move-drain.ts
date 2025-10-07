@@ -1,8 +1,8 @@
 import {
 	EmbedBuilder,
 	SlashCommandBuilder,
-	SlashCommandStringOption,
-	SlashCommandNumberOption,
+	type SlashCommandStringOption,
+	type SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';

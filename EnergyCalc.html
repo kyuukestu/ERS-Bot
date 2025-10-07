@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Energy Pool Calculator</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				padding: 20px;
+			}
+			table {
+				border-collapse: collapse;
+				margin-top: 20px;
+				width: 100%;
+			}
+			th,
+			td {
+				border: 1px solid #ccc;
+				padding: 8px;
+				text-align: center;
+			}
+			th {
+				background-color: #f4f4f4;
+			}
+			input {
+				width: 60px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Energy Pool Calculator</h1>
+
+		<div>
+			<label>Base: <input id="base" type="number" value="40" /></label>
+			<label
+				>WithinBase:
+				<input id="withinBase" type="number" step="0.01" value="1.25"
+			/></label>
+			<label
+				>WithinAccel:
+				<input id="withinAccel" type="number" step="0.01" value="1.15"
+			/></label>
+			<label
+				>LinearPerSub: <input id="linearPerSub" type="number" value="21"
+			/></label>
+			<label
+				>CrossBase: <input id="crossBase" type="number" step="0.01" value="6"
+			/></label>
+			<button onclick="updateTable()">Update Table</button>
+		</div>
+
+		<div id="tableContainer"></div>
+
+		<script>
+			const ranks = [
+				'Bronze',
+				'Silver',
+				'Gold',
+				'Platinum',
+				'Diamond',
+				'Master',
+			];
+			const subranks = 5;
+
+			function calculateEnergy(params) {
+				const energyTable = {};
+				let crossMultiplier = 1;
+
+				for (const rank of ranks) {
+					const energies = [];
+					for (let sub = 1; sub <= subranks; sub++) {
+						const withinMultiplier = Math.pow(
+							params.withinBase,
+							Math.pow(sub, params.withinAccel)
+						);
+						const linearBoost = params.linearPerSub * (sub - 1);
+						const energy = Math.round(
+							params.base * crossMultiplier * withinMultiplier + linearBoost
+						);
+						energies.push(energy);
+					}
+					energyTable[rank] = energies;
+					crossMultiplier *= params.crossBase;
+				}
+
+				return energyTable;
+			}
+
+			function renderTable(energyTable) {
+				let html = '<table><thead><tr><th>Rank</th>';
+				for (let sub = 1; sub <= subranks; sub++)
+					html += `<th>Subrank ${sub}</th>`;
+				html += '</tr></thead><tbody>';
+
+				for (const rank of ranks) {
+					html += `<tr><td>${rank}</td>`;
+					energyTable[rank].forEach((val) => (html += `<td>${val}</td>`));
+					html += '</tr>';
+				}
+
+				html += '</tbody></table>';
+				document.getElementById('tableContainer').innerHTML = html;
+			}
+
+			function updateTable() {
+				const params = {
+					base: Number(document.getElementById('base').value),
+					withinBase: Number(document.getElementById('withinBase').value),
+					withinAccel: Number(document.getElementById('withinAccel').value),
+					linearPerSub: Number(document.getElementById('linearPerSub').value),
+					crossBase: Number(document.getElementById('crossBase').value),
+				};
+
+				const energyTable = calculateEnergy(params);
+				renderTable(energyTable);
+			}
+
+			// Initial render
+			updateTable();
+		</script>
+	</body>
+</html>
