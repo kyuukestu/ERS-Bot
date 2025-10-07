@@ -5,7 +5,7 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import path from 'path';
-import { underground_draw } from '../../utility/draws/undeground-draw';
+import { underground_draw } from '../../utility/draws/underground-draw';
 
 export default {
 	data: new SlashCommandBuilder()

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
@@ -11,11 +9,10 @@ import {
 	StringSelectMenuBuilder,
 	ComponentType,
 	type ChatInputCommandInteraction,
+	type StringSelectMenuInteraction,
+	type ButtonInteraction,
 } from 'discord.js';
-import {
-	ParsedSpeciesDataSchema,
-	type ParsedSpeciesData,
-} from '../../schemas/apiSchemas.ts';
+import type { ParsedSpeciesData } from '../../schemas/apiSchemas.ts';
 // import type { PokemonData, SpeciesData } from '../../interface/apiData.ts';
 import { typeColors } from '../../ui/colors.ts';
 import { pokemonEndPoint, speciesEndPoint } from '../../utility/api/pokeapi.ts';
@@ -24,6 +21,16 @@ import { PokemonStatsCanvas } from '../../utility/statsCanvas.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
 import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo.ts';
+
+interface PokemonSprites {
+	default: string | null;
+	shiny: string | null;
+	back: string | null;
+	backShiny: string | null;
+	officialArtwork: string | null;
+	shinyArtwork: string | null;
+	dreamWorld: string | null;
+}
 
 export default {
 	data: new SlashCommandBuilder()
@@ -350,14 +357,11 @@ export default {
 
 // Helper functions
 async function handlePokedexEntries(
-	interaction: any,
-	species: unknown,
+	interaction: StringSelectMenuInteraction,
+	species: ParsedSpeciesData,
 	name: string
 ) {
-	const parsedSpecies: ParsedSpeciesData =
-		ParsedSpeciesDataSchema.parse(species);
-
-	const allFlavorTexts = parsedSpecies.flavor_text_entries
+	const allFlavorTexts = species.flavor_text_entries
 		.filter((ft) => ft.language.name === 'en')
 		.map((entry) => {
 			const versionName = entry.version.name.toUpperCase().replace('-', ' ');
@@ -421,7 +425,7 @@ async function handlePokedexEntries(
 
 	const entriesMessage = await interaction.followUp({
 		embeds: [createEntriesEmbed(currentPage)],
-		components: [row],
+		components: [row.toJSON()],
 		ephemeral: true,
 	});
 
@@ -429,28 +433,31 @@ async function handlePokedexEntries(
 		time: 120000, // 2 minutes
 	});
 
-	entriesCollector.on('collect', async (buttonInteraction: any) => {
-		if (buttonInteraction.customId === 'entries_prev') {
-			currentPage = Math.max(0, currentPage - 1);
-		} else if (buttonInteraction.customId === 'entries_next') {
-			currentPage = Math.min(pages.length - 1, currentPage + 1);
-		} else if (buttonInteraction.customId === 'entries_close') {
-			entriesCollector.stop();
-			await buttonInteraction.update({ components: [] });
-			return;
+	entriesCollector.on(
+		'collect',
+		async (buttonInteraction: ButtonInteraction) => {
+			if (buttonInteraction.customId === 'entries_prev') {
+				currentPage = Math.max(0, currentPage - 1);
+			} else if (buttonInteraction.customId === 'entries_next') {
+				currentPage = Math.min(pages.length - 1, currentPage + 1);
+			} else if (buttonInteraction.customId === 'entries_close') {
+				entriesCollector.stop();
+				await buttonInteraction.update({ components: [] });
+				return;
+			}
+
+			// Update button states
+			(row.components[0] as ButtonBuilder).setDisabled(currentPage === 0);
+			(row.components[1] as ButtonBuilder).setDisabled(
+				currentPage === pages.length - 1
+			);
+
+			await buttonInteraction.update({
+				embeds: [createEntriesEmbed(currentPage)],
+				components: [row.toJSON()],
+			});
 		}
-
-		// Update button states
-		(row.components[0] as ButtonBuilder).setDisabled(currentPage === 0);
-		(row.components[1] as ButtonBuilder).setDisabled(
-			currentPage === pages.length - 1
-		);
-
-		await buttonInteraction.update({
-			embeds: [createEntriesEmbed(currentPage)],
-			components: [row],
-		});
-	});
+	);
 
 	entriesCollector.on('end', () => {
 		entriesMessage.edit({ components: [] }).catch(console.error);
@@ -458,8 +465,8 @@ async function handlePokedexEntries(
 }
 
 async function handleSpriteGallery(
-	interaction: any,
-	sprites: any,
+	interaction: StringSelectMenuInteraction,
+	sprites: PokemonSprites,
 	name: string,
 	currentlyShiny: boolean
 ) {
@@ -512,7 +519,7 @@ async function handleSpriteGallery(
 
 	const spriteMessage = await interaction.followUp({
 		embeds: [createSpriteEmbed(currentSprite)],
-		components: [spriteRow],
+		components: [spriteRow.toJSON()],
 		ephemeral: true,
 	});
 
@@ -520,19 +527,24 @@ async function handleSpriteGallery(
 		time: 120000,
 	});
 
-	spriteCollector.on('collect', async (selectInteraction: any) => {
-		currentSprite = selectInteraction.values[0];
+	spriteCollector.on(
+		'collect',
+		async (selectInteraction: StringSelectMenuInteraction) => {
+			currentSprite = selectInteraction.values[0];
 
-		// Update select menu defaults
-		spriteSelect.options.forEach((option) => {
-			option.setDefault(option.data.value === currentSprite);
-		});
+			// Update select menu defaults
+			spriteSelect.options.forEach((option) => {
+				option.setDefault(option.data.value === currentSprite);
+			});
 
-		await selectInteraction.update({
-			embeds: [createSpriteEmbed(currentSprite)],
-			components: [new ActionRowBuilder().addComponents(spriteSelect)],
-		});
-	});
+			await selectInteraction.update({
+				embeds: [createSpriteEmbed(currentSprite)],
+				components: [
+					new ActionRowBuilder().addComponents(spriteSelect).toJSON(),
+				],
+			});
+		}
+	);
 
 	spriteCollector.on('end', () => {
 		spriteMessage.edit({ components: [] }).catch(console.error);

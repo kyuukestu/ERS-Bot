@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {
 	EmbedBuilder,
 	ActionRowBuilder,
@@ -7,6 +5,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	StringSelectMenuBuilder,
+	type SlashCommandStringOption,
 } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
@@ -16,6 +15,20 @@ import {
 } from '../../schemas/apiSchemas.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+
+interface Move {
+	name: string;
+	primaryMethod: string;
+	primaryLevel: number;
+	version: string;
+	allMethods: {
+		method: string;
+		level: number;
+		version: string;
+	}[];
+}
+
+type Moves = Move[];
 
 // ADD THIS: Enhanced styling configuration
 const methodConfig = {
@@ -57,7 +70,7 @@ export default {
 		.setDescription(
 			'Provides information about a Pokémon and their move-set i.e. Level-up, Egg Moves, TM/TR, and Tutor.'
 		)
-		.addStringOption((option: any) =>
+		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('pokemon')
 				.setDescription('Enter the Pokémon name.')
@@ -82,6 +95,11 @@ export default {
 			// MODIFIED: Use enhanced grouping
 			const groupedMoves = groupAndSortMovesEnhanced(moves);
 			const methods = Object.keys(groupedMoves);
+
+			if (methods.length === 0) {
+				await interaction.editReply('❌ No moves found for this Pokémon.');
+				return;
+			}
 
 			// MODIFIED: Track both method and page within method
 			let currentMethodIndex = 0;
@@ -322,7 +340,7 @@ export default {
 			});
 		} catch (error) {
 			console.error('Error:', error);
-			const errorMsg = `❌ Error: Pokémon "${pokemonName}" not found. ${error}`;
+			const errorMsg = `❌ Error: Pokémon "${pokemonName}" not found. \n\n ${error}`;
 			if (interaction.replied || interaction.deferred) {
 				await interaction.followUp(errorMsg);
 			} else {
@@ -378,9 +396,19 @@ const formatMoveName = (moveName: string): string => {
 		.join(' ');
 };
 
+interface GroupedMove {
+	name: string;
+	level: number;
+	version: string;
+	method: string;
+	otherMethods: string[];
+}
+
 // REPLACED: Enhanced grouping function
-const groupAndSortMovesEnhanced = (moves: any[]): { [key: string]: any[] } => {
-	const grouped: { [key: string]: any[] } = {};
+const groupAndSortMovesEnhanced = (
+	moves: Moves
+): Record<string, GroupedMove[]> => {
+	const grouped: Record<string, GroupedMove[]> = {};
 
 	moves.forEach((move) => {
 		const formattedMethod = formatMethodName(move.primaryMethod);
@@ -391,8 +419,8 @@ const groupAndSortMovesEnhanced = (moves: any[]): { [key: string]: any[] } => {
 		const otherMethods = [
 			...new Set(
 				move.allMethods
-					.filter((m: any) => m.method !== move.primaryMethod)
-					.map((m: any) => formatMethodName(m.method))
+					.filter((m) => m.method !== move.primaryMethod)
+					.map((m) => formatMethodName(m.method))
 			),
 		];
 
@@ -401,11 +429,10 @@ const groupAndSortMovesEnhanced = (moves: any[]): { [key: string]: any[] } => {
 			level: move.primaryLevel,
 			version: move.version,
 			method: formattedMethod,
-			otherMethods: otherMethods,
+			otherMethods,
 		});
 	});
 
-	// Sort level-up moves by level, others alphabetically
 	Object.keys(grouped).forEach((method) => {
 		if (method === 'Level Up') {
 			grouped[method].sort((a, b) => a.level - b.level);
@@ -418,7 +445,10 @@ const groupAndSortMovesEnhanced = (moves: any[]): { [key: string]: any[] } => {
 };
 
 // ADD THIS: Enhanced move formatting
-const formatEnhancedMove = (move: any, method: string): string => {
+const formatEnhancedMove = (
+	move: GroupedMove,
+	method: GroupedMove['method']
+): string => {
 	const config = getMethodConfig(method);
 
 	if (method === 'Level Up') {

@@ -111,7 +111,7 @@ const createAttackEmbed = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-attacks')
+		.setName('dex-moves')
 		.setDescription(
 			'Provides information about a Pokémon move e.g. Glaciate, Searing Shot, Toxic Thread, etc.'
 		)
@@ -234,6 +234,15 @@ async function sendPaginatedList(
 	});
 
 	collector.on('collect', async (buttonInteraction) => {
+		// Verify the user is the original command invoker
+		if (buttonInteraction.user.id !== interaction.user.id) {
+			await buttonInteraction.reply({
+				content: 'These buttons are not for you!',
+				ephemeral: true,
+			});
+			return;
+		}
+
 		if (buttonInteraction.customId === 'previous') currentPage--;
 		if (buttonInteraction.customId === 'next') currentPage++;
 		collector.resetTimer();

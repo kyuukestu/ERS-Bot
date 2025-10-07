@@ -64,10 +64,10 @@ export default {
 		const inBox = interaction.options.getBoolean('box');
 		const isShiny =
 			(interaction.options.get('shiny', false)?.value as boolean) || false;
-		const formName = interaction.options.get('form', false)
-			? formatUserInput(interaction.options.get('form')?.value as string)
-			: '';
-		const searchName = formatUserInput(`${pokemonName} ${formName}`);
+		const formName = interaction.options.getString('form');
+		const searchName = formName
+			? formatUserInput(`${pokemonName} ${formName}`)
+			: pokemonName;
 
 		try {
 			await interaction.deferReply();
@@ -140,7 +140,11 @@ export default {
 					{ name: 'Upkeep', value: `${upkeep}`, inline: true },
 					{ name: 'Base Stat Total', value: `${totalStats}`, inline: true },
 				])
-				.setImage(isShiny ? sprites.shinyArtwork : sprites.officialArtwork)
+				.setImage(
+					isShiny
+						? sprites.shinyArtwork ?? sprites.default
+						: sprites.officialArtwork ?? sprites.default
+				)
 				.setTimestamp();
 
 			await interaction.editReply({ embeds: [embed] });

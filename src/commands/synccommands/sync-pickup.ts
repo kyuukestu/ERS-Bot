@@ -19,17 +19,25 @@ export default {
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
-		const level = interaction.options.getInteger('level', true);
+		try {
+			const level = interaction.options.getInteger('level', true);
 
-		await interaction.deferReply();
+			await interaction.deferReply();
 
-		const result = getRandomItem(level);
+			const result = getRandomItem(level);
 
-		const resultEmbed = new EmbedBuilder()
-			.setTitle('Pick Up Draw: Lv. ' + level)
-			.setDescription(`${result?.message}`)
-			.setColor(result?.obtained ? 0x228b22 : 0xff0000);
+			const resultEmbed = new EmbedBuilder()
+				.setTitle('Pick Up Draw: Lv. ' + level)
+				.setDescription(`${result?.message}`)
+				.setColor(result?.obtained ? 0x228b22 : 0xff0000);
 
-		await interaction.editReply({ embeds: [resultEmbed] });
+			await interaction.editReply({ embeds: [resultEmbed] });
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : 'An unknown error occurred';
+			await interaction.editReply({
+				content: `Failed to process Pick Up ability: ${errorMessage}`,
+			});
+		}
 	},
 };

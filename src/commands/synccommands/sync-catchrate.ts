@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	EmbedBuilder,
 	SlashCommandBuilder,
@@ -14,9 +13,15 @@ import { speciesEndPoint } from '../../utility/api/pokeapi';
 import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo';
 import { calculateCatchRate } from '../../utility/calculators/catchRateCalculator';
 
+interface CatchData {
+	catch_roll: number;
+	catch_rate: number;
+	caught: boolean;
+	chance: string;
+}
 const createEmbed = (
 	pokemon: string,
-	catch_data: any,
+	catch_data: CatchData,
 	attempts: number
 ): EmbedBuilder => {
 	return new EmbedBuilder()

@@ -49,12 +49,12 @@ const createItemEmbed = (
 			},
 			{
 				name: '⚡ Fling Power',
-				value: itemInfo.fling_power.toString(),
+				value: itemInfo.fling_power ? itemInfo.fling_power.toString() : 'N/A',
 				inline: true,
 			},
 			{
 				name: '🎯 Fling Effect',
-				value: itemInfo.fling_effect,
+				value: itemInfo.fling_effect || 'None',
 				inline: true,
 			},
 			{
@@ -111,7 +111,7 @@ export default {
 				.setColor(0xff0000)
 				.setTitle('❌ Item Not Found')
 				.setDescription(
-					`Could not find an item named "${itemName}". Please check the spelling and try again. Error: ${error}`
+					`Could not find an item named "${itemName}". Please check the spelling and try again. \n\n Error: ${error}`
 				)
 				.addFields({
 					name: '💡 Tips',

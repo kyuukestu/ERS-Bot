@@ -121,7 +121,7 @@ const sendPaginatedList = async (
 
 	const totalPages = Math.ceil(sortedPossession.length / monsPerPage);
 
-	const formattdAbilityName = abilityName
+	const formattedAbilityName = abilityName
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
@@ -136,7 +136,7 @@ const sendPaginatedList = async (
 				.join('\n') || 'No Pokémon found.';
 
 		return new EmbedBuilder()
-			.setTitle(`${formattdAbilityName} is learned by:`)
+			.setTitle(`${formattedAbilityName} is learned by:`)
 			.setDescription(currentMons)
 			.setFooter({
 				text: `Page ${page + 1}/${totalPages} | Total: ${

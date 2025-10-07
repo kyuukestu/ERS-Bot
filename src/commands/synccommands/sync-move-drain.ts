@@ -103,7 +103,8 @@ export default {
 			}
 
 			// Priority moves count as secondary effects
-			if (parseInt(moveInfo.priority) > 0) secondaryEffects++;
+			const priorityValue = parseInt(moveInfo.priority);
+			if (!isNaN(priorityValue) && priorityValue > 0) secondaryEffects++;
 
 			if (moveInfo.meta) {
 				if (moveInfo.meta.ailment_chance > 0) secondaryEffects++;
@@ -131,9 +132,10 @@ export default {
 					'room',
 				];
 
-				fieldKeywords.forEach((keyword) => {
-					if (effectText.includes(keyword)) field_effect_count++;
-				});
+				const hasFieldEffect = fieldKeywords.some((keyword) =>
+					effectText.includes(keyword)
+				);
+				if (hasFieldEffect) field_effect_count = 1;
 			}
 
 			const cost = f_calculate_move_cost(

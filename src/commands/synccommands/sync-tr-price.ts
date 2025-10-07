@@ -129,7 +129,6 @@ export default {
 					'reflect',
 					'light screen',
 					'tailwind',
-					'room',
 				];
 
 				fieldKeywords.forEach((keyword) => {
