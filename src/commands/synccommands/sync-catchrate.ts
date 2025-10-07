@@ -60,8 +60,8 @@ const createActionRow = (): ActionRowBuilder<ButtonBuilder> => {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('catch-rate')
-		.setDescription('Calculates the catch rate of a pokemon')
+		.setName('sync-catch-rate')
+		.setDescription('Calculates the catch rate of a pokemon. (PokeSync)')
 		.addStringOption((option) =>
 			option
 				.setName('pokemon')

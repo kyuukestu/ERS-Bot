@@ -15,7 +15,7 @@ import { moveEmojis } from '../../ui/emojis';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('calculate-tr-price')
+		.setName('sync-tr-price')
 		.setDescription(
 			'Calculates the price to purchase a move from the PokeMart.'
 		)
@@ -67,16 +67,16 @@ export default {
 			let statChanges = 0;
 
 			if (move.stat_changes?.length) {
-				move.stat_changes.forEach((s: any) => {
+				move.stat_changes.forEach((stat) => {
 					// Positive changes are always buffs → charge
-					if (s.change > 0) {
-						statChanges += s.change;
+					if (stat.change > 0) {
+						statChanges += stat.change;
 					}
 					// Negative changes may apply to opponent or self
-					else if (s.change < 0) {
+					else if (stat.change < 0) {
 						const effectText = move.effect_entries
-							.filter((e: any) => e.language.name === 'en')
-							.map((e: any) => e.effect.toLowerCase())
+							.filter((entry) => entry.language.name === 'en')
+							.map((entry) => entry.effect.toLowerCase())
 							.join(' ');
 
 						// If the effect text implies "user" gets the debuff → ignore
@@ -87,7 +87,7 @@ export default {
 							// self-nerf → no cost
 						} else {
 							// otherwise assume it's a debuff on opponent
-							statChanges += Math.abs(s.change);
+							statChanges += Math.abs(stat.change);
 						}
 					}
 				});

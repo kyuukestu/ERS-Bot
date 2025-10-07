@@ -53,7 +53,7 @@ const createLevelProgressBar = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('moveset')
+		.setName('dex-movesets')
 		.setDescription(
 			'Provides information about a Pokémon and their move-set i.e. Level-up, Egg Moves, TM/TR, and Tutor.'
 		)

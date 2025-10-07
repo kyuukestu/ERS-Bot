@@ -9,8 +9,10 @@ import { underground_draw } from '../../utility/draws/undeground-draw';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('underground-encounter')
-		.setDescription('Rolls an Underground encounter.'),
+		.setName('sync-rand-underground-encounter')
+		.setDescription(
+			'Rolls a random encounter for the Sinnoh Grand Underground. (PokeSync)'
+		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		await interaction.deferReply();

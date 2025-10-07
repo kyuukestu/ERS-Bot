@@ -14,8 +14,10 @@ import { calculateUpkeep } from '../../utility/calculators/pokeUpkeepCalc.ts';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('pokemon-upkeep')
-		.setDescription('Calculates the Fortitude Upkeep of a pokemon.')
+		.setName('sync-poke-drain')
+		.setDescription(
+			'Calculates the passive Fortitude drain (or Up Keep) of a pokemon.'
+		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('pokemon')

@@ -7,8 +7,10 @@ import { getRandomItem } from '../../utility/draws/pickup-draws';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('pick-up-draw')
-		.setDescription('Rolls a Pick Up draw.')
+		.setName('sync-pick-up-proc')
+		.setDescription(
+			'Procs the Pick Up Ability, chance to get a random item or nothing. (PokeSync)'
+		)
 		.addIntegerOption((option) =>
 			option
 				.setName('level')

@@ -9,19 +9,16 @@ import {
 import { abilityEndPoint } from '../../utility/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { extractAbilityInfo } from '../../utility/dataExtraction/extractAbilityInfo.ts';
-import z from 'zod';
 
-const abilitySchema = z.object({
-	name: z.string(),
-	color: z.number(),
-	emoji: z.string(),
-	generation: z.string(),
-	effect: z.string(),
-	effectChance: z.string(),
-	pokemon: z.array(z.string()).optional(),
-});
-
-type AbilityInfo = z.infer<typeof abilitySchema>;
+interface AbilityInfo {
+	name: string;
+	color: number;
+	emoji: string;
+	generation: string;
+	effect: string;
+	effectChance: string;
+	pokemon?: string[];
+}
 
 const createAbilityEmbed = (
 	interaction: ChatInputCommandInteraction,
@@ -52,7 +49,7 @@ const createAbilityEmbed = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('abilitydex')
+		.setName('dex-abilities')
 		.setDescription(
 			'Provides information about a Pokémon ability, e.g. Speed Boost, Immunity, Huge Power, etc.'
 		)

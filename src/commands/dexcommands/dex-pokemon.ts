@@ -27,7 +27,7 @@ import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesI
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('rotomdex')
+		.setName('dex-pokemon')
 		.setDescription('Provides pokedex-like information about a Pokémon.')
 		.addStringOption((option: SlashCommandStringOption) =>
 			option

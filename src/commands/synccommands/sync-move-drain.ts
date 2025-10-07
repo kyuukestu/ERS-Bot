@@ -15,8 +15,8 @@ import { moveEmojis } from '../../ui/emojis.ts';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('move-cost')
-		.setDescription('Calculates the fortitude cost of a move.')
+		.setName('sync-move-drain')
+		.setDescription('Calculates the fortitude drain (or cost) of a given move.')
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('move')
@@ -66,16 +66,16 @@ export default {
 			let statChanges = 0;
 
 			if (move.stat_changes?.length) {
-				move.stat_changes.forEach((s: any) => {
+				move.stat_changes.forEach((stat) => {
 					// Positive changes are always buffs → charge
-					if (s.change > 0) {
-						statChanges += s.change;
+					if (stat.change > 0) {
+						statChanges += stat.change;
 					}
 					// Negative changes may apply to opponent or self
-					else if (s.change < 0) {
+					else if (stat.change < 0) {
 						const effectText = move.effect_entries
-							.filter((e: any) => e.language.name === 'en')
-							.map((e: any) => e.effect.toLowerCase())
+							.filter((entry) => entry.language.name === 'en')
+							.map((entry) => entry.effect.toLowerCase())
 							.join(' ');
 
 						// If the effect text implies "user" gets the debuff → ignore
@@ -86,7 +86,7 @@ export default {
 							// self-nerf → no cost
 						} else {
 							// otherwise assume it's a debuff on opponent
-							statChanges += Math.abs(s.change);
+							statChanges += Math.abs(stat.change);
 						}
 					}
 				});
@@ -143,6 +143,18 @@ export default {
 				fieldOverride ? fieldOverride : field_effect_count
 			);
 
+			const targetkeywords = [
+				'user-and-allies',
+				'all-opponents',
+				'all-other-pokemon',
+			];
+
+			const spreadCost = targetkeywords.some((keyword) =>
+				moveInfo.target.includes(keyword)
+			)
+				? 2 * cost * 0.75
+				: 'N/A';
+
 			// Create an embed with enhanced layout
 			const embed = new EmbedBuilder()
 				.setColor(typeColors[moveInfo.type] || typeColors['normal'])
@@ -172,7 +184,8 @@ export default {
 						inline: true,
 					},
 					{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-					{ name: 'Fortitude Cost', value: cost.toString(), inline: false },
+					{ name: 'Fortitude Cost', value: cost.toString(), inline: true },
+					{ name: 'Spread Cost', value: spreadCost.toString(), inline: true },
 					{ name: '🎯 Target', value: moveInfo.target, inline: true },
 					{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
 					{

@@ -10,9 +10,22 @@ import type { ItemData } from '../../interface/apiData.ts';
 import { itemCategoryColors } from '../../ui/colors.ts';
 import { extractItemInfo } from '../../utility/dataExtraction/extractItemInfo.ts';
 
+interface ItemInfo {
+	name: string;
+	category: string;
+	item_emoji: string;
+	cost: number;
+	effect: string;
+	flavor_text_entries: string;
+	flavor_text_ver: string;
+	sprite: string;
+	fling_power: number;
+	fling_effect: string;
+}
+
 const createItemEmbed = (
 	interaction: ChatInputCommandInteraction,
-	itemInfo: any
+	itemInfo: ItemInfo
 ) => {
 	const embed = new EmbedBuilder()
 		.setColor(
