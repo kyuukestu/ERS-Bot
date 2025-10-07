@@ -79,7 +79,7 @@ const createItemEmbed = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-items')
+		.setName('sync-items')
 		.setDescription(
 			'Provides information about an item e.g. Flame Orb, Pinap Berry, Thunder Stone, etc.'
 		)
@@ -104,6 +104,16 @@ export default {
 
 			// Create an embed with enhanced layout
 			const embed = createItemEmbed(interaction, itemInfo);
+
+			const itemkeywords = ['standard-ball', 'special-ball', 'healing'];
+
+			const excludedCategory = itemkeywords.some((keyword) =>
+				itemInfo.category.includes(keyword)
+			);
+
+			itemInfo.cost = excludedCategory
+				? itemInfo.cost
+				: Math.round(itemInfo.cost * 45.75);
 
 			await interaction.editReply({ embeds: [embed] });
 		} catch (error) {
