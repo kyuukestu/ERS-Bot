@@ -110,7 +110,7 @@ export default {
 
 			itemInfo.cost = excludedCategory
 				? itemInfo.cost
-				: Math.round(itemInfo.cost * 45.75);
+				: Math.round(itemInfo.cost * 46.25);
 
 			// Create an embed with enhanced layout
 			const embed = createItemEmbed(interaction, itemInfo);
