@@ -26,7 +26,7 @@ export const ItemDataSchema = z.object({
 	name: z.string(),
 	category: z.object({ name: z.string() }),
 	cost: z.number(),
-	fling_power: z.number(),
+	fling_power: z.number().nullable(),
 	fling_effect: z.object({ name: z.string().optional() }).nullable(),
 	effect_entries: z.array(
 		z.object({
