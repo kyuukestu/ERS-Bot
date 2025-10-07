@@ -102,9 +102,6 @@ export default {
 			const data: ItemData = response as ItemData;
 			const itemInfo = extractItemInfo(data);
 
-			// Create an embed with enhanced layout
-			const embed = createItemEmbed(interaction, itemInfo);
-
 			const itemkeywords = ['standard-ball', 'special-ball', 'healing'];
 
 			const excludedCategory = itemkeywords.some((keyword) =>
@@ -114,6 +111,9 @@ export default {
 			itemInfo.cost = excludedCategory
 				? itemInfo.cost
 				: Math.round(itemInfo.cost * 45.75);
+
+			// Create an embed with enhanced layout
+			const embed = createItemEmbed(interaction, itemInfo);
 
 			await interaction.editReply({ embeds: [embed] });
 		} catch (error) {
