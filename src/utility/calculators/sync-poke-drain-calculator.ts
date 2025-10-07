@@ -1,5 +1,6 @@
 const calculateUpkeep = (
 	bst: number,
+	level: number = 1,
 	isAlpha = false,
 	additionalAbilities = 0,
 	inBox = false
@@ -9,11 +10,13 @@ const calculateUpkeep = (
 	const base_cost = 2;
 	const alphaModifier = 0.25;
 	const additionalAbilitiesModifier = 0.1;
+	const levelModifier = 0.01;
 
 	const final_base =
 		base_cost +
 		(isAlpha ? alphaModifier : 0) +
-		additionalAbilities * additionalAbilitiesModifier;
+		additionalAbilities * additionalAbilitiesModifier +
+		level * levelModifier;
 
 	const upkeep = inBox
 		? Math.round(Math.pow(final_base, bst / 100) / 4)

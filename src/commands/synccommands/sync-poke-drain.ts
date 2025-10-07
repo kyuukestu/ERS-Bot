@@ -5,12 +5,13 @@ import {
 	SlashCommandBooleanOption,
 	SlashCommandNumberOption,
 	type ChatInputCommandInteraction,
+	type SlashCommandIntegerOption,
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
-import { calculateUpkeep } from '../../utility/calculators/pokeUpkeepCalc.ts';
+import { calculateUpkeep } from '../../utility/calculators/sync-poke-drain-calculator.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -23,6 +24,14 @@ export default {
 				.setName('pokemon')
 				.setDescription('Enter the pokemon name.')
 				.setRequired(true)
+		)
+		.addIntegerOption((option: SlashCommandIntegerOption) =>
+			option
+				.setName('level')
+				.setDescription("Enter the Pokemon's level (Defaults to 1).")
+				.setRequired(true)
+				.setMinValue(1)
+				.setMaxValue(100)
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
@@ -68,6 +77,7 @@ export default {
 		const searchName = formName
 			? formatUserInput(`${pokemonName} ${formName}`)
 			: pokemonName;
+		const level = interaction.options.getInteger('level', true);
 
 		try {
 			await interaction.deferReply();
@@ -111,6 +121,7 @@ export default {
 
 			const upkeep = calculateUpkeep(
 				totalStats,
+				level,
 				isAlpha || undefined,
 				extraAbilities || undefined,
 				inBox || undefined
@@ -134,11 +145,22 @@ export default {
 
 			const embed = new EmbedBuilder()
 				.setColor(0xff9999)
-				.setTitle(`${pokemonInfo.name} Upkeep`)
+				.setTitle(`${pokemonInfo.name} - Level ${level}`)
 				.setThumbnail(sprites.default)
 				.addFields([
-					{ name: 'Upkeep', value: `${upkeep}`, inline: true },
-					{ name: 'Base Stat Total', value: `${totalStats}`, inline: true },
+					{ name: 'Fortitude Drain:', value: `${upkeep}`, inline: true },
+					{ name: 'Base Stat Total:', value: `${totalStats}`, inline: true },
+					{
+						name: 'Extra Abilities:',
+						value: `${extraAbilities}`,
+						inline: false,
+					},
+					{ name: 'Alpha:', value: `${isAlpha ? 'Yes' : 'No'}`, inline: true },
+					{
+						name: 'In Box:',
+						value: `${inBox ? 'Yes' : 'No'}`,
+						inline: false,
+					},
 				])
 				.setImage(
 					isShiny

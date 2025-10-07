@@ -9,7 +9,7 @@ import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { type MoveData } from '../../interface/apiData.ts';
 import { moveEndPoint } from '../../utility/api/pokeapi.ts';
 import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
-import { f_calculate_move_cost } from '../../utility/calculators/F-moveCostCalc.ts';
+import { f_calculate_move_cost } from '../../utility/calculators/sync-move-drain-calculator.ts';
 import { typeColors } from '../../ui/colors.ts';
 import { moveEmojis } from '../../ui/emojis.ts';
 
