@@ -15,6 +15,7 @@ import {
 } from '../../schemas/apiSchemas.ts';
 import { pokemonEndPoint } from '../../utility/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { matchPokemonSpecies } from '../../utility/fuzzy-search.ts';
 
 interface Move {
 	name: string;
@@ -85,9 +86,11 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const PokemonInfo = extractPokemonInfo(
-				await pokemonEndPoint(pokemonName)
-			);
+			const { speciesName, formName } = await matchPokemonSpecies(pokemonName);
+
+			const apiName = formName || speciesName;
+
+			const PokemonInfo = extractPokemonInfo(await pokemonEndPoint(apiName));
 			const name = PokemonInfo.name.toUpperCase();
 			const sprite = PokemonInfo.sprites.front_default;
 			const moves = processMoveData(PokemonInfo);

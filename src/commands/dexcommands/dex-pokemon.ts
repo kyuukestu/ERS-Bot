@@ -21,6 +21,7 @@ import { PokemonStatsCanvas } from '../../utility/statsCanvas.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
 import { extractSpeciesInfo } from '../../utility/dataExtraction/extractSpeciesInfo.ts';
+import { matchPokemonSpecies } from '../../utility/fuzzy-search.ts';
 
 interface PokemonSprites {
 	default: string | null;
@@ -59,20 +60,28 @@ export default {
 			interaction.options.get('name', true).value as string
 		);
 
-		const formName = interaction.options.get('form', false)
+		const form = interaction.options.get('form', false)
 			? formatUserInput(interaction.options.get('form')?.value as string)
 			: '';
 
 		const showShiny =
 			(interaction.options.get('shiny', false)?.value as boolean) || false;
-		const searchName = formatUserInput(`${pokemonName} ${formName}`);
+		const searchName = formatUserInput(`${pokemonName} ${form}`);
 
 		try {
 			await interaction.deferReply();
 
-			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+			const { speciesName, formName } = await matchPokemonSpecies(
+				`${pokemonName}-${form}`
+			);
+
+			const apiName = formName || speciesName;
+
+			console.log(`Matched Name: ${speciesName}; Matched Form: ${formName}`);
+
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(apiName));
 			const speciesInfo = extractSpeciesInfo(
-				await speciesEndPoint(pokemonName)
+				await speciesEndPoint(speciesName)
 			);
 
 			// TODO: Implement check for cases in which the pokemon endpoint passes but the speceis end-point does not.
