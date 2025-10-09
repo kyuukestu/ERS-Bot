@@ -79,7 +79,15 @@ export default {
 
 			console.log(`Matched Name: ${speciesName}; Matched Form: ${formName}`);
 
-			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(apiName));
+			const testNames = async () => {
+				try {
+					return await pokemonEndPoint(apiName);
+				} catch {
+					return await pokemonEndPoint(speciesName);
+				}
+			};
+
+			const pokemonInfo = extractPokemonInfo(await testNames());
 			const speciesInfo = extractSpeciesInfo(
 				await speciesEndPoint(speciesName)
 			);

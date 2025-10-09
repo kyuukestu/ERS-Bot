@@ -90,7 +90,15 @@ export default {
 
 			const apiName = formName || speciesName;
 
-			const PokemonInfo = extractPokemonInfo(await pokemonEndPoint(apiName));
+			const testNames = async () => {
+				try {
+					return await pokemonEndPoint(apiName);
+				} catch {
+					return await pokemonEndPoint(speciesName);
+				}
+			};
+
+			const PokemonInfo = extractPokemonInfo(await testNames());
 			const name = PokemonInfo.name.toUpperCase();
 			const sprite = PokemonInfo.sprites.front_default;
 			const moves = processMoveData(PokemonInfo);

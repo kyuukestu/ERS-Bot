@@ -13,7 +13,7 @@ const pokemonList = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 const fuse = new Fuse(pokemonList, {
 	keys: ['formName', 'speciesName'], // search both form and base names
 	includeScore: true,
-	threshold: 0.38, // tweak for fuzzy sensitivity
+	threshold: 0.3, // tweak for fuzzy sensitivity
 });
 
 // Function to match user input to Pokémon
