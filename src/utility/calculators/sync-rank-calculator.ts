@@ -50,21 +50,12 @@ export const calculateEnergyPool = (
 
 	const { base, withinBase, withinAccel, crossBase, linearPerSub } = config;
 
-	// Base energy for this rank (cross-rank growth)
-	const crossRankEnergy = base * Math.pow(crossBase, rankIndex);
+	const crossMultiplier = Math.pow(crossBase, rankIndex);
+	const withinMultiplier = Math.pow(withinBase, Math.pow(subRank, withinAccel));
+	const linearBoost = linearPerSub * (subRank - 1);
 
-	// Exponential growth within the rank
-	const withinRankMultiplier = Math.pow(
-		withinBase + rankIndex * withinAccel,
-		subRank - 1
-	);
-
-	// Linear smoothing inside the rank
-	const linearBoost = (subRank - 1) * linearPerSub;
-
-	// Final energy pool
 	const energy = Math.round(
-		crossRankEnergy * withinRankMultiplier + linearBoost
+		base * crossMultiplier * withinMultiplier + linearBoost
 	);
 
 	return energy;
