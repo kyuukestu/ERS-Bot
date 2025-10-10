@@ -11,8 +11,8 @@ export const extractPokemonInfo = (rawData: unknown) => {
 	return {
 		id,
 		name: formatName(name),
-		weight: (Number(weight) / 10).toFixed(2) + ' kg',
-		height: (Number(height) / 10).toFixed(2) + ' m',
+		weight: (Number(weight) / 10).toFixed(2),
+		height: (Number(height) / 10).toFixed(2),
 		types: types.map(
 			(t) => `\`${getTypeEmoji(t)} ${t.charAt(0).toUpperCase() + t.slice(1)}\``
 		),
