@@ -27,7 +27,11 @@ export function matchPokemonSpecies(userInput: string) {
 	console.log('Matches: :', results);
 
 	// Pick the top match
-	const bestMatch = results[0].item;
+	const bestMatch = results[0].item as {
+		speciesName: string;
+		formName?: string;
+		sprite: string;
+	};
 
 	// Always return the base species name
 	return {

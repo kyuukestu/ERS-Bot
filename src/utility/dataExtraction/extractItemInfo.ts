@@ -33,7 +33,7 @@ export const extractItemInfo = (rawData: unknown) => {
 		flavor_text_ver:
 			flavor_text_entries.filter((ft) => ft.language.name === 'en').pop()
 				?.version_group.name ?? 'Unknown',
-		sprite: sprites.default ?? '',
+		sprite: sprites?.default ?? '',
 		fling_power: fling_power ?? 0,
 		fling_effect: fling_effect?.name ?? 'N/A',
 	};
