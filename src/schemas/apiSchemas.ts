@@ -41,11 +41,9 @@ export const ItemDataSchema = z.object({
 			version_group: z.object({ name: z.string() }),
 		})
 	),
-	sprites: z
-		.object({
-			default: z.string().nullable(),
-		})
-		.nullable(),
+	sprites: z.object({
+		default: z.string().nullable(),
+	}),
 });
 
 export type ItemData = z.infer<typeof ItemDataSchema>;
