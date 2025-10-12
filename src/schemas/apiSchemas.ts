@@ -43,7 +43,7 @@ export const ItemDataSchema = z.object({
 	),
 	sprites: z
 		.object({
-			default: z.string(),
+			default: z.string().nullable(),
 		})
 		.nullable(),
 });
