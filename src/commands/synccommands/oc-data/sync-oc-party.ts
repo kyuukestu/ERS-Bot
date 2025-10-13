@@ -4,6 +4,7 @@ import {
 } from 'discord.js';
 import OC from '../../../models/OCSchema';
 import { type PokemonDocument } from '../../../models/PokemonSchema';
+import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -19,6 +20,12 @@ export default {
 		const OCName = interaction.options.getString('oc-name');
 
 		try {
+			if (!isDBConnected()) {
+				return interaction.reply(
+					'⚠️ Database is currently unavailable. Please try again later.'
+				);
+			}
+
 			const targetOC = await OC.findOne({ name: OCName }).populate<{
 				pokemon: PokemonDocument;
 			}>('party.pokemon');

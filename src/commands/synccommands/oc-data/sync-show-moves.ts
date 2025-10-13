@@ -5,6 +5,7 @@ import {
 import OC from '../../../models/OCSchema';
 import Pokemon from '../../../models/PokemonSchema';
 import { Types } from 'mongoose';
+import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -37,6 +38,12 @@ export default {
 		const isInBox = interaction.options.getBoolean('in-box') || false;
 
 		try {
+			if (!isDBConnected()) {
+				return interaction.reply(
+					'⚠️ Database is currently unavailable. Please try again later.'
+				);
+			}
+
 			await interaction.deferReply();
 
 			const targetOC = await OC.findOne({ name: OCName });

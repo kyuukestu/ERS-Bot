@@ -10,6 +10,7 @@ import { pokemonEndPoint } from '../../../utility/api/pokeapi.ts';
 import { extractPokemonInfo } from '../../../utility/dataExtraction/extractPokemonInfo.ts';
 import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
 import { type PokemonStats } from '../../../interface/canvasData.ts';
+import { isDBConnected } from '../../../mongoose/connection.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -91,94 +92,109 @@ export default {
 			? formatUserInput(`${species} ${formName}`)
 			: species;
 		const targetOC = await OC.findOne({ name: OCName });
-		if (!targetOC) {
-			return interaction.reply({
-				content: `❌ OC **${OCName}** not found. Please use /sync-register-oc first.`,
-				flags: 'Ephemeral',
-			});
-		}
 
-		const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+		try {
+			if (!isDBConnected()) {
+				return interaction.reply(
+					'⚠️ Database is currently unavailable. Please try again later.'
+				);
+			}
+			if (!targetOC) {
+				return interaction.reply({
+					content: `❌ OC **${OCName}** not found. Please use /sync-register-oc first.`,
+					flags: 'Ephemeral',
+				});
+			}
 
-		interface StatObject {
-			base_stat: number;
-			stat: {
-				name: string;
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+
+			interface StatObject {
+				base_stat: number;
+				stat: {
+					name: string;
+				};
+			}
+
+			const stats: PokemonStats = {
+				hp:
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'hp')
+						?.base_stat || 0,
+				attack:
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'attack')
+						?.base_stat || 0,
+				defense:
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'defense')
+						?.base_stat || 0,
+				spAttack:
+					pokemonInfo.stats.find(
+						(s: StatObject) => s.stat.name === 'special-attack'
+					)?.base_stat || 0,
+				spDefense:
+					pokemonInfo.stats.find(
+						(s: StatObject) => s.stat.name === 'special-defense'
+					)?.base_stat || 0,
+				speed:
+					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'speed')
+						?.base_stat || 0,
 			};
-		}
 
-		const stats: PokemonStats = {
-			hp:
-				pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'hp')
-					?.base_stat || 0,
-			attack:
-				pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'attack')
-					?.base_stat || 0,
-			defense:
-				pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'defense')
-					?.base_stat || 0,
-			spAttack:
-				pokemonInfo.stats.find(
-					(s: StatObject) => s.stat.name === 'special-attack'
-				)?.base_stat || 0,
-			spDefense:
-				pokemonInfo.stats.find(
-					(s: StatObject) => s.stat.name === 'special-defense'
-				)?.base_stat || 0,
-			speed:
-				pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'speed')
-					?.base_stat || 0,
-		};
+			const totalStats = Object.values(stats).reduce(
+				(sum, stat) => sum + stat,
+				0
+			);
 
-		const totalStats = Object.values(stats).reduce(
-			(sum, stat) => sum + stat,
-			0
-		);
+			const fortitude_drain = await calculateUpkeep(
+				totalStats,
+				level,
+				alpha,
+				additionalAbilities,
+				inBox
+			);
 
-		const fortitude_drain = await calculateUpkeep(
-			totalStats,
-			level,
-			alpha,
-			additionalAbilities,
-			inBox
-		);
-
-		const pokemon = await Pokemon.create({
-			species: species,
-			level: level,
-			ability: ability,
-			shiny: shiny,
-			fortitude_drain: fortitude_drain,
-			gender: gender,
-			bst: totalStats,
-			stats: stats,
-			nickname: nickname ? nickname : species, // Use the nickname if provided, otherwise use the species name
-		});
-
-		if (inBox) {
-			targetOC.storage.push({
-				pokemon: pokemon._id,
-				nickname: nickname ? nickname : species,
+			const pokemon = await Pokemon.create({
 				species: species,
 				level: level,
-				drain: fortitude_drain,
+				ability: ability,
+				shiny: shiny,
+				fortitude_drain: fortitude_drain,
+				gender: gender,
+				bst: totalStats,
+				stats: stats,
+				nickname: nickname ? nickname : species, // Use the nickname if provided, otherwise use the species name
 			});
-		} else {
-			targetOC.party.push({
-				pokemon: pokemon._id,
-				nickname: nickname ? nickname : species,
-				species: species,
-				level: level,
-				drain: fortitude_drain,
+
+			if (inBox) {
+				targetOC.storage.push({
+					pokemon: pokemon._id,
+					nickname: nickname ? nickname : species,
+					species: species,
+					level: level,
+					drain: fortitude_drain,
+				});
+			} else {
+				targetOC.party.push({
+					pokemon: pokemon._id,
+					nickname: nickname ? nickname : species,
+					species: species,
+					level: level,
+					drain: fortitude_drain,
+				});
+			}
+
+			await targetOC.save();
+
+			return interaction.reply({
+				content: `✅ Added **${species} (Lv. ${level})** to ${
+					targetOC.name
+				}'s ${
+					inBox ? 'storage' : 'party'
+				}!\n\n**Fortitude Drain:** ${fortitude_drain} FP.`,
+			});
+		} catch (error) {
+			console.error(error);
+			return interaction.reply({
+				content: `❌ An error occurred while adding the Pokémon.\nError: ${error}`,
 			});
 		}
-
-		await targetOC.save();
-
-		return interaction.reply({
-			content: `✅ Added **${species} (Lv. ${level})** to ${targetOC.name}'s ${
-				inBox ? 'storage' : 'party'
-			}!\n\n**Fortitude Drain:** ${fortitude_drain} FP.`,
-		});
 	},
 };

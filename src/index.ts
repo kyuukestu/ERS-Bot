@@ -22,7 +22,11 @@ const connectDB = async () => {
 	}
 };
 
-await connectDB();
+try {
+	await connectDB();
+} catch (error) {
+	console.error('❌ Error connecting to MongoDB:', error);
+}
 
 class ExtendedClient extends Client {
 	commands: Collection<string, any>;

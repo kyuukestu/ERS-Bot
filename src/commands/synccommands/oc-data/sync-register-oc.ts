@@ -3,6 +3,7 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
+import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -20,6 +21,12 @@ export default {
 		const nickname = interaction.options.getString('nickname') ?? name;
 
 		try {
+			if (!isDBConnected()) {
+				return interaction.reply(
+					'⚠️ Database is currently unavailable. Please try again later.'
+				);
+			}
+
 			const existingOC = await OC.findOne({ name });
 
 			if (existingOC) {
