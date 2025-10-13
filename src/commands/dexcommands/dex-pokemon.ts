@@ -153,12 +153,12 @@ export default {
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'defense'
 					)?.base_stat || 0,
-				specialAttack:
+				spAttack:
 					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'special-attack'
 					)?.base_stat || 0,
-				specialDefense:
+				spDefense:
 					pokemonInfo.stats.find(
 						(s: { stat: { name: string }; base_stat: number }) =>
 							s.stat.name === 'special-defense'

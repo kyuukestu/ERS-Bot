@@ -3,8 +3,8 @@ interface PokemonStats {
 	hp: number;
 	attack: number;
 	defense: number;
-	specialAttack: number;
-	specialDefense: number;
+	spAttack: number;
+	spDefense: number;
 	speed: number;
 }
 

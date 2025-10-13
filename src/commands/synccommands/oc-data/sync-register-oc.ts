@@ -1,4 +1,4 @@
-import OC from '../../models/OCSchema';
+import OC from '../../../models/OCSchema';
 import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
@@ -10,10 +10,14 @@ export default {
 		.setDescription('Register your OC to the database. (PokeSync)')
 		.addStringOption((option) =>
 			option.setName('name').setDescription('Name of your OC').setRequired(true)
+		)
+		.addStringOption((option) =>
+			option.setName('nickname').setDescription('Nickname of your OC')
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		const name = interaction.options.getString('name');
+		const nickname = interaction.options.getString('nickname') ?? name;
 
 		try {
 			const existingOC = await OC.findOne({ name });
@@ -21,12 +25,13 @@ export default {
 			if (existingOC) {
 				return interaction.reply({
 					content: `${interaction.user.username}, there is already an OC registered with that name.`,
-					ephemeral: true,
+					flags: 'Ephemeral',
 				});
 			}
 
 			await OC.create({
 				name,
+				nickname,
 				money: 5000,
 				inventory: [],
 				party: [],

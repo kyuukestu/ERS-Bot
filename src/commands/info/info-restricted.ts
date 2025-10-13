@@ -215,7 +215,7 @@ const fuse = new Fuse(searchList, {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('restricted')
+		.setName('info-restricted')
 		.setDescription(
 			"Enter a Pokemon's name to check its restricted stats. (e.g. Restricted or Banned)"
 		)

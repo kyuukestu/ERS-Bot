@@ -25,8 +25,8 @@ export class PokemonStatsCanvas {
 		hp: '#FF5959',
 		attack: '#F5AC78',
 		defense: '#FAE078',
-		specialAttack: '#9DB7F5',
-		specialDefense: '#A7DB8D',
+		spAttack: '#9DB7F5',
+		spDefense: '#A7DB8D',
 		speed: '#FA92B2',
 	};
 
@@ -34,8 +34,8 @@ export class PokemonStatsCanvas {
 		hp: 'HP',
 		attack: 'Attack',
 		defense: 'Defense',
-		specialAttack: 'Sp. Attack',
-		specialDefense: 'Sp. Defense',
+		spAttack: 'Sp. Attack',
+		spDefense: 'Sp. Defense',
 		speed: 'Speed',
 	};
 
@@ -234,8 +234,8 @@ export class PokemonEmbedBuilder {
 			hp: pokemonData.stats.hp,
 			attack: pokemonData.stats.attack,
 			defense: pokemonData.stats.defense,
-			specialAttack: pokemonData.stats.special_attack,
-			specialDefense: pokemonData.stats.special_defense,
+			spAttack: pokemonData.stats.special_attack,
+			spDefense: pokemonData.stats.special_defense,
 			speed: pokemonData.stats.speed,
 		};
 

@@ -37,32 +37,30 @@ class ExtendedClient extends Client {
 const client = new ExtendedClient();
 
 // Load commands dynamically
-async function loadCommands() {
-	const foldersPath = path.join(__dirname, 'commands');
-	const commandFolders = await fs.readdir(foldersPath);
+async function loadCommands(dirPath = path.join(__dirname, 'commands')) {
+	const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
-	for (const folder of commandFolders) {
-		const commandsPath = path.join(foldersPath, folder);
-		const commandFiles = (await fs.readdir(commandsPath)).filter(
-			(file: string) => file.endsWith('.ts')
-		);
+	for (const entry of entries) {
+		const fullPath = path.join(dirPath, entry.name);
 
-		for (const file of commandFiles) {
-			const filePath = path.join(commandsPath, file);
+		if (entry.isDirectory()) {
+			// Recursively load commands from subfolders
+			await loadCommands(fullPath);
+		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
 			try {
-				const command = await import(filePath); // Dynamic import for ES Modules
-				// Access the default export
-				const commandModule = command.default;
+				const commandImport = await import(fullPath);
+				const commandModule = commandImport.default;
+
 				if ('data' in commandModule && 'execute' in commandModule) {
 					client.commands.set(commandModule.data.name, commandModule);
 					console.log(`Loaded command: ${commandModule.data.name}`);
 				} else {
 					console.warn(
-						`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`
+						`[WARNING] The command at ${fullPath} is missing a required "data" or "execute" property.`
 					);
 				}
 			} catch (error) {
-				console.error(`[ERROR] Failed to load command at ${filePath}:`, error);
+				console.error(`[ERROR] Failed to load command at ${fullPath}:`, error);
 			}
 		}
 	}

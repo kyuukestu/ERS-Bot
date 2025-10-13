@@ -1,23 +1,54 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 const { Schema, model } = mongoose;
+
+export interface PokemonDocument extends Document {
+	species: string;
+	nickname?: string;
+	level: number;
+	fortitude_drain: number;
+	gender: 'Male' | 'Female' | 'Genderless' | 'Unknown';
+	nature?: string;
+	ability: string[];
+	shiny: boolean;
+	moves: string[];
+	bst: number;
+	stats: {
+		hp: number;
+		attack: number;
+		defense: number;
+		spAttack: number;
+		spDefense: number;
+		speed: number;
+	};
+	createdAt: Date;
+	updatedAt: Date;
+}
 
 const pokemonSchema = new Schema(
 	{
 		species: { type: String, required: true },
 		nickname: { type: String },
 		level: { type: Number, default: 1, min: 1, max: 100 },
+		fortitude_drain: {
+			type: Number,
+			default: 0,
+		},
 		gender: {
 			type: String,
-			enum: ['Male', 'Female', 'Unknown'],
+			enum: ['Male', 'Female', 'Genderless', 'Unknown'],
 			default: 'Unknown',
 		},
 		nature: { type: String },
-		ability: { type: String },
+		ability: { type: [String], default: [] },
 		shiny: { type: Boolean, default: false },
 		moves: {
 			type: [String], // e.g. ['Thunderbolt', 'Quick Attack']
 			default: [],
+		},
+		bst: {
+			type: Number,
+			default: 0,
 		},
 		stats: {
 			hp: { type: Number, default: 0 },

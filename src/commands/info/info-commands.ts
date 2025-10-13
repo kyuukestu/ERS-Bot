@@ -5,7 +5,7 @@ import {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('command-list')
+		.setName('info-commands')
 		.setDescription('Provides a list of commands'),
 	async execute(interaction: ChatInputCommandInteraction) {
 		await interaction.reply('Under Construction');

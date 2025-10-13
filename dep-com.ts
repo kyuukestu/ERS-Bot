@@ -16,30 +16,36 @@ const commands: any[] = [];
 // Grab all the command folders from the commands directory
 const foldersPath = path.join(__dirname, './src/commands'); // Align with index.ts
 const commandFolders = await fs.readdir(foldersPath);
+async function loadCommands(dirPath = path.join(__dirname, './src/commands')) {
+	const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
-for (const folder of commandFolders) {
-	const commandsPath = path.join(foldersPath, folder);
-	const commandFiles = (await fs.readdir(commandsPath)).filter((file: string) =>
-		file.endsWith('.ts')
-	);
+	for (const entry of entries) {
+		const fullPath = path.join(dirPath, entry.name);
 
-	for (const file of commandFiles) {
-		const filePath = path.join(commandsPath, file);
-		try {
-			const command = await import(filePath); // Use dynamic import for ES Modules
-			if ('data' in command.default && 'execute' in command.default) {
-				commands.push(command.default.data.toJSON());
-				console.log(`Prepared command: ${command.default.data.name}`);
-			} else {
-				console.warn(
-					`[WARNING] The command at ${filePath} is missing "data" or "execute".`
-				);
+		if (entry.isDirectory()) {
+			// Recursively process subfolders
+			await loadCommands(fullPath);
+		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
+			try {
+				const imported = await import(fullPath);
+				const commandModule = imported.default;
+
+				if ('data' in commandModule && 'execute' in commandModule) {
+					commands.push(commandModule.data.toJSON());
+					console.log(`Prepared command: ${commandModule.data.name}`);
+				} else {
+					console.warn(
+						`[WARNING] The command at ${fullPath} is missing "data" or "execute".`
+					);
+				}
+			} catch (error) {
+				console.error(`[ERROR] Failed to load command at ${fullPath}:`, error);
 			}
-		} catch (error) {
-			console.error(`[ERROR] Failed to load command at ${filePath}:`, error);
 		}
 	}
 }
+
+await loadCommands();
 
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token);
