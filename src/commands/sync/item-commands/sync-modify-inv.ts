@@ -45,13 +45,13 @@ export default {
 		)
 
 		.addStringOption((option) =>
-			option.setName('Reason').setDescription('Reason for the action')
+			option.setName('reason').setDescription('Reason for the action')
 		)
 		.addNumberOption((option) =>
 			option
 				.setName('value')
 				.setDescription(
-					'Enter a custom value; item prices are stored in the database, only use this for custom transactions/Trades.'
+					'Enter a custom value; only use this for custom transactions/Trades.'
 				)
 		),
 
