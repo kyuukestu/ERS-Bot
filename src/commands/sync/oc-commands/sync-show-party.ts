@@ -10,7 +10,7 @@ import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('sync-oc-party')
+		.setName('sync-show-party')
 		.setDescription('Displays your OC’s party.')
 		.addStringOption((option) =>
 			option

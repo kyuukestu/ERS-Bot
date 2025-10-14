@@ -14,7 +14,7 @@ import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('sync-oc-inv')
+		.setName('sync-show-inv')
 		.setDescription("Displays your OC's inventory.")
 		.addStringOption((option) =>
 			option

@@ -1,6 +1,6 @@
-import OC from '../../models/OCSchema';
-import Item, { type ItemDocument } from '../../models/ItemSchema';
-import TransactionLog from '../../models/TransactionLogSchema';
+// import OC from '../../models/OCSchema';
+import { type ItemDocument } from '../../models/ItemSchema';
+// import TransactionLog from '../../models/TransactionLogSchema';
 
 export enum action {
 	ADD = 'ADD',
@@ -27,6 +27,10 @@ export const modifyInventory = async ({
 	reason?: string | null;
 	value?: number | null;
 }) => {
+	const OC = (await import('../../models/OCSchema')).default;
+	const Item = (await import('../../models/ItemSchema')).default;
+	const TransactionLog = (await import('../../models/TransactionLogSchema'))
+		.default;
 	// Find the player and populate the inventory items
 	const userOC = await OC.findOne({ name: OCName }).populate<{
 		item: ItemDocument;
