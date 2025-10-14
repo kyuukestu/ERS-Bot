@@ -11,6 +11,7 @@ import {
 	type ChatInputCommandInteraction,
 	type StringSelectMenuInteraction,
 	type ButtonInteraction,
+	MessageFlags,
 } from 'discord.js';
 import type { ParsedSpeciesData } from '../../schemas/apiSchemas.ts';
 // import type { PokemonData, SpeciesData } from '../../interface/apiData.ts';
@@ -443,7 +444,7 @@ async function handlePokedexEntries(
 	const entriesMessage = await interaction.followUp({
 		embeds: [createEntriesEmbed(currentPage)],
 		components: [row.toJSON()],
-		ephemeral: true,
+		flags: MessageFlags.Ephemeral,
 	});
 
 	const entriesCollector = entriesMessage.createMessageComponentCollector({
@@ -537,7 +538,7 @@ async function handleSpriteGallery(
 	const spriteMessage = await interaction.followUp({
 		embeds: [createSpriteEmbed(currentSprite)],
 		components: [spriteRow.toJSON()],
-		ephemeral: true,
+		flags: MessageFlags.Ephemeral,
 	});
 
 	const spriteCollector = spriteMessage.createMessageComponentCollector({

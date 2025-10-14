@@ -1,4 +1,5 @@
 import {
+	MessageFlags,
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
@@ -102,7 +103,7 @@ export default {
 			if (!targetOC) {
 				return interaction.reply({
 					content: `❌ OC **${OCName}** not found. Please use /sync-register-oc first.`,
-					flags: 'Ephemeral',
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 

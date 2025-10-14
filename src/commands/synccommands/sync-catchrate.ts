@@ -13,6 +13,7 @@ import {
 	type SlashCommandBooleanOption,
 	type SlashCommandNumberOption,
 	SlashCommandStringOption,
+	MessageFlags,
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput';
 import { speciesEndPoint } from '../../utility/api/pokeapi';
@@ -488,7 +489,7 @@ export default {
 												await buttonInteraction.reply({
 													content:
 														'Only the original user can use this button!',
-													ephemeral: true,
+													flags: MessageFlags.Ephemeral,
 												});
 												return;
 											}
@@ -598,7 +599,7 @@ export default {
 												await buttonInteraction.reply({
 													content:
 														'Only the original user can use this button!',
-													ephemeral: true,
+													flags: MessageFlags.Ephemeral,
 												});
 												return;
 											}
@@ -697,7 +698,7 @@ export default {
 								if (buttonInteraction.user.id !== interaction.user.id) {
 									await buttonInteraction.reply({
 										content: 'Only the original user can use this button!',
-										ephemeral: true,
+										flags: MessageFlags.Ephemeral,
 									});
 									return;
 								}

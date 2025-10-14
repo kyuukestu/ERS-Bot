@@ -6,6 +6,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	type ChatInputCommandInteraction,
+	MessageFlags,
 } from 'discord.js';
 import { typeColors } from '../../ui/colors.ts';
 import { moveEmojis } from '../../ui/emojis.ts';
@@ -238,7 +239,7 @@ async function sendPaginatedList(
 		if (buttonInteraction.user.id !== interaction.user.id) {
 			await buttonInteraction.reply({
 				content: 'These buttons are not for you!',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}

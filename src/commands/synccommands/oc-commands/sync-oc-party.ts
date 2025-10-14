@@ -1,6 +1,8 @@
 import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	MessageFlags,
 } from 'discord.js';
 import OC from '../../../models/OCSchema';
 import { type PokemonDocument } from '../../../models/PokemonSchema';
@@ -9,69 +11,94 @@ import { isDBConnected } from '../../../mongoose/connection';
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-oc-party')
-		.setDescription('Displays your OCs party.')
+		.setDescription('Displays your OC’s party.')
 		.addStringOption((option) =>
 			option
 				.setName('oc-name')
-				.setDescription('Your registered ocs name')
+				.setDescription('Your registered OC’s name')
 				.setRequired(true)
 		),
+
 	async execute(interaction: ChatInputCommandInteraction) {
-		const OCName = interaction.options.getString('oc-name');
+		const OCName = interaction.options.getString('oc-name', true);
 
 		try {
 			if (!isDBConnected()) {
-				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
-				);
+				return interaction.reply({
+					content:
+						'⚠️ Database is currently unavailable. Please try again later.',
+					flags: MessageFlags.Ephemeral,
+				});
 			}
 
 			const targetOC = await OC.findOne({ name: OCName }).populate<{
 				pokemon: PokemonDocument;
 			}>('party.pokemon');
 
-			if (!targetOC) return interaction.reply(`${OCName} does not exist.`);
+			if (!targetOC)
+				return interaction.reply({
+					content: `❌ OC **${OCName}** does not exist.`,
+					flags: MessageFlags.Ephemeral,
+				});
 
-			// Loop through each Pokémon in the party
 			const partyInfo = targetOC.party
 				.map((entry) => {
-					// entry.pokemon is populated (PokemonDocument)
 					const pokemonDoc = entry.pokemon as PokemonDocument | null;
-					if (!pokemonDoc) return null; // safety check
+					if (!pokemonDoc) return null;
 
 					return {
-						nickname: entry.nickname || pokemonDoc.nickname || null,
+						nickname: entry.nickname || pokemonDoc.nickname || '—',
 						species: entry.species || pokemonDoc.species,
 						level: entry.level || pokemonDoc.level,
 						drain: entry.drain || pokemonDoc.fortitude_drain,
 						gender: pokemonDoc.gender,
 						ability: pokemonDoc.ability,
 						bst: pokemonDoc.bst,
-						// you can add more info from the Pokemon document if needed
 					};
 				})
-				.filter(Boolean); // remove any nulls
+				.filter(Boolean) as {
+				nickname: string;
+				species: string;
+				level: number;
+				drain: number;
+				gender: string;
+				ability: string[];
+				bst: number;
+			}[];
+
+			if (partyInfo.length === 0)
+				return interaction.reply({
+					content: `🧳 OC **${OCName}** has no Pokémon in their party.`,
+					flags: MessageFlags.Ephemeral,
+				});
 
 			let totalDrain = 0;
-			// Example: create a formatted string for display
-			let displayString = `# **${OCName}'s Party:**\n`;
+
+			const embed = new EmbedBuilder()
+				.setTitle(`🎯 ${OCName}'s Party`)
+				.setColor(0x6a5acd)
+				.setTimestamp();
+
 			partyInfo.forEach((p, idx) => {
-				displayString += `## ${idx + 1}. ${p?.nickname || p?.species}`;
-				displayString += `Species: ${p?.species.toUpperCase()}\t ${p?.ability.join(
-					', '
-				)}\n`;
-				displayString += `Gender: ${p?.gender}\n`;
-				displayString += `Level: ${p?.level}\t BST: **${p?.bst}**\n`;
-				displayString += `Drain: *${p?.drain}*\n`;
-				totalDrain += p?.drain || 0;
+				totalDrain += p.drain;
+
+				embed.addFields({
+					name: `${idx + 1}. ${p.nickname} (${p.species.toUpperCase()})`,
+					value: `**Level:** ${p.level}\n**BST:** ${p.bst}\n**Gender:** ${
+						p.gender
+					}\n**Drain:** ${p.drain}\n**Abilities:** ${p.ability.join(', ')}`,
+				});
 			});
 
-			displayString += `### Total Drain: ${totalDrain}`;
+			embed.setFooter({ text: `Total Drain: ${totalDrain}` });
 
-			// Send the message
-			await interaction.reply({ content: displayString });
+			await interaction.reply({ embeds: [embed] });
 		} catch (err) {
-			interaction.reply(`Error displaying party for ${OCName} \n\n ${err}`);
+			console.error(err);
+			await interaction.reply({
+				content: `❌ Error displaying party for ${OCName}.\n\n${err}`,
+				flags: MessageFlags.Ephemeral,
+			});
 		}
 	},
 };

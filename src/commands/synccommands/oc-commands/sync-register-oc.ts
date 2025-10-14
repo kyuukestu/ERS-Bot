@@ -1,5 +1,6 @@
 import OC from '../../../models/OCSchema';
 import {
+	MessageFlags,
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
@@ -32,7 +33,7 @@ export default {
 			if (existingOC) {
 				return interaction.reply({
 					content: `${interaction.user.username}, there is already an OC registered with that name.`,
-					flags: 'Ephemeral',
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 
