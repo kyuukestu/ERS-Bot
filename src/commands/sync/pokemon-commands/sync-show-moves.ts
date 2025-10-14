@@ -89,7 +89,7 @@ export default {
 
 			return new EmbedBuilder()
 				.setTitle(`📝 Moves — ${pokeNickname}`)
-				.setDescription(`- ${pageMoves.join('\n\\- ')}`)
+				.setDescription(`\\- ${pageMoves.join('\n\\- ')}`)
 				.setFooter({ text: `Page ${page + 1}/${totalPages}` })
 				.setColor(0x1e90ff);
 		};
