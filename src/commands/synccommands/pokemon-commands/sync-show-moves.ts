@@ -86,10 +86,11 @@ export default {
 
 				const pokemon = await Pokemon.findById(pokemonId);
 
-				let moveList = '';
-				pokemon?.moves.map((move, idx) => {
-					moveList += `${idx + 1}. ${move}\n`;
+				let moveList = '```';
+				pokemon?.moves.map((move) => {
+					moveList += `- ${move}\n`;
 				});
+				moveList += '```';
 
 				interaction.editReply(moveList);
 			}

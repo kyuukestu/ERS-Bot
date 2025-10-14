@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
-import itemSchema from './ItemSchema';
-
-const { Schema, model, Types } = mongoose;
+import { Document, Types, Schema, model } from 'mongoose';
+import type { ItemDocument } from './ItemSchema';
+import type { PokemonDocument } from './PokemonSchema';
 
 export enum Rank {
 	'Bronze',
@@ -14,101 +13,87 @@ export enum Rank {
 	'Legendary',
 }
 
-const OCSchema = new Schema(
+// Inventory entry
+export interface InventoryEntry {
+	item: Types.ObjectId | ItemDocument; // can be populated
+	quantity: number;
+}
+
+export type InventorySubdoc = InventoryEntry & Types.Subdocument;
+
+// Party/Storage entry
+export interface PokemonEntry {
+	pokemon: Types.ObjectId | PokemonDocument; // can be populated
+	nickname: string;
+	species: string;
+	level: number;
+	drain: number;
+}
+
+// OC Document interface
+export interface OCDocument extends Document {
+	name: string;
+	nickname?: string;
+	money: number;
+	rank: Rank | string;
+	tier: number;
+	fortitude: {
+		current: number;
+		max: number;
+	};
+	inventory: Types.DocumentArray<InventorySubdoc>;
+	party: Types.DocumentArray<PokemonEntry>;
+	storage: Types.DocumentArray<PokemonEntry>;
+}
+
+const inventorySchema = new Schema<InventoryEntry>(
+	{
+		item: { type: Types.ObjectId, ref: 'Item', required: true },
+		quantity: { type: Number, default: 1, min: 0 },
+	},
+	{ _id: false }
+);
+
+const pokemonEntrySchema = new Schema<PokemonEntry>(
+	{
+		pokemon: { type: Types.ObjectId, ref: 'Pokemon' },
+		nickname: { type: String, default: '' },
+		species: { type: String, required: true },
+		level: { type: Number, default: 1 },
+		drain: { type: Number, default: 0 },
+	},
+	{ _id: false }
+);
+
+const OCSchema = new Schema<OCDocument>(
 	{
 		name: {
 			type: String,
 			required: true,
 			trim: true,
-			unique: true, // optional: if usernames must be unique
-			index: true, // optional: for faster querying by username
+			unique: true,
+			index: true,
 		},
-
-		nickname: {
-			type: String,
-			trim: true,
-		},
-
-		money: {
-			type: Number,
-			default: 0,
-			min: 0,
-		},
-
-		rank: {
-			type: String,
-			enum: Object.values(Rank),
-			default: 'Bronze',
-		},
-		tier: {
-			type: Number,
-			default: 1,
-			min: 1,
-			max: 5,
-		},
-
+		nickname: { type: String, trim: true },
+		money: { type: Number, default: 0, min: 0 },
+		rank: { type: String, enum: Object.values(Rank), default: 'Bronze' },
+		tier: { type: Number, default: 1, min: 1, max: 5 },
 		fortitude: {
-			current: {
-				type: Number,
-				default: 50,
-				min: 0,
-			},
-			max: {
-				type: Number,
-				default: 50,
-			},
+			current: { type: Number, default: 50, min: 0 },
+			max: { type: Number, default: 50 },
 		},
-
-		inventory: {
-			type: [itemSchema], // e.g. ['Potion', 'Poké Ball', 'Revive']
-			default: [],
-		},
-
+		inventory: [inventorySchema],
 		party: {
-			type: [
-				{
-					pokemon: { type: Types.ObjectId, ref: 'Pokemon' },
-					nickname: { type: String, default: '' },
-					species: { type: String, required: true },
-					level: { type: Number, default: 1 },
-					drain: { type: Number, default: 0 },
-				},
-			],
+			type: [pokemonEntrySchema],
+			default: [],
 			validate: {
-				validator: function (arr: any[]) {
-					return arr.length <= 6;
-				},
+				validator: (arr: PokemonEntry[]) => arr.length <= 6,
 				message: 'Party can have a maximum of 6 Pokémon.',
 			},
-			default: [],
 		},
-
-		storage: [
-			{
-				pokemon: {
-					type: Types.ObjectId,
-					ref: 'Pokemon',
-				},
-				nickname: { type: String, default: '' },
-				species: {
-					type: String,
-					required: true,
-				},
-				level: {
-					type: Number,
-					default: 1,
-					min: 1,
-				},
-				drain: {
-					type: Number,
-					default: 0,
-				},
-			},
-		],
+		storage: [pokemonEntrySchema],
 	},
-	{
-		timestamps: true, // adds createdAt and updatedAt
-	}
+	{ timestamps: true }
 );
 
 OCSchema.pre('save', function (next) {
