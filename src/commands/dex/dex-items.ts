@@ -18,7 +18,7 @@ interface ItemInfo {
 	effect: string;
 	flavor_text_entries: string;
 	flavor_text_ver: string;
-	sprite: string;
+	sprites: { default: string | null };
 	fling_power: number;
 	fling_effect: string;
 }
@@ -33,7 +33,7 @@ const createItemEmbed = (
 		)
 		.setTitle(`${itemInfo.item_emoji || '❓'} **${itemInfo.name}**`)
 		.setDescription(itemInfo.flavor_text_entries.replace(/\r?\n|\r/g, ' '))
-		.setThumbnail(itemInfo.sprite)
+		.setThumbnail(itemInfo.sprites.default)
 		.addFields(
 			{
 				name: '📌 Category',
