@@ -1,4 +1,4 @@
-import { Document, Schema, model } from 'mongoose';
+import { Document, Schema, model, Types } from 'mongoose';
 
 export interface EffectEntry {
 	effect: string;
@@ -24,6 +24,7 @@ const EffectEntrySchema = new Schema<EffectEntry>({
 });
 
 const ItemSchema = new Schema<ItemDocument>({
+	_id: { type: Types.ObjectId, auto: true },
 	id: { type: Number, required: true, unique: true },
 	name: { type: String, required: true, unique: true },
 	category: { type: String, required: true },

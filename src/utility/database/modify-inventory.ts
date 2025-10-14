@@ -54,11 +54,13 @@ export const modifyInventory = async ({
 			throw new Error('Quantity must be specified.');
 		}
 
+		const pushID = item._id;
+
 		if (invEntry) {
 			invEntry.quantity += quantityChange;
 		} else {
 			userOC.inventory.push({
-				item: getItemId,
+				item: pushID,
 				quantity: quantityChange,
 			});
 		}
