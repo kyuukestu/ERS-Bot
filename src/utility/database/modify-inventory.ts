@@ -39,11 +39,11 @@ export const modifyInventory = async ({
 	if (!item) throw new Error(`Item ${itemName} not found.`);
 
 	// Helper to get ObjectId whether populated or not
-	const getItemId = item.id || item._id;
+	const getItemId = item.id;
 
 	// Find the inventory entry
 	const invEntry = userOC.inventory.find(
-		(entry) => entry.item.id === getItemId || entry.item._id === getItemId
+		(entry) => entry.item.id === getItemId
 	);
 
 	if (!invEntry && action !== 'BUY' && action !== 'ADD')
@@ -136,8 +136,8 @@ export const modifyInventory = async ({
 
 		// Record the transaction
 		await TransactionLog.create({
-			oc: userOC._id, // better to reference by ObjectId
-			item: item._id,
+			oc: userOC.name, // better to reference by ObjectId
+			item: item.name,
 			itemNameSnapshot: item.name,
 			quantity: -quantityChange, // negative to indicate reduction
 			action: 'SELL',
@@ -249,7 +249,7 @@ export const modifyInventory = async ({
 		await Promise.all([
 			TransactionLog.create({
 				oc: userOC.name,
-				item: item ? item._id : null,
+				item: item ? item.name : null,
 				quantity: quantityChange || 0,
 				action,
 				reason: `Traded to ${target.name}`,
@@ -257,7 +257,7 @@ export const modifyInventory = async ({
 			}),
 			TransactionLog.create({
 				oc: target.name,
-				item: item ? item._id : null,
+				item: item ? item.name : null,
 				quantity: quantityChange || 0,
 				action,
 				reason: `Received from ${userOC.name}`,

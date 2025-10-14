@@ -46,24 +46,18 @@ export interface OCDocument extends Document {
 	storage: Types.DocumentArray<PokemonEntry>;
 }
 
-const inventorySchema = new Schema<InventoryEntry>(
-	{
-		item: { type: Types.ObjectId, ref: 'Item', required: true },
-		quantity: { type: Number, default: 1, min: 0 },
-	},
-	{ _id: false }
-);
+const inventorySchema = new Schema<InventoryEntry>({
+	item: { type: Types.ObjectId, ref: 'Item', required: true },
+	quantity: { type: Number, default: 1, min: 0 },
+});
 
-const pokemonEntrySchema = new Schema<PokemonEntry>(
-	{
-		pokemon: { type: Types.ObjectId, ref: 'Pokemon' },
-		nickname: { type: String, default: '' },
-		species: { type: String, required: true },
-		level: { type: Number, default: 1 },
-		drain: { type: Number, default: 0 },
-	},
-	{ _id: false }
-);
+const pokemonEntrySchema = new Schema<PokemonEntry>({
+	pokemon: { type: Types.ObjectId, ref: 'Pokemon' },
+	nickname: { type: String, default: '' },
+	species: { type: String, required: true },
+	level: { type: Number, default: 1 },
+	drain: { type: Number, default: 0 },
+});
 
 const OCSchema = new Schema<OCDocument>(
 	{
