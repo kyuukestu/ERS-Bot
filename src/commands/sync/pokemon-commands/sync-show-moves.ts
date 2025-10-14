@@ -72,7 +72,7 @@ export default {
 			return interaction.editReply(`Pokemon data could not be retrieved.`);
 		}
 
-		const moves = pokemon.moves.map((move) => `- ${move}`);
+		const moves = pokemon.moves.map((move) => `${move}`);
 		if (moves.length === 0) {
 			return interaction.editReply(`${pokeNickname} has no moves.`);
 		}
@@ -89,7 +89,7 @@ export default {
 
 			return new EmbedBuilder()
 				.setTitle(`📝 Moves — ${pokeNickname}`)
-				.setDescription(pageMoves.join('\n'))
+				.setDescription(`- ${pageMoves.join('\n- ')}`)
 				.setFooter({ text: `Page ${page + 1}/${totalPages}` })
 				.setColor(0x1e90ff);
 		};
