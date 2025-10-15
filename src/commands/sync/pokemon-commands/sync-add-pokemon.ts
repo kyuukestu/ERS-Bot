@@ -157,6 +157,7 @@ export default {
 				level: level,
 				ability: ability,
 				shiny: shiny,
+				alpha: alpha,
 				fortitude_drain: fortitude_drain,
 				gender: gender,
 				bst: totalStats,

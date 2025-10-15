@@ -71,7 +71,7 @@ export default {
 				);
 			}
 
-			await modifyInventory({
+			const action_data = await modifyInventory({
 				OCName,
 				targetOC: targetOC,
 				itemName,
@@ -81,7 +81,14 @@ export default {
 				value: value ?? 0,
 			});
 
-			return interaction.reply(`✅ ${action} successful.`);
+			return interaction.reply(`✅ ${action} successful.\n\n 
+				Initiator:${action_data?.oc}\n
+				Target:${action_data?.targetOC}\n
+				Action:  ${action_data?.action}\n
+				Reason: ${action_data?.reason}\n
+				Item: ${action_data?.item}\n
+				Quantity: ${action_data?.quantity}\n
+				Money Traded: ${action_data?.value}`);
 		} catch (error) {
 			console.error(error);
 

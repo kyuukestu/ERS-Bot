@@ -42,6 +42,7 @@ const pokemonSchema = new Schema(
 		nature: { type: String },
 		ability: { type: [String], default: [] },
 		shiny: { type: Boolean, default: false },
+		alpha: { type: Boolean, default: false },
 		moves: {
 			type: [String], // e.g. ['Thunderbolt', 'Quick Attack']
 			default: [],

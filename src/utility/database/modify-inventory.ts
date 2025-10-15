@@ -35,7 +35,7 @@ export const modifyInventory = async ({
 	if (!userOC) throw new Error(`Player ${OCName} not found.`);
 
 	// Find the item document
-	const item = await Item.findOne({ name: itemName });
+	const item = await Item.findOne<ItemDocument>({ name: itemName });
 	if (!item) throw new Error(`Item ${itemName} not found.`);
 
 	// Helper to get ObjectId whether populated or not
@@ -53,8 +53,6 @@ export const modifyInventory = async ({
 		if (!quantityChange) {
 			throw new Error('Quantity must be specified.');
 		}
-
-		const pushID = item._id;
 
 		if (invEntry) {
 			invEntry.quantity += quantityChange;
@@ -75,6 +73,17 @@ export const modifyInventory = async ({
 			reason,
 			balanceAfter: userOC.money,
 		});
+
+		return {
+			item: item.name,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
+		};
 	}
 
 	if (action === 'BUY') {
@@ -92,7 +101,7 @@ export const modifyInventory = async ({
 			invEntry.quantity += quantityChange;
 		} else {
 			userOC.inventory.push({
-				tem: item._id,
+				item: item._id,
 				quantity: quantityChange,
 			});
 		}
@@ -108,6 +117,17 @@ export const modifyInventory = async ({
 			reason,
 			balanceAfter: userOC.money,
 		});
+
+		return {
+			item: item.name,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
+		};
 	}
 
 	if (action === 'SELL') {
@@ -115,7 +135,9 @@ export const modifyInventory = async ({
 			throw new Error('Quantity must be specified.');
 		}
 
-		const invEntry = userOC.inventory.find((e) => e.item.equals(getItemId));
+		const invEntry = userOC.inventory.find(
+			(entry) => entry.item.id === getItemId
+		);
 		if (!invEntry) {
 			throw new Error(`${OCName} does not have that item.`);
 		}
@@ -133,7 +155,7 @@ export const modifyInventory = async ({
 
 		// Remove item entirely if depleted
 		if (invEntry.quantity <= 0) {
-			userOC.inventory.pull({ item: getItemId });
+			userOC.inventory.pull({ item: item._id });
 		}
 
 		await userOC.save();
@@ -151,15 +173,23 @@ export const modifyInventory = async ({
 
 		return {
 			item: item.name,
+			quantity: quantityChange,
 			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
 		};
 	}
 
 	if (action === 'DELETE') {
-		const invEntry = userOC.inventory.find((e) => e.item.equals(getItemId));
+		const invEntry = userOC.inventory.find(
+			(entry) => entry.item.id === getItemId
+		);
 		if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 
-		userOC.inventory.pull({ item: getItemId });
+		userOC.inventory.pull({ item: item._id });
 
 		await userOC.save();
 
@@ -172,6 +202,17 @@ export const modifyInventory = async ({
 			reason,
 			balanceAfter: userOC.money,
 		});
+
+		return {
+			item: item.name,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
+		};
 	}
 
 	if (action === 'REMOVE') {
@@ -179,7 +220,9 @@ export const modifyInventory = async ({
 			throw new Error('Quantity must be specified.');
 		}
 
-		const invEntry = userOC.inventory.find((e) => e.item.equals(getItemId));
+		const invEntry = userOC.inventory.find(
+			(entry) => entry.item.id === getItemId
+		);
 		if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 
 		if (invEntry.quantity < quantityChange)
@@ -188,7 +231,7 @@ export const modifyInventory = async ({
 		invEntry.quantity -= quantityChange;
 
 		if (invEntry.quantity <= 0) {
-			userOC.inventory.pull({ item: getItemId });
+			userOC.inventory.pull({ item: item._id });
 		}
 
 		await userOC.save();
@@ -202,6 +245,17 @@ export const modifyInventory = async ({
 			reason,
 			balanceAfter: userOC.money,
 		});
+
+		return {
+			item: item.name,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
+		};
 	}
 
 	if (action === 'TRADE') {
@@ -222,7 +276,9 @@ export const modifyInventory = async ({
 				throw new Error('Quantity must be a positive number for item trades.');
 			}
 
-			const invEntry = userOC.inventory.find((e) => e.item.equals(getItemId));
+			const invEntry = userOC.inventory.find(
+				(entry) => entry.item.id === getItemId
+			);
 			if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 			if (invEntry.quantity < quantityChange)
 				throw new Error(`${OCName} does not have enough ${itemName}.`);
@@ -232,8 +288,8 @@ export const modifyInventory = async ({
 			if (invEntry.quantity <= 0) userOC.inventory.pull({ item: getItemId });
 
 			// Receiver gains item(s)
-			const receiverInv = target.inventory.find((e) =>
-				e.item.equals(getItemId)
+			const receiverInv = target.inventory.find(
+				(entry) => entry.item.id === getItemId
 			);
 			if (receiverInv) receiverInv.quantity += quantityChange;
 			else target.inventory.push({ item: item._id, quantity: quantityChange });
@@ -273,5 +329,16 @@ export const modifyInventory = async ({
 				balanceAfter: target.money,
 			}),
 		]);
+
+		return {
+			item: item.name,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value,
+		};
 	}
 };
