@@ -60,47 +60,34 @@ export default {
 
 			if (!targetOC) return interaction.reply(`${OCName} does not exist.`);
 
-			if (isInBox) {
-				const targetPokemon = targetOC.storage.find(
-					(p) => p.nickname === pokeNickname
+			await targetOC.populate(isInBox ? 'storage' : 'party');
+
+			const collection = isInBox ? targetOC.storage : targetOC.party;
+
+			const targetPokemon = collection.find(
+				(p) => p.nickname?.toLowerCase() === pokeNickname?.toLowerCase()
+			);
+
+			if (!targetPokemon) {
+				return interaction.editReply(
+					`${pokeNickname} was not found in ${isInBox ? 'storage' : 'party'}.`
 				);
+			}
 
-				if (!targetPokemon || !targetPokemon.pokemon)
-					return interaction.reply(`${pokeNickname} was not found in storage.`);
+			const pokemonId = (targetPokemon._id ||
+				targetPokemon.pokemon) as Types.ObjectId;
 
-				const pokemonId: Types.ObjectId =
-					targetPokemon.pokemon as Types.ObjectId;
+			const updatedPokemon = await Pokemon.findByIdAndUpdate(
+				pokemonId,
+				{
+					$addToSet: { moves: { $each: moveList } },
+				},
+				{ new: true }
+			);
 
-				await Pokemon.findByIdAndUpdate(
-					pokemonId,
-					{ $addToSet: { moves: { $each: moveList } } },
-					{ new: true }
-				);
-
-				interaction.editReply(
-					`${pokeNickname}'s moves have been updated!
-					**Added:\n** ${moveList.join('\n ')}`
-				);
-			} else {
-				const targetPokemon = targetOC.party.find(
-					(p) => p.nickname === pokeNickname
-				);
-
-				if (!targetPokemon || !targetPokemon.pokemon)
-					return interaction.reply(`${pokeNickname} was not found in party.`);
-
-				const pokemonId: Types.ObjectId =
-					targetPokemon.pokemon as Types.ObjectId;
-
-				await Pokemon.findByIdAndUpdate(
-					pokemonId,
-					{ $addToSet: { moves: { $each: moveList } } },
-					{ new: true }
-				);
-
-				interaction.editReply(
-					`${pokeNickname}'s moves have been updated!
-					\n**Added:**\n- ${moveList.join('\n- ')}`
+			if (!updatedPokemon) {
+				return interaction.editReply(
+					`Something went wrong while updating ${pokeNickname}'s moves.`
 				);
 			}
 		} catch (err) {

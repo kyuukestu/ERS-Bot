@@ -13,6 +13,103 @@ import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts'
 import { type PokemonStats } from '../../../interface/canvasData.ts';
 import { isDBConnected } from '../../../mongoose/connection.ts';
 
+/**
+ * Helper: extract stats and calculate derived data
+ */
+async function buildPokemonData(
+	species: string,
+	level: number,
+	alpha: boolean,
+	additionalAbilities: number,
+	inBox: boolean,
+	formName?: string
+) {
+	const searchName = formName
+		? formatUserInput(`${species} ${formName}`)
+		: species;
+	const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+
+	const stats: PokemonStats = Object.fromEntries(
+		pokemonInfo.stats.map((s: any) => [
+			s.stat.name
+				.replace('special-attack', 'spAttack')
+				.replace('special-defense', 'spDefense'),
+			s.base_stat,
+		])
+	) as PokemonStats;
+
+	const totalStats = Object.values(stats).reduce((a, b) => a + b, 0);
+	const fortitude_drain = await calculateUpkeep(
+		totalStats,
+		level,
+		alpha,
+		additionalAbilities,
+		inBox
+	);
+
+	return { stats, totalStats, fortitude_drain };
+}
+
+/**
+ * Helper: create a Pokemon and link it to the OC
+ */
+async function addPokemonToOC({
+	targetOC,
+	species,
+	level,
+	ability,
+	gender,
+	nickname,
+	shiny,
+	alpha,
+	formName,
+	additionalAbilities,
+	inBox,
+}: {
+	targetOC: any;
+	species: string;
+	level: number;
+	ability: string;
+	gender?: string | null;
+	nickname?: string | null;
+	shiny: boolean;
+	alpha: boolean;
+	formName?: string | null;
+	additionalAbilities: number;
+	inBox: boolean;
+}) {
+	const { stats, totalStats, fortitude_drain } = await buildPokemonData(
+		species,
+		level,
+		alpha,
+		additionalAbilities,
+		inBox,
+		formName || undefined
+	);
+
+	const pokemon = await Pokemon.create({
+		species,
+		level,
+		ability,
+		shiny,
+		alpha,
+		fortitude_drain,
+		gender,
+		bst: totalStats,
+		stats,
+		nickname: nickname || species,
+	});
+
+	const destination = inBox ? targetOC.storage : targetOC.party;
+	destination.push({ pokemon: pokemon._id });
+
+	await targetOC.save();
+	return { pokemon, fortitude_drain };
+}
+
+/**
+ * Slash Command: /sync-add-pokemon
+ */
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-add-pokemon')
@@ -46,7 +143,7 @@ export default {
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
-				.setDescription(`Enter the pokémon's form (e.g., alolan, galar).`)
+				.setDescription(`Enter the Pokémon's form (e.g., alolan, galar).`)
 		)
 		.addStringOption((option) =>
 			option
@@ -76,23 +173,20 @@ export default {
 				.setName('additional-abilities')
 				.setDescription('Additional Abilities File')
 		),
+
 	async execute(interaction: ChatInputCommandInteraction) {
 		const OCName = interaction.options.getString('oc-name', true);
 		const species = interaction.options.getString('species', true);
 		const level = interaction.options.getInteger('level', true);
-		const gender = interaction.options.getString('gender');
 		const ability = interaction.options.getString('ability', true);
-		const nickname = interaction.options.getString('nickname'); // Get the nickname option value
-		const shiny = interaction.options.getBoolean('shiny') || false; // Get the shiny option value or set it as false if not provided
-		const alpha = interaction.options.getBoolean('is-alpha') || false; // Get the is-alpha option value or set it as false if not provided
-		const inBox = interaction.options.getBoolean('in-box') || false; // Get the in-box option value or set it as false if not provided
+		const gender = interaction.options.getString('gender');
+		const nickname = interaction.options.getString('nickname');
+		const shiny = interaction.options.getBoolean('shiny') ?? false;
+		const alpha = interaction.options.getBoolean('is-alpha') ?? false;
+		const inBox = interaction.options.getBoolean('in-box') ?? false;
 		const additionalAbilities =
-			interaction.options.getNumber('additional-abilities') || 0;
+			interaction.options.getInteger('additional-abilities') ?? 0;
 		const formName = interaction.options.getString('form');
-		const searchName = formName
-			? formatUserInput(`${species} ${formName}`)
-			: species;
-		const targetOC = await OC.findOne({ name: OCName });
 
 		try {
 			if (!isDBConnected()) {
@@ -100,6 +194,8 @@ export default {
 					'⚠️ Database is currently unavailable. Please try again later.'
 				);
 			}
+
+			const targetOC = await OC.findOne({ name: OCName });
 			if (!targetOC) {
 				return interaction.reply({
 					content: `❌ OC **${OCName}** not found. Please use /sync-register-oc first.`,
@@ -107,86 +203,22 @@ export default {
 				});
 			}
 
-			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
-
-			interface StatObject {
-				base_stat: number;
-				stat: {
-					name: string;
-				};
-			}
-
-			const stats: PokemonStats = {
-				hp:
-					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'hp')
-						?.base_stat || 0,
-				attack:
-					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'attack')
-						?.base_stat || 0,
-				defense:
-					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'defense')
-						?.base_stat || 0,
-				spAttack:
-					pokemonInfo.stats.find(
-						(s: StatObject) => s.stat.name === 'special-attack'
-					)?.base_stat || 0,
-				spDefense:
-					pokemonInfo.stats.find(
-						(s: StatObject) => s.stat.name === 'special-defense'
-					)?.base_stat || 0,
-				speed:
-					pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'speed')
-						?.base_stat || 0,
-			};
-
-			const totalStats = Object.values(stats).reduce(
-				(sum, stat) => sum + stat,
-				0
-			);
-
-			const fortitude_drain = await calculateUpkeep(
-				totalStats,
+			const { pokemon, fortitude_drain } = await addPokemonToOC({
+				targetOC,
+				species,
 				level,
+				ability,
+				gender,
+				nickname,
+				shiny,
 				alpha,
+				formName,
 				additionalAbilities,
-				inBox
-			);
-
-			const pokemon = await Pokemon.create({
-				species: species,
-				level: level,
-				ability: ability,
-				shiny: shiny,
-				alpha: alpha,
-				fortitude_drain: fortitude_drain,
-				gender: gender,
-				bst: totalStats,
-				stats: stats,
-				nickname: nickname ? nickname : species, // Use the nickname if provided, otherwise use the species name
+				inBox,
 			});
 
-			if (inBox) {
-				targetOC.storage.push({
-					pokemon: pokemon._id,
-					nickname: nickname ? nickname : species,
-					species: species,
-					level: level,
-					drain: fortitude_drain,
-				});
-			} else {
-				targetOC.party.push({
-					pokemon: pokemon._id,
-					nickname: nickname ? nickname : species,
-					species: species,
-					level: level,
-					drain: fortitude_drain,
-				});
-			}
-
-			await targetOC.save();
-
 			return interaction.reply({
-				content: `✅ Added **${species} (Lv. ${level})** to ${
+				content: `✅ Added **${pokemon.nickname} (Lv. ${level})** to ${
 					targetOC.name
 				}'s ${
 					inBox ? 'storage' : 'party'
@@ -195,7 +227,7 @@ export default {
 		} catch (error) {
 			console.error(error);
 			return interaction.reply({
-				content: `❌ An error occurred while adding the Pokémon.\nError: ${error}`,
+				content: `❌ An error occurred while adding the Pokémon.\n\`\`\`${error}\`\`\``,
 			});
 		}
 	},

@@ -4,10 +4,79 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
-import OC from '../../../models/OCSchema';
-import { type PokemonDocument } from '../../../models/PokemonSchema';
-import { isDBConnected } from '../../../mongoose/connection';
+import OC from '../../../models/OCSchema.ts';
+import { type PokemonDocument } from '../../../models/PokemonSchema.ts';
+import { isDBConnected } from '../../../mongoose/connection.ts';
 
+/** 🧠 Helper: Fetch OC and populate their party */
+async function fetchOCParty(OCName: string) {
+	const oc = await OC.findOne({ name: OCName }).populate<{
+		party: { pokemon: PokemonDocument }[];
+	}>('party.pokemon');
+	return oc;
+}
+
+/** 📦 Helper: Build a clean, uniform structure from the populated Pokémon docs */
+function formatPartyData(oc: any) {
+	return oc.party
+		.map((entry: any) => {
+			const pokemonDoc = entry.pokemon as PokemonDocument | null;
+			if (!pokemonDoc) return null;
+
+			return {
+				nickname: pokemonDoc.nickname || pokemonDoc.species,
+				species: pokemonDoc.species,
+				level: pokemonDoc.level,
+				drain: pokemonDoc.fortitude_drain ?? 0,
+				gender: pokemonDoc.gender ?? 'Unknown',
+				ability: Array.isArray(pokemonDoc.ability)
+					? pokemonDoc.ability
+					: [pokemonDoc.ability],
+				bst: pokemonDoc.bst ?? 0,
+			};
+		})
+		.filter(Boolean) as {
+		nickname: string;
+		species: string;
+		level: number;
+		drain: number;
+		gender: string;
+		ability: string[];
+		bst: number;
+	}[];
+}
+
+/** 🎨 Helper: Create a nice embed from the data */
+function buildPartyEmbed(
+	OCName: string,
+	partyData: ReturnType<typeof formatPartyData>
+) {
+	const embed = new EmbedBuilder()
+		.setTitle(`🎯 ${OCName}'s Party`)
+		.setColor(0x6a5acd)
+		.setTimestamp();
+
+	let totalDrain = 0;
+
+	partyData.forEach((p, i) => {
+		totalDrain += p.drain;
+		embed.addFields({
+			name: `${i + 1}. ${p.nickname} (${p.species.toUpperCase()})`,
+			value: [
+				`**Level:** ${p.level}`,
+				`**BST:** ${p.bst}`,
+				`**Gender:** ${p.gender}`,
+				`**Drain:** ${p.drain}`,
+				`**Ability:** ${p.ability.join(', ')}`,
+			].join('\n'),
+		});
+	});
+
+	embed.setFooter({ text: `Total Fortitude Drain: ${totalDrain} FP` });
+	return embed;
+}
+
+/** 🧩 Command Definition */
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-show-party')
@@ -31,72 +100,28 @@ export default {
 				});
 			}
 
-			const targetOC = await OC.findOne({ name: OCName }).populate<{
-				pokemon: PokemonDocument;
-			}>('party.pokemon');
-
-			if (!targetOC)
+			const targetOC = await fetchOCParty(OCName);
+			if (!targetOC) {
 				return interaction.reply({
 					content: `❌ OC **${OCName}** does not exist.`,
 					flags: MessageFlags.Ephemeral,
 				});
+			}
 
-			const partyInfo = targetOC.party
-				.map((entry) => {
-					const pokemonDoc = entry.pokemon as PokemonDocument | null;
-					if (!pokemonDoc) return null;
-
-					return {
-						nickname: entry.nickname || pokemonDoc.nickname || '—',
-						species: entry.species || pokemonDoc.species,
-						level: entry.level || pokemonDoc.level,
-						drain: entry.drain || pokemonDoc.fortitude_drain,
-						gender: pokemonDoc.gender,
-						ability: pokemonDoc.ability,
-						bst: pokemonDoc.bst,
-					};
-				})
-				.filter(Boolean) as {
-				nickname: string;
-				species: string;
-				level: number;
-				drain: number;
-				gender: string;
-				ability: string[];
-				bst: number;
-			}[];
-
-			if (partyInfo.length === 0)
+			const partyData = formatPartyData(targetOC);
+			if (partyData.length === 0) {
 				return interaction.reply({
 					content: `🧳 OC **${OCName}** has no Pokémon in their party.`,
 					flags: MessageFlags.Ephemeral,
 				});
+			}
 
-			let totalDrain = 0;
-
-			const embed = new EmbedBuilder()
-				.setTitle(`🎯 ${OCName}'s Party`)
-				.setColor(0x6a5acd)
-				.setTimestamp();
-
-			partyInfo.forEach((p, idx) => {
-				totalDrain += p.drain;
-
-				embed.addFields({
-					name: `${idx + 1}. ${p.nickname} (${p.species.toUpperCase()})`,
-					value: `**Level:** ${p.level}\n**BST:** ${p.bst}\n**Gender:** ${
-						p.gender
-					}\n**Drain:** ${p.drain}\n**Abilities:** ${p.ability.join(', ')}`,
-				});
-			});
-
-			embed.setFooter({ text: `Total Drain: ${totalDrain}` });
-
+			const embed = buildPartyEmbed(OCName, partyData);
 			await interaction.reply({ embeds: [embed] });
 		} catch (err) {
 			console.error(err);
 			await interaction.reply({
-				content: `❌ Error displaying party for ${OCName}.\n\n${err}`,
+				content: `❌ Error displaying party for ${OCName}.\n\`\`\`${err}\`\`\``,
 				flags: MessageFlags.Ephemeral,
 			});
 		}

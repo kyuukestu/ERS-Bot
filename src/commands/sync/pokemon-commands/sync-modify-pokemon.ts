@@ -107,9 +107,13 @@ export default {
 				});
 			}
 
+			await targetOC.populate(inBox ? 'storage' : 'party');
+
 			const collection = inBox ? targetOC.storage : targetOC.party;
 
-			const targetEntry = collection.find((p) => p.nickname === nickname);
+			const targetEntry = collection.find(
+				(p) => p.nickname?.toLowerCase() === nickname?.toLowerCase()
+			);
 
 			if (!targetEntry) {
 				return interaction.reply({
