@@ -316,6 +316,13 @@ export default {
 				files: [statsImage],
 			});
 
+			await interaction.followUp({
+				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
+					'\n'
+				)}`,
+				flags: MessageFlags.Ephemeral,
+			});
+
 			// Handle menu interactions
 			const collector = interaction.channel?.createMessageComponentCollector({
 				filter: (i) => i.user.id === interaction.user.id,
@@ -347,13 +354,6 @@ export default {
 
 			collector?.on('end', () => {
 				interaction.editReply({ components: [] }).catch(console.error);
-			});
-
-			await interaction.followUp({
-				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
-					'\n'
-				)}`,
-				flags: MessageFlags.Ephemeral,
 			});
 		} catch (error) {
 			console.error('Error fetching Pokemon data:', error);
