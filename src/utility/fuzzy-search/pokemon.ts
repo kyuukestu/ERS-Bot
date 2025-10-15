@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 
 // Load Pokémon list
-const filePath = path.resolve('./public/json/species-list.json');
+const filePath = path.resolve('../../../public/json/species-list.json');
 if (!fs.existsSync(filePath)) {
 	throw new Error(`Pokémon list not found at ${filePath}`);
 }

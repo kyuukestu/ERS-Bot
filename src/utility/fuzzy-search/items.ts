@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 
 // Load item list
-const filePath = path.resolve('./public/json/items-list.json');
+const filePath = path.resolve('../../../public/json/items-list.json');
 if (!fs.existsSync(filePath)) {
 	throw new Error(`Item list not found at ${filePath}`);
 }
