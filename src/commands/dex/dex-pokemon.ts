@@ -269,6 +269,12 @@ export default {
 						name: '** 📊 BASE STAT TOTAL**',
 						value: `**🎯 ${totalStats}**`,
 						inline: false,
+					},
+					{
+						name: 'Matches',
+						value: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
+							'\n'
+						)}`,
 					}
 				)
 				.setImage('attachment://pokemon-stats.png')
