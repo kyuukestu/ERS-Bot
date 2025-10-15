@@ -100,6 +100,7 @@ export default {
 			await interaction.deferReply();
 
 			const result = matchItemName(itemName);
+
 			if (!result) throw new Error(`No results found for "${itemName}"`);
 
 			const response = await itemEndPoint(itemName);
@@ -115,6 +116,8 @@ export default {
 					result.bestMatch
 				}\n\nOther matches:\n${result.otherMatches.join('\n')}}`,
 			});
+
+			throw new Error(`Fuzzy Search: ${result.bestMatch}`);
 		} catch (error) {
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
