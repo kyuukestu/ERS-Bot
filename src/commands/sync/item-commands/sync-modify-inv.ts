@@ -65,8 +65,6 @@ export default {
 		const value = interaction.options.getNumber('value');
 
 		try {
-			await interaction.deferReply();
-
 			if (!isDBConnected) {
 				return interaction.reply(
 					'⚠️ Database is currently unavailable. Please try again later.'
@@ -83,11 +81,11 @@ export default {
 				value: value ?? 0,
 			});
 
-			return interaction.editReply(`✅ ${action} successful.`);
+			return interaction.reply(`✅ ${action} successful.`);
 		} catch (error) {
 			console.error(error);
 
-			return interaction.editReply(`❌ ${action} failed. \n\nError: ${error}}`);
+			return interaction.reply(`❌ ${action} failed. \n\nError: ${error}}`);
 		}
 	},
 };
