@@ -13,7 +13,14 @@ const filePath = path.resolve(
 if (!fs.existsSync(filePath)) {
 	throw new Error(`Pokémon list not found at ${filePath}`);
 }
-const pokemonList = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+interface Pokemon {
+	speciesName: string;
+	formName?: string;
+	sprite: string;
+}
+
+const pokemonList: Pokemon[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
 // Configure Fuse
 const fuse = new Fuse(pokemonList, {
@@ -39,10 +46,16 @@ export function matchPokemonSpecies(userInput: string) {
 		sprite: string;
 	};
 
+	const [firstMatch, ...otherMatches] = results;
+
 	// Always return the base species name
 	return {
 		speciesName: bestMatch.speciesName,
 		formName: bestMatch.formName, // optional, if you want the specific form
 		sprite: bestMatch.sprite,
+		firstMatch: firstMatch.item.speciesName,
+		otherMatches: otherMatches.map((match) => ({
+			speciesName: match.item.speciesName,
+		})),
 	};
 }

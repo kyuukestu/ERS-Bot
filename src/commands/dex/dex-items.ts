@@ -5,6 +5,7 @@ import {
 	SlashCommandStringOption,
 	EmbedBuilder,
 	type ChatInputCommandInteraction,
+	MessageFlags,
 } from 'discord.js';
 import type { ItemData } from '../../interface/apiData.ts';
 import { itemCategoryColors } from '../../ui/colors.ts';
@@ -117,6 +118,7 @@ export default {
 				}\n\nOther matches:\n${result.otherMatches
 					.map((item) => item.name)
 					.join('\n')}`,
+				flags: MessageFlags.Ephemeral,
 			});
 		} catch (error) {
 			const result = matchItemName(itemName);

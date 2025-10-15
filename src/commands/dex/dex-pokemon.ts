@@ -72,9 +72,8 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const { speciesName, formName } = await matchPokemonSpecies(
-				`${pokemonName}-${form}`
-			);
+			const { speciesName, formName, firstMatch, otherMatches } =
+				await matchPokemonSpecies(`${pokemonName}-${form}`);
 
 			const apiName = formName || speciesName;
 
@@ -348,6 +347,13 @@ export default {
 
 			collector?.on('end', () => {
 				interaction.editReply({ components: [] }).catch(console.error);
+			});
+
+			await interaction.followUp({
+				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
+					'\n'
+				)}`,
+				flags: MessageFlags.Ephemeral,
 			});
 		} catch (error) {
 			console.error('Error fetching Pokemon data:', error);
