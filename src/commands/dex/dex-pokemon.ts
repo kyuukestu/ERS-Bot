@@ -76,9 +76,9 @@ export default {
 				await matchPokemonSpecies(`${pokemonName}-${form}`);
 
 			await interaction.followUp({
-				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
-					'\n'
-				)}`,
+				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
+					.map((match) => `- ${match}`.trim())
+					.join('\n')}`,
 				flags: MessageFlags.Ephemeral,
 			});
 
@@ -272,9 +272,9 @@ export default {
 					},
 					{
 						name: 'Matches',
-						value: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
-							'\n'
-						)}`,
+						value: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
+							.map((match) => `- ${match}`)
+							.join('\n')}}`,
 					}
 				)
 				.setImage('attachment://pokemon-stats.png')
