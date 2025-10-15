@@ -1,5 +1,5 @@
-import OC from '../../../models/OCSchema';
-import { connectDB } from '../../../mongoose/connection'; // use your existing connection util
+import OC from '~/database/models/OCSchema';
+import { connectDB } from '~/database/mongoose/connection'; // use your existing connection util
 
 (async () => {
 	try {

@@ -3,7 +3,7 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { modifyInventory, type action } from '~/database/modify-inventory';
-import { isDBConnected } from '../../../mongoose/connection';
+import { isDBConnected } from '../../../database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()

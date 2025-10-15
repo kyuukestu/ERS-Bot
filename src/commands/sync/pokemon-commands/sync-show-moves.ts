@@ -8,10 +8,10 @@ import {
 	MessageFlags,
 	EmbedBuilder,
 } from 'discord.js';
-import OC from '../../../models/OCSchema';
-import Pokemon from '../../../models/PokemonSchema';
+import OC from '../../../database/models/OCSchema';
+import Pokemon from '../../../database/models/PokemonSchema';
 import { Types } from 'mongoose';
-import { isDBConnected } from '../../../mongoose/connection';
+import { isDBConnected } from '../../../database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()

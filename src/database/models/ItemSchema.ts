@@ -7,7 +7,7 @@ export interface EffectEntry {
 }
 
 export interface ItemDocument extends Document {
-	id: number;
+	id: string;
 	name: string;
 	category: string;
 	cost: number;
@@ -25,7 +25,7 @@ const EffectEntrySchema = new Schema<EffectEntry>({
 
 const ItemSchema = new Schema<ItemDocument>({
 	_id: { type: Types.ObjectId, auto: true },
-	id: { type: Number, required: true, unique: true },
+	id: { type: String, required: true, unique: true },
 	name: { type: String, required: true, unique: true },
 	category: { type: String, required: true },
 	cost: { type: Number, required: true, default: 0 },

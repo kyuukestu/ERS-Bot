@@ -2,8 +2,8 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import OC from '../../../models/OCSchema';
-import { isDBConnected } from '../../../mongoose/connection';
+import OC from '../../../database/models/OCSchema';
+import { isDBConnected } from '../../../database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()

@@ -4,14 +4,14 @@ import {
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
 } from 'discord.js';
-import OC from '../../../models/OCSchema.ts';
-import Pokemon from '../../../models/PokemonSchema.ts';
+import OC from '../../../database/models/OCSchema.ts';
+import Pokemon from '../../../database/models/PokemonSchema.ts';
 import { calculateUpkeep } from '../../../utility/calculators/sync-poke-drain-calculator.ts';
 import { pokemonEndPoint } from '../../../api/pokeapi.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
 import { type PokemonStats } from '../../../interface/canvasData.ts';
-import { isDBConnected } from '../../../mongoose/connection.ts';
+import { isDBConnected } from '../../../database/mongoose/connection.ts';
 
 export default {
 	data: new SlashCommandBuilder()

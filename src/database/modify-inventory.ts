@@ -1,6 +1,7 @@
-import OC from '~/models/OCSchema';
-import Item, { type ItemDocument } from '~/models/ItemSchema';
-import TransactionLog from '~/models/TransactionLogSchema';
+import OC from '~/database/models/OCSchema';
+import Item, { type ItemDocument } from '~/database/models/ItemSchema';
+import TransactionLog from '~/database/models/TransactionLogSchema';
+import { v4 as uuidv4 } from 'uuid';
 
 export enum action {
 	ADD = 'ADD',
@@ -18,6 +19,7 @@ export const modifyInventory = async ({
 	action,
 	reason,
 	value,
+	customItem,
 }: {
 	OCName: string;
 	targetOC?: string | null;
@@ -26,6 +28,7 @@ export const modifyInventory = async ({
 	action: action;
 	reason?: string | null;
 	value?: number | null;
+	customItem?: boolean;
 }) => {
 	// Find the player and populate the inventory items
 	const userOC = await OC.findOne({ name: OCName }).populate<{
@@ -33,6 +36,28 @@ export const modifyInventory = async ({
 	}>('inventory.item');
 
 	if (!userOC) throw new Error(`Player ${OCName} not found.`);
+
+	if (customItem) {
+		if (!itemName) throw new Error('Item name must be specified.');
+
+		const existing = await Item.findOne({ name: itemName });
+		if (existing) {
+			console.log(`Item "${itemName}" already exists — skipping creation.`);
+		} else {
+			if (!value) throw new Error('Item value must be specified.');
+
+			Item.create({
+				id: uuidv4(),
+				name: itemName,
+				category: 'custom',
+				cost: value,
+				attributes: [],
+				effect_entries: [],
+				flavor_text_entries: [],
+				sprites: '',
+			});
+		}
+	}
 
 	// Find the item document
 	const item = await Item.findOne<ItemDocument>({ name: itemName });

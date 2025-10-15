@@ -8,9 +8,9 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
-import OC from '../../../models/OCSchema';
-import { type ItemDocument } from '../../../models/ItemSchema';
-import { isDBConnected } from '../../../mongoose/connection';
+import OC from '../../../database/models/OCSchema';
+import { type ItemDocument } from '../../../database/models/ItemSchema';
+import { isDBConnected } from '../../../database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()

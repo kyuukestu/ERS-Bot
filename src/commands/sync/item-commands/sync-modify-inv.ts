@@ -3,7 +3,7 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { modifyInventory, type action } from '~/database/modify-inventory';
-import { isDBConnected } from '../../../mongoose/connection';
+import { isDBConnected } from '../../../database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -37,6 +37,9 @@ export default {
 		.addStringOption((option) =>
 			option.setName('item-name').setDescription('Item name')
 		)
+		.addBooleanOption((option) =>
+			option.setName('custom-item').setDescription('Used for a custom item.')
+		)
 		.addIntegerOption((option) =>
 			option.setName('quantity').setDescription('Item amount')
 		)
@@ -60,6 +63,7 @@ export default {
 		const quantity = interaction.options.getInteger('quantity');
 		const reason = interaction.options.getString('reason');
 		const value = interaction.options.getNumber('value');
+		const customItem = interaction.options.getBoolean('custom-item') ?? false;
 
 		try {
 			if (!isDBConnected) {
@@ -76,6 +80,7 @@ export default {
 				action,
 				reason,
 				value: value ?? 0,
+				customItem,
 			});
 
 			return interaction.reply(`✅ ${action} successful.\n\n 
