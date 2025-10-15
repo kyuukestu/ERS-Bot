@@ -60,7 +60,7 @@ export const modifyInventory = async ({
 			invEntry.quantity += quantityChange;
 		} else {
 			userOC.inventory.push({
-				item: pushID,
+				item: item._id,
 				quantity: quantityChange,
 			});
 		}
@@ -91,7 +91,7 @@ export const modifyInventory = async ({
 			invEntry.quantity += quantityChange;
 		} else {
 			userOC.inventory.push({
-				item: getItemId,
+				tem: item._id,
 				quantity: quantityChange,
 			});
 		}
@@ -231,7 +231,7 @@ export const modifyInventory = async ({
 				e.item.equals(getItemId)
 			);
 			if (receiverInv) receiverInv.quantity += quantityChange;
-			else target.inventory.push({ item: getItemId, quantity: quantityChange });
+			else target.inventory.push({ item: item._id, quantity: quantityChange });
 		}
 
 		// 🪙 Handle money trades
