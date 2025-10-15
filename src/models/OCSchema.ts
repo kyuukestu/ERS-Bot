@@ -53,10 +53,6 @@ const inventorySchema = new Schema<InventoryEntry>({
 
 const pokemonEntrySchema = new Schema<PokemonEntry>({
 	pokemon: { type: Types.ObjectId, ref: 'Pokemon' },
-	nickname: { type: String, default: '' },
-	species: { type: String, required: true },
-	level: { type: Number, default: 1 },
-	drain: { type: Number, default: 0 },
 });
 
 const OCSchema = new Schema<OCDocument>(

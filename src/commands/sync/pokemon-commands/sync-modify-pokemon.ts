@@ -198,6 +198,13 @@ export default {
 				targetEntry.drain = fortitude_drain;
 			}
 
+			// Update cached data in OC
+			if (pokemon.level !== undefined) targetEntry.level = pokemon.level;
+			if (pokemon.species) targetEntry.species = pokemon.species;
+			if (pokemon.nickname) targetEntry.nickname = pokemon.nickname;
+			if (pokemon.fortitude_drain !== undefined)
+				targetEntry.drain = pokemon.fortitude_drain;
+
 			// Save the Pokémon document
 			await pokemon.save();
 			await targetOC.save();
