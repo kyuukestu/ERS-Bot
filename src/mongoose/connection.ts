@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import { mongoURI } from '../config.json';
+import { mongoURI, adminURI } from '../config.json';
 
-await mongoose.connect(mongoURI);
+await mongoose.connect(mongoURI || adminURI);
 console.log('✅ Connected to MongoDB on Mac');
 
 export const isDBConnected = (): boolean => {
