@@ -116,8 +116,6 @@ export default {
 					result.bestMatch
 				}\n\nOther matches:\n${result.otherMatches.join('\n')}}`,
 			});
-
-			throw new Error(`Fuzzy Search: ${result.bestMatch}`);
 		} catch (error) {
 			const result = matchItemName(itemName);
 
@@ -135,13 +133,11 @@ export default {
 					},
 					{
 						name: '🔎 Best Match',
-						value: `${result?.bestMatch.item}`,
+						value: `${result?.bestMatch}`,
 					},
 					{
 						name: '🔍 Other Matches',
-						value: `${result?.otherMatches
-							.map((item) => item.item)
-							.join('\n')}`,
+						value: `${result.otherMatches.join('\n')}`,
 					}
 				)
 				.setTimestamp();

@@ -25,5 +25,8 @@ export const matchItemName = (userInput: string) => {
 
 	const [bestMatch, ...otherMatches] = results;
 
-	return { bestMatch, otherMatches };
+	return {
+		bestMatch: bestMatch.item,
+		otherMatches: otherMatches.map((r) => r.item),
+	};
 };
