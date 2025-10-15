@@ -5,6 +5,9 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleDetection": "force",
+		"paths": {
+			"~/*": ["./src/*"]
+		},
 		"jsx": "react-jsx",
 		"allowJs": true,
 

@@ -7,7 +7,7 @@ import {
 import OC from '../../../models/OCSchema.ts';
 import Pokemon from '../../../models/PokemonSchema.ts';
 import { calculateUpkeep } from '../../../utility/calculators/sync-poke-drain-calculator.ts';
-import { pokemonEndPoint } from '../../../utility/api/pokeapi.ts';
+import { pokemonEndPoint } from '../../../api/pokeapi.ts';
 import { extractPokemonInfo } from '../../../utility/dataExtraction/extractPokemonInfo.ts';
 import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
 import { type PokemonStats } from '../../../interface/canvasData.ts';

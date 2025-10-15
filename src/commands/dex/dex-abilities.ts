@@ -6,7 +6,7 @@ import {
 	ButtonStyle,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { abilityEndPoint } from '../../utility/api/pokeapi.ts';
+import { abilityEndPoint } from '~/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { extractAbilityInfo } from '../../utility/dataExtraction/extractAbilityInfo.ts';
 

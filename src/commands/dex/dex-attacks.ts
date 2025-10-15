@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 import { typeColors } from '../../ui/colors.ts';
 import { moveEmojis } from '../../ui/emojis.ts';
-import { moveEndPoint } from '../../utility/api/pokeapi.ts';
+import { moveEndPoint } from '../../api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
 
