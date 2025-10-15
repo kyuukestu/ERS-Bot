@@ -77,7 +77,7 @@ export default {
 
 			await interaction.followUp({
 				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
-					.map((match) => `- ${match}`.trim())
+					.map((match) => `- ${match.speciesName}`.trim())
 					.join('\n')}`,
 				flags: MessageFlags.Ephemeral,
 			});
@@ -273,7 +273,7 @@ export default {
 					{
 						name: 'Matches',
 						value: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
-							.map((match) => `- ${match}`)
+							.map((match) => `- ${match.speciesName}`)
 							.join('\n')}}`,
 					}
 				)
