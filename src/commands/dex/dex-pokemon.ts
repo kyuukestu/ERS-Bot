@@ -75,6 +75,13 @@ export default {
 			const { speciesName, formName, firstMatch, otherMatches } =
 				await matchPokemonSpecies(`${pokemonName}-${form}`);
 
+			await interaction.followUp({
+				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
+					'\n'
+				)}`,
+				flags: MessageFlags.Ephemeral,
+			});
+
 			const apiName = formName || speciesName;
 
 			console.log(`Matched Name: ${speciesName}; Matched Form: ${formName}`);
@@ -314,13 +321,6 @@ export default {
 				embeds: [mainEmbed],
 				components: [actionRow.toJSON()],
 				files: [statsImage],
-			});
-
-			await interaction.followUp({
-				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches.join(
-					'\n'
-				)}`,
-				flags: MessageFlags.Ephemeral,
 			});
 
 			// Handle menu interactions
