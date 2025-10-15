@@ -75,19 +75,9 @@ export default {
 			const { speciesName, formName, firstMatch, otherMatches } =
 				await matchPokemonSpecies(`${pokemonName}-${form}`);
 
-			const apiName = formName || speciesName;
-
 			console.log(`Matched Name: ${speciesName}; Matched Form: ${formName}`);
 
-			const testNames = async () => {
-				try {
-					return await pokemonEndPoint(apiName);
-				} catch {
-					return await pokemonEndPoint(speciesName);
-				}
-			};
-
-			const pokemonInfo = extractPokemonInfo(await testNames());
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(firstMatch));
 			const speciesInfo = extractSpeciesInfo(
 				await speciesEndPoint(speciesName)
 			);
