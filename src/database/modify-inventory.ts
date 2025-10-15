@@ -1,6 +1,6 @@
-import OC from '../../models/OCSchema';
-import Item, { type ItemDocument } from '../../models/ItemSchema';
-import TransactionLog from '../../models/TransactionLogSchema';
+import OC from '~/models/OCSchema';
+import Item, { type ItemDocument } from '~/models/ItemSchema';
+import TransactionLog from '~/models/TransactionLogSchema';
 
 export enum action {
 	ADD = 'ADD',

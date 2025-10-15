@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
-import Item, { type ItemDocument } from '../../models/ItemSchema';
-import { mongoURI, adminURI } from '../../config.json';
+import Item, { type ItemDocument } from '~/models/ItemSchema';
+import { mongoURI, adminURI } from '~/config.json';
 // 1. Connect to MongoDB
 await mongoose.connect(mongoURI || adminURI);
 console.log('✅ Connected to MongoDB');
