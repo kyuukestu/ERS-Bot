@@ -135,11 +135,13 @@ export default {
 					},
 					{
 						name: '🔎 Best Match',
-						value: `${result?.bestMatch}`,
+						value: `${result?.bestMatch.item}`,
 					},
 					{
 						name: '🔍 Other Matches',
-						value: `${result?.otherMatches.join('\n')}`,
+						value: `${result?.otherMatches
+							.map((item) => item.item)
+							.join('\n')}`,
 					}
 				)
 				.setTimestamp();
