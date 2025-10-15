@@ -1,7 +1,7 @@
-import { AbilityDataSchema, type AbilityData } from '../../schemas/apiSchemas';
+import { AbilityDataSchema, type AbilityData } from '../z-schemas/apiSchemas';
 import { abilityColors } from '../../ui/colors';
 import { abilityEmojis } from '../../ui/emojis';
-import { formatName } from '../formatting/formatName';
+import { formatName } from '~/utility/formatting/formatName';
 
 export const extractAbilityInfo = (rawData: unknown) => {
 	const data: AbilityData = AbilityDataSchema.parse(rawData);

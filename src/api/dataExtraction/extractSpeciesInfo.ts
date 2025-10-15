@@ -1,5 +1,5 @@
-import { SpeciesDataSchema, type SpeciesData } from '../../schemas/apiSchemas';
-import { gen_num_convert } from '../formatting/formatGen';
+import { SpeciesDataSchema, type SpeciesData } from '../z-schemas/apiSchemas';
+import { gen_num_convert } from '~/utility/formatting/formatGen';
 import { getGenerationEmoji } from '../../ui/emojis';
 
 export const extractSpeciesInfo = (rawData: unknown) => {

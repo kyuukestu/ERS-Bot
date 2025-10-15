@@ -8,11 +8,11 @@ import {
 	type SlashCommandStringOption,
 } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { extractPokemonInfo } from '../../utility/dataExtraction/extractPokemonInfo.ts';
+import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import {
 	PokemonDataSchema,
 	type PokemonData,
-} from '../../schemas/apiSchemas.ts';
+} from '../../api/z-schemas/apiSchemas.ts';
 import { pokemonEndPoint } from '../../api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { matchPokemonSpecies } from '../../utility/fuzzy-search.ts';

@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import { abilityEndPoint } from '~/api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { extractAbilityInfo } from '../../utility/dataExtraction/extractAbilityInfo.ts';
+import { extractAbilityInfo } from '~/api/dataExtraction/extractAbilityInfo.ts';
 
 interface AbilityInfo {
 	name: string;
@@ -136,7 +136,7 @@ const sendPaginatedList = async (
 				.join('\n') || 'No Pokémon found.';
 
 		return new EmbedBuilder()
-			.setTitle(`${formattedAbilityName} is learned by:`)
+			.setTitle(`${formattedAbilityName} is possessed by:`)
 			.setDescription(currentMons)
 			.setFooter({
 				text: `Page ${page + 1}/${totalPages} | Total: ${

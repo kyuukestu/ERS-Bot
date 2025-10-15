@@ -12,7 +12,7 @@ import { typeColors } from '../../ui/colors.ts';
 import { moveEmojis } from '../../ui/emojis.ts';
 import { moveEndPoint } from '../../api/pokeapi.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo.ts';
+import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo.ts';
 
 interface MoveInfo {
 	name: string;

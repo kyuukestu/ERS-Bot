@@ -1,5 +1,5 @@
-import { MoveDataSchema, type MoveData } from '../../schemas/apiSchemas';
-import { formatName } from '../formatting/formatName';
+import { MoveDataSchema, type MoveData } from '../z-schemas/apiSchemas';
+import { formatName } from '~/utility/formatting/formatName';
 
 export const extractMoveInfo = (rawData: unknown) => {
 	const data: MoveData = MoveDataSchema.parse(rawData);

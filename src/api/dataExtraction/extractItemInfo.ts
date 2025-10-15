@@ -1,6 +1,6 @@
-import { ItemDataSchema, type ItemData } from '../../schemas/apiSchemas';
-import { formatName } from '../formatting/formatName';
-import { itemEmojis } from '../../ui/emojis';
+import { ItemDataSchema, type ItemData } from '../z-schemas/apiSchemas';
+import { formatName } from '~/utility/formatting/formatName';
+import { itemEmojis } from '~/ui/emojis';
 
 export const extractItemInfo = (rawData: unknown) => {
 	const data: ItemData = ItemDataSchema.parse(rawData);

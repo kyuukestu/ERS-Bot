@@ -1,5 +1,5 @@
-import { PokemonDataSchema, type PokemonData } from '../../schemas/apiSchemas';
-import { formatName } from '../formatting/formatName';
+import { PokemonDataSchema, type PokemonData } from '../z-schemas/apiSchemas';
+import { formatName } from '~/utility/formatting/formatName';
 import { getTypeEmoji } from '../../ui/emojis';
 
 export const extractPokemonInfo = (rawData: unknown) => {

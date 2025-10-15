@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import type { ItemData } from '../../interface/apiData.ts';
 import { itemCategoryColors } from '../../ui/colors.ts';
-import { extractItemInfo } from '../../utility/dataExtraction/extractItemInfo.ts';
+import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
 
 interface ItemInfo {
 	name: string;

@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput';
 import { moveEndPoint } from '../../api/pokeapi';
-import { extractMoveInfo } from '../../utility/dataExtraction/extractMoveInfo';
+import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo';
 import { calculateMovePrice } from '../../utility/calculators/sync-tr-price-calculator';
 import { formatCurrency } from '../../utility/formatting/formatCurrency';
 import { typeColors } from '../../ui/colors';
