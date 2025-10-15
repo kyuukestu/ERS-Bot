@@ -119,17 +119,29 @@ export default {
 
 			throw new Error(`Fuzzy Search: ${result.bestMatch}`);
 		} catch (error) {
+			const result = matchItemName(itemName);
+
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
 				.setTitle('❌ Item Not Found')
 				.setDescription(
 					`Could not find an item named "${itemName}". Please check the spelling and try again. \n\n Error: ${error}`
 				)
-				.addFields({
-					name: '💡 Tips',
-					value:
-						'• Use the exact item name\n• Check for typos\n• Example: "potion" or "master-ball"',
-				})
+				.addFields(
+					{
+						name: '💡 Tips',
+						value:
+							'• Use the exact item name\n• Check for typos\n• Example: "potion" or "master-ball"',
+					},
+					{
+						name: '🔎 Best Match',
+						value: `${result?.bestMatch}`,
+					},
+					{
+						name: '🔍 Other Matches',
+						value: `${result?.otherMatches.join('\n')}`,
+					}
+				)
 				.setTimestamp();
 
 			await interaction.editReply({ embeds: [errorEmbed] });
