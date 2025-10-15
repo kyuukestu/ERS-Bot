@@ -200,7 +200,6 @@ export default {
 					} (#${speciesInfo.pokedex_numbers})`
 				)
 				.setThumbnail(sprites.default || sprites.officialArtwork)
-				.setImage(sprites.officialArtwork || sprites.default)
 				.addFields(
 					// Row 1: Types and Abilities (inline, 2 per row)
 					{
@@ -300,24 +299,6 @@ export default {
 						description: 'Browse different sprites and artwork',
 						value: 'sprite_gallery',
 						emoji: '🎨',
-					},
-					{
-						label: '⚔️ Type Effectiveness',
-						description: 'View type advantages and weaknesses',
-						value: 'type_effectiveness',
-						emoji: '🛡️',
-					},
-					{
-						label: '📍 Game Locations',
-						description: 'Where to find this Pokémon',
-						value: 'locations',
-						emoji: '🗺️',
-					},
-					{
-						label: '🔄 Move Learn-set',
-						description: 'Moves this Pokémon can learn',
-						value: 'moves',
-						emoji: '⚡',
 					},
 				]);
 
