@@ -67,8 +67,9 @@ export const modifyInventory = async ({
 		await userOC.save();
 
 		await TransactionLog.create({
-			oc: userOC.name,
-			item: item.id,
+			oc: userOC._id,
+			item: item._id,
+			itemNameSnapshot: item.name,
 			quantity: quantityChange,
 			action,
 			reason,
@@ -99,8 +100,9 @@ export const modifyInventory = async ({
 		await userOC.save();
 
 		await TransactionLog.create({
-			oc: userOC.name,
-			item: item.id,
+			oc: userOC._id,
+			item: item._id,
+			itemNameSnapshot: item.name,
 			quantity: quantityChange,
 			action,
 			reason,
@@ -138,8 +140,8 @@ export const modifyInventory = async ({
 
 		// Record the transaction
 		await TransactionLog.create({
-			oc: userOC.name, // better to reference by ObjectId
-			item: item.name,
+			oc: userOC._id, // better to reference by ObjectId
+			item: item._id,
 			itemNameSnapshot: item.name,
 			quantity: -quantityChange, // negative to indicate reduction
 			action: 'SELL',
@@ -162,8 +164,10 @@ export const modifyInventory = async ({
 		await userOC.save();
 
 		await TransactionLog.create({
-			oc: userOC.name,
-			item: item.id,
+			oc: userOC._id,
+			item: item._id,
+			itemNameSnapshot: item.name,
+			quantity: quantityChange,
 			action,
 			reason,
 			balanceAfter: userOC.money,
@@ -190,8 +194,9 @@ export const modifyInventory = async ({
 		await userOC.save();
 
 		await TransactionLog.create({
-			oc: userOC.name,
-			item: item.id,
+			oc: userOC._id,
+			item: item._id,
+			itemNameSnapshot: item.name,
 			quantity: quantityChange,
 			action,
 			reason,
@@ -250,16 +255,18 @@ export const modifyInventory = async ({
 
 		await Promise.all([
 			TransactionLog.create({
-				oc: userOC.name,
-				item: item ? item.name : null,
+				oc: userOC._id,
+				item: item._id,
+				itemNameSnapshot: item.name,
 				quantity: quantityChange || 0,
 				action,
 				reason: `Traded to ${target.name}`,
 				balanceAfter: userOC.money,
 			}),
 			TransactionLog.create({
-				oc: target.name,
-				item: item ? item.name : null,
+				oc: target._id,
+				item: item._id,
+				itemNameSnapshot: item.name,
 				quantity: quantityChange || 0,
 				action,
 				reason: `Received from ${userOC.name}`,
