@@ -137,11 +137,11 @@ export default {
 					},
 					{
 						name: '🔎 Best Match',
-						value: `${result?.bestMatch}`,
+						value: `${result.bestMatch.name}`,
 					},
 					{
 						name: '🔍 Other Matches',
-						value: `${result.otherMatches.join('\n')}`,
+						value: `${result.otherMatches.map((item) => item.name).join('\n')}`,
 					}
 				)
 				.setTimestamp();
