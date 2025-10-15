@@ -4,7 +4,6 @@ import {
 } from 'discord.js';
 import OC from '../../../models/OCSchema';
 import Pokemon from '../../../models/PokemonSchema';
-import { Types } from 'mongoose';
 import { isDBConnected } from '../../../mongoose/connection';
 
 export default {
@@ -56,6 +55,12 @@ export default {
 				);
 			}
 
+			const targetPokemon = await Pokemon.findOne({
+				nickname: pokeNickname,
+			});
+
+			const targetId = targetPokemon?._id;
+
 			const targetOC = await OC.findOne({ name: OCName });
 
 			if (!targetOC) return interaction.reply(`${OCName} does not exist.`);
@@ -64,21 +69,16 @@ export default {
 
 			const collection = isInBox ? targetOC.storage : targetOC.party;
 
-			const targetPokemon = collection.find(
-				(p) => p.nickname?.toLowerCase() === pokeNickname?.toLowerCase()
-			);
+			const modifyingPokemon = collection.find((p) => p.pokemon === targetId);
 
-			if (!targetPokemon) {
+			if (!modifyingPokemon) {
 				return interaction.editReply(
 					`${pokeNickname} was not found in ${isInBox ? 'storage' : 'party'}.`
 				);
 			}
 
-			const pokemonId = (targetPokemon._id ||
-				targetPokemon.pokemon) as Types.ObjectId;
-
 			const updatedPokemon = await Pokemon.findByIdAndUpdate(
-				pokemonId,
+				targetId,
 				{
 					$addToSet: { moves: { $each: moveList } },
 				},

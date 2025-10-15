@@ -9,6 +9,7 @@ import {
 import type { ItemData } from '../../interface/apiData.ts';
 import { itemCategoryColors } from '../../ui/colors.ts';
 import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
+import { matchItemName } from '~/utility/fuzzy-search/items.ts';
 
 interface ItemInfo {
 	name: string;
@@ -98,6 +99,9 @@ export default {
 		try {
 			await interaction.deferReply();
 
+			const result = matchItemName(itemName);
+			if (!result) throw new Error(`No results found for "${itemName}"`);
+
 			const response = await itemEndPoint(itemName);
 			const data: ItemData = response as ItemData;
 			const itemInfo = extractItemInfo(data);
@@ -106,6 +110,11 @@ export default {
 			const embed = createItemEmbed(interaction, itemInfo);
 
 			await interaction.editReply({ embeds: [embed] });
+			await interaction.followUp({
+				content: `Best Match for ${itemName}: ${
+					result.bestMatch
+				}\n\nOther matches:\n${result.otherMatches.join('\n')}}`,
+			});
 		} catch (error) {
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)

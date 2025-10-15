@@ -22,7 +22,7 @@ import { PokemonStatsCanvas } from '../../utility/statsCanvas.ts';
 import { type PokemonStats } from '../../interface/canvasData.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { extractSpeciesInfo } from '~/api/dataExtraction/extractSpeciesInfo.ts';
-import { matchPokemonSpecies } from '../../utility/fuzzy-search.ts';
+import { matchPokemonSpecies } from '../../utility/fuzzy-search/pokemon.ts';
 
 interface PokemonSprites {
 	default: string | null;
