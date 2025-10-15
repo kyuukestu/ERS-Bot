@@ -1,9 +1,15 @@
-import Fuse from 'fuse.js';
+import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
+import Fuse from 'fuse.js';
 
-// Load Pokémon list
-const filePath = path.resolve('../../../public/json/species-list.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const filePath = path.resolve(
+	__dirname,
+	'../../../public/json/species-list.json'
+);
 if (!fs.existsSync(filePath)) {
 	throw new Error(`Pokémon list not found at ${filePath}`);
 }
