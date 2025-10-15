@@ -113,8 +113,10 @@ export default {
 			await interaction.editReply({ embeds: [embed] });
 			await interaction.followUp({
 				content: `Best Match for ${itemName}: ${
-					result.bestMatch
-				}\n\nOther matches:\n${result.otherMatches.join('\n')}}`,
+					result.bestMatch.name
+				}\n\nOther matches:\n${result.otherMatches
+					.map((item) => item.name)
+					.join('\n')}`,
 			});
 		} catch (error) {
 			const result = matchItemName(itemName);
