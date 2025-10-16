@@ -12,6 +12,7 @@ import { type PokemonStats } from '~/interface/canvasData';
 import { pokemonEndPoint } from '~/api/pokeapi.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
+import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -82,7 +83,11 @@ export default {
 		try {
 			await interaction.deferReply();
 
-			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(searchName));
+			const { firstMatch, otherMatches } = await matchPokemonSpecies(
+				searchName
+			);
+
+			const pokemonInfo = extractPokemonInfo(await pokemonEndPoint(firstMatch));
 
 			interface StatObject {
 				base_stat: number;
@@ -170,14 +175,26 @@ export default {
 				.setTimestamp();
 
 			await interaction.editReply({ embeds: [embed] });
+			await interaction.followUp({
+				content: `Best Match: ${firstMatch}\n\nOther Matches: ${otherMatches
+					.map((match) => `- ${match.speciesName}`.trim())
+					.join('\n')}`,
+			});
 		} catch (err) {
 			console.error(err);
+
+			const { firstMatch, otherMatches } = await matchPokemonSpecies(
+				searchName
+			);
 
 			const errorEmbed = new EmbedBuilder()
 				.setColor('#ff0000')
 				.setTitle('❌ Error')
 				.setDescription(
-					`An error occurred while fetching data for \`${searchName}\`.\nError: ${err}`
+					`An error occurred while fetching data for \`${searchName}\`.\n\nError: ${err}\n\n
+					Best Match: ${firstMatch}\n\nOther Matches: ${otherMatches
+						.map((match) => `- ${match.speciesName}`.trim())
+						.join('\n')}`
 				);
 
 			await interaction.editReply({ embeds: [errorEmbed] });
