@@ -57,6 +57,7 @@ export default {
 					reason: log.reason || '—',
 					balanceAfter: log.balanceAfter ?? 0,
 					createdAt: log.createdAt,
+					rpDate: log.rpDate,
 				})),
 				...services.map((log) => ({
 					type: 'Service',
@@ -66,10 +67,10 @@ export default {
 					reason: log.reason || '—',
 					balanceAfter: log.balanceAfter ?? 0,
 					createdAt: log.createdAt,
+					rpDate: log.rpDate,
 				})),
 			].sort(
-				(a, b) =>
-					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				(a, b) => new Date(b.rpDate).getTime() - new Date(a.rpDate).getTime()
 			);
 
 			if (combinedLogs.length === 0) {
@@ -95,7 +96,7 @@ export default {
 					.setFooter({ text: `Page ${page + 1} of ${totalPages}` });
 
 				pageLogs.forEach((log) => {
-					const date = new Date(log.createdAt).toLocaleString();
+					const date = new Date(log.rpDate).toLocaleString();
 					embed.addFields({
 						name: `${log.action} — ${log.type}: ${log.name}`,
 						value: `**Qty:** ${log.quantity}\n**Reason:** ${log.reason}\n**Balance After:** ${log.balanceAfter}\n**Date:** ${date}`,

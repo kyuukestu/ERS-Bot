@@ -21,6 +21,7 @@ const serviceLogSchema = new Schema(
 		},
 		reason: { type: String, default: '' },
 		balanceAfter: { type: Number, default: 0 },
+		rpDate: { type: Date, required: true },
 	},
 	{
 		timestamps: true,

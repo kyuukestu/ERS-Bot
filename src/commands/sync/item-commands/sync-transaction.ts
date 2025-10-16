@@ -36,6 +36,12 @@ export default {
 		)
 		.addStringOption((option) =>
 			option
+				.setName('rp-date')
+				.setDescription('RP date of the transaction. (YYYY-MM-DD)')
+				.setRequired(true)
+		)
+		.addStringOption((option) =>
+			option
 				.setName('target-oc')
 				.setDescription('Target OC for the transaction.')
 		)
@@ -88,11 +94,19 @@ export default {
 		const isLeagueService =
 			interaction.options.getBoolean('league-service') ?? false;
 		const isService = interaction.options.getBoolean('is-service') ?? false;
+		const rpDate = interaction.options.getString('rp-date', true);
 
 		try {
 			if (!isDBConnected) {
 				return interaction.reply(
 					'⚠️ Database is currently unavailable. Please try again later.'
+				);
+			}
+
+			const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+			if (!dateFormatRegex.test(rpDate)) {
+				throw new Error(
+					`Invalid date format: "${rpDate}". Please use the format YYYY-MM-DD.`
 				);
 			}
 
@@ -108,6 +122,7 @@ export default {
 				customItem,
 				isLeagueService,
 				isService,
+				rpDate,
 			});
 
 			return interaction.reply(`✅ ${action} successful.\n\n 

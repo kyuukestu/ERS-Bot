@@ -5,12 +5,13 @@
       "name": "ers-bot",
       "dependencies": {
         "@smogon/calc": "^0.10.0",
-        "@types/node": "^24.6.2",
+        "@types/node": "^24.7.2",
         "@types/node-fetch": "^2.6.13",
-        "axios": "^1.12.1",
-        "axios-cache-interceptor": "^1.8.2",
+        "axios": "^1.12.2",
+        "axios-cache-interceptor": "^1.8.3",
         "canvas": "^3.2.0",
-        "discord.js": "^14.22.1",
+        "date-fns": "^4.1.0",
+        "discord.js": "^14.23.2",
         "express": "^4.21.2",
         "fetch": "^1.1.0",
         "fuse.js": "^7.1.0",
@@ -18,18 +19,18 @@
         "node-fetch": "^3.3.2",
         "pm2": "^6.0.13",
         "pokenode-ts": "^1.20.0",
-        "sharp": "^0.34.3",
+        "sharp": "^0.34.4",
         "ts-node": "^10.9.2",
         "uuid": "^13.0.0",
-        "zod": "^4.1.5",
+        "zod": "^4.1.12",
       },
       "devDependencies": {
-        "@eslint/js": "^9.34.0",
+        "@eslint/js": "^9.37.0",
         "@types/bun": "latest",
-        "eslint": "^9.34.0",
-        "globals": "^16.3.0",
-        "jiti": "^2.5.1",
-        "typescript-eslint": "^8.41.0",
+        "eslint": "^9.37.0",
+        "globals": "^16.4.0",
+        "jiti": "^2.6.1",
+        "typescript-eslint": "^8.46.1",
       },
       "peerDependencies": {
         "typescript": "^5.8.2",
@@ -326,6 +327,8 @@
     "culvert": ["culvert@0.1.2", "", {}, "sha512-yi1x3EAWKjQTreYWeSd98431AV+IEE0qoDyOoaHJ7KJ21gv6HtBXHVLX74opVSGqcR8/AbjJBHAHpcOy2bj5Gg=="],
 
     "data-uri-to-buffer": ["data-uri-to-buffer@4.0.1", "", {}, "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A=="],
+
+    "date-fns": ["date-fns@4.1.0", "", {}, "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg=="],
 
     "dayjs": ["dayjs@1.11.15", "", {}, "sha512-MC+DfnSWiM9APs7fpiurHGCoeIx0Gdl6QZBy+5lu8MbYKN5FZEXqOgrundfibdfhGZ15o9hzmZ2xJjZnbvgKXQ=="],
 

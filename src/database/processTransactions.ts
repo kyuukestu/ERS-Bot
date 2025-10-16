@@ -4,6 +4,7 @@ import Service, { type ServiceDocument } from '~/database/models/ServiceSchema';
 import TransactionLog from '~/database/models/TransactionLogSchema';
 import ServiceLog from '~/database/models/ServiceLogSchema';
 import { v4 as uuidv4 } from 'uuid';
+import { parse, isValid } from 'date-fns';
 
 export enum action {
 	ADD = 'ADD',
@@ -25,6 +26,7 @@ export const processTransaction = async ({
 	customItem,
 	isLeagueService,
 	isService,
+	rpDate,
 }: {
 	OCName: string;
 	targetOC?: string | null;
@@ -37,7 +39,12 @@ export const processTransaction = async ({
 	customItem?: boolean;
 	isLeagueService?: boolean;
 	isService?: boolean;
+	rpDate: string;
 }) => {
+	const parseDate = parse(rpDate, 'yyyy-MM-dd', new Date());
+
+	if (!isValid(parseDate)) throw new Error('Not a valid calendar date!');
+
 	if (isService) {
 		if (!serviceName) throw new Error('Service name must be specified!');
 		if (!quantityChange) throw new Error('Quantity change must be specified!');
@@ -66,6 +73,7 @@ export const processTransaction = async ({
 				action,
 				reason,
 				balanceAfter: userOC.money,
+				rpDate: parseDate,
 			});
 
 			return {
@@ -77,6 +85,7 @@ export const processTransaction = async ({
 				action,
 				reason,
 				value,
+				rpDate: parseDate,
 			};
 		}
 
@@ -96,6 +105,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -107,6 +117,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value: service.cost,
+			rpDate: parseDate,
 		};
 	}
 
@@ -178,6 +189,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -189,6 +201,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 
@@ -222,6 +235,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -233,6 +247,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 
@@ -275,6 +290,7 @@ export const processTransaction = async ({
 			action: 'SELL',
 			reason: reason ?? `Sold ${quantityChange}x ${item.name}`,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -286,6 +302,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 
@@ -307,6 +324,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -318,6 +336,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 
@@ -350,6 +369,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			balanceAfter: userOC.money,
+			rpDate: parseDate,
 		});
 
 		return {
@@ -361,6 +381,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 
@@ -424,6 +445,7 @@ export const processTransaction = async ({
 				action,
 				reason: `Traded to ${target.name}`,
 				balanceAfter: userOC.money,
+				rpDate: parseDate,
 			}),
 			TransactionLog.create({
 				oc: target._id,
@@ -433,6 +455,7 @@ export const processTransaction = async ({
 				action,
 				reason: `Received from ${userOC.name}`,
 				balanceAfter: target.money,
+				rpDate: parseDate,
 			}),
 		]);
 
@@ -445,6 +468,7 @@ export const processTransaction = async ({
 			action,
 			reason,
 			value,
+			rpDate: parseDate,
 		};
 	}
 };
