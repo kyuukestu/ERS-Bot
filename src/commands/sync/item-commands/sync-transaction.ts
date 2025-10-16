@@ -1,5 +1,6 @@
 import {
 	SlashCommandBuilder,
+	EmbedBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import {
@@ -125,16 +126,68 @@ export default {
 				rpDate,
 			});
 
-			return interaction.reply(`✅ ${action} successful.\n\n 
-				Initiator:${action_data?.oc}\n
-				Target:${action_data?.targetOC}\n
-				Action:  ${action_data?.action}\n
-				Reason: ${action_data?.reason}\n
-				Item: ${action_data?.item}\n
-				Quantity: ${action_data?.quantity}\n
-				Cost: ${action_data?.value}\n
-				Balance After: ${action_data?.newBalance}\n
-				RP Date: ${action_data?.rpDate}`);
+			const embed = new EmbedBuilder()
+				.setColor('#00FF7F') // 🟢 light green for success
+				.setTitle(`✅ ${action} Successful`)
+				.setDescription('The transaction has been recorded successfully.')
+				.addFields(
+					{
+						name: '🧑 Initiator',
+						value: `${action_data?.oc || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '🎯 Target',
+						value: `${action_data?.targetOC || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '⚙️ Action',
+						value: `${action_data?.action || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '📦 Item',
+						value: `${action_data?.item || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '🔢 Quantity',
+						value: `${action_data?.quantity || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '💰 Cost',
+						value: `${action_data?.value || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '🏦 Balance After',
+						value: `${action_data?.newBalance || 'N/A'}`,
+						inline: true,
+					},
+					{
+						name: '📅 RP Date',
+						value: `${
+							action_data?.rpDate
+								? new Date(action_data.rpDate).toLocaleDateString()
+								: 'N/A'
+						}`,
+						inline: true,
+					}
+				)
+				.addFields({
+					name: '📝 Reason',
+					value: action_data?.reason?.trim() || 'No reason provided.',
+				})
+				.setTimestamp()
+				.setFooter({
+					text: '🧾 PokéSync Transaction Log',
+				});
+
+			await interaction.reply({
+				embeds: [embed],
+			});
 		} catch (error) {
 			console.error(error);
 
