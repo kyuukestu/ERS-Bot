@@ -40,6 +40,9 @@ export const processTransaction = async ({
 }) => {
 	if (isService) {
 		if (!serviceName) throw new Error('Service name must be specified!');
+		if (!quantityChange) throw new Error('Quantity change must be specified!');
+		if (quantityChange <= 0)
+			throw new Error('Quantity change must be positive.');
 
 		const allowedActions = ['BUY', 'SELL', 'TRADE'];
 

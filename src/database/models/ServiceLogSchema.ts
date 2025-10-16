@@ -8,7 +8,7 @@ const serviceLogSchema = new Schema(
 			required: true,
 		},
 		service: {
-			type: Types.ObjectId || String,
+			type: Schema.Types.Mixed,
 			ref: 'Item',
 			required: true,
 		},
