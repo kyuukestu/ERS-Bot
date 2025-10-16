@@ -14042,7 +14042,7 @@
 	{
 		"formName": "mimikyu-disguised",
 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/778.png",
-		"speciesName": "mimikyu",
+		"speciesName": "mimikyu-disguised",
 		"types": ["ghost", "fairy"],
 		"abilities": ["disguise"],
 		"stats": {
@@ -20882,7 +20882,7 @@
 	{
 		"formName": "mimikyu-busted",
 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10143.png",
-		"speciesName": "mimikyu",
+		"speciesName": "mimikyu-disguised",
 		"types": ["ghost", "fairy"],
 		"abilities": ["disguise"],
 		"stats": {
@@ -20897,7 +20897,7 @@
 	{
 		"formName": "mimikyu-totem-disguised",
 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10144.png",
-		"speciesName": "mimikyu",
+		"speciesName": "mimikyu-disguised",
 		"types": ["ghost", "fairy"],
 		"abilities": ["disguise"],
 		"stats": {
@@ -20912,7 +20912,7 @@
 	{
 		"formName": "mimikyu-totem-busted",
 		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10145.png",
-		"speciesName": "mimikyu",
+		"speciesName": "mimikyu-disguised",
 		"types": ["ghost", "fairy"],
 		"abilities": ["disguise"],
 		"stats": {
