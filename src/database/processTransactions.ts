@@ -65,6 +65,8 @@ export const processTransaction = async ({
 
 			userOC.money -= value ?? 0;
 
+			await userOC.save();
+
 			await ServiceLog.create({
 				oc: userOC._id,
 				service: uuidv4(),
@@ -96,6 +98,8 @@ export const processTransaction = async ({
 		if (!service) throw new Error(`Service ${serviceName} not found.`);
 
 		userOC.money -= service.cost ?? 0;
+
+		await userOC.save();
 
 		await ServiceLog.create({
 			oc: userOC._id,
@@ -137,6 +141,8 @@ export const processTransaction = async ({
 		if (!value) throw new Error('Value must be specified.');
 
 		userOC.money -= value * quantityChange;
+
+		await userOC.save();
 
 		await TransactionLog.create({
 			oc: userOC._id,

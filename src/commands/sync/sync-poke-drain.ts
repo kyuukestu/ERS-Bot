@@ -8,7 +8,7 @@ import {
 	type SlashCommandIntegerOption,
 } from 'discord.js';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
-import { type PokemonStats } from '~/interface/canvasData.ts';
+import { type PokemonStats } from '~/interface/canvasData';
 import { pokemonEndPoint } from '~/api/pokeapi.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';

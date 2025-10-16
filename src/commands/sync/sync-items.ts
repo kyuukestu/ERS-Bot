@@ -6,7 +6,7 @@ import {
 	EmbedBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import type { ItemData } from '~/interface/apiData.ts';
+import type { ItemData } from '~/interface/apiData';
 import { itemCategoryColors } from '~/ui/colors.ts';
 import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
 

@@ -7,7 +7,7 @@ import {
 	type ChatInputCommandInteraction,
 	MessageFlags,
 } from 'discord.js';
-import type { ItemData } from '~/interface/apiData.ts';
+import type { ItemData } from '~/interface/apiData';
 import { itemCategoryColors } from '~/ui/colors.ts';
 import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
 import { matchItemName } from '~/utility/fuzzy-search/items.ts';

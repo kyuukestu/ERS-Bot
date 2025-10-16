@@ -6,7 +6,7 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
-import { type MoveData } from '~/interface/apiData.ts';
+import { type MoveData } from '~/interface/apiData';
 import { moveEndPoint } from '~/api/pokeapi.ts';
 import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo.ts';
 import { f_calculate_move_cost } from '~/utility/calculators/sync-move-drain-calculator.ts';
