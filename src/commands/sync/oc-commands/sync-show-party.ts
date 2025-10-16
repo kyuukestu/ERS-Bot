@@ -4,9 +4,9 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema.ts';
-import { type PokemonDocument } from '../../../database/models/PokemonSchema.ts';
-import { isDBConnected } from '../../../database/mongoose/connection.ts';
+import OC from '~/database/models/OCSchema.ts';
+import { type PokemonDocument } from '~/database/models/PokemonSchema.ts';
+import { isDBConnected } from '~/database/mongoose/connection.ts';
 
 /** 🧠 Helper: Fetch OC and populate their party */
 async function fetchOCParty(OCName: string) {

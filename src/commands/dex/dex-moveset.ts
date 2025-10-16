@@ -12,10 +12,10 @@ import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import {
 	PokemonDataSchema,
 	type PokemonData,
-} from '../../api/z-schemas/apiSchemas.ts';
-import { pokemonEndPoint } from '../../api/pokeapi.ts';
-import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { matchPokemonSpecies } from '../../utility/fuzzy-search/pokemon.ts';
+} from '~/api/z-schemas/apiSchemas.ts';
+import { pokemonEndPoint } from '~/api/pokeapi.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon.ts';
 
 interface Move {
 	name: string;

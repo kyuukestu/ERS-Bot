@@ -15,10 +15,10 @@ import {
 	SlashCommandStringOption,
 	MessageFlags,
 } from 'discord.js';
-import { formatUserInput } from '../../utility/formatting/formatUserInput';
-import { speciesEndPoint } from '../../api/pokeapi';
+import { formatUserInput } from '~/utility/formatting/formatUserInput';
+import { speciesEndPoint } from '~/api/pokeapi';
 import { extractSpeciesInfo } from '~/api/dataExtraction/extractSpeciesInfo';
-import { calculateCatchRate } from '../../utility/calculators/sync-catchrate-calculator';
+import { calculateCatchRate } from '~/utility/calculators/sync-catchrate-calculator';
 
 interface CatchData {
 	catch_roll: number;

@@ -1,10 +1,10 @@
-import OC from '../../../database/models/OCSchema';
+import OC from '~/database/models/OCSchema';
 import {
 	MessageFlags,
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { isDBConnected } from '../../../database/mongoose/connection';
+import { isDBConnected } from '~/database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()

@@ -7,14 +7,14 @@ import {
 	MessageFlags,
 	type Interaction,
 } from 'discord.js';
-import { token, mongoURI, adminURI } from './config.json';
+import { token, mongoURI, adminURI, sshmongoURI } from './config.json';
 import * as fs from 'node:fs/promises'; // Use promises for async
 import * as path from 'node:path';
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
 	try {
-		await mongoose.connect(mongoURI || adminURI);
+		await mongoose.connect(mongoURI || adminURI || sshmongoURI);
 		console.log('✅ Connected to MongoDB');
 	} catch (error) {
 		console.error('❌ Error connecting to MongoDB:', error);

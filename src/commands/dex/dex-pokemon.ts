@@ -13,16 +13,16 @@ import {
 	type ButtonInteraction,
 	MessageFlags,
 } from 'discord.js';
-import type { ParsedSpeciesData } from '../../api/z-schemas/apiSchemas.ts';
-// import type { PokemonData, SpeciesData } from '../../interface/apiData.ts';
-import { typeColors } from '../../ui/colors.ts';
-import { pokemonEndPoint, speciesEndPoint } from '../../api/pokeapi.ts';
-import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { PokemonStatsCanvas } from '../../utility/statsCanvas.ts';
-import { type PokemonStats } from '../../interface/canvasData.ts';
+import type { ParsedSpeciesData } from '~/api/z-schemas/apiSchemas.ts';
+// import type { PokemonData, SpeciesData } from '~/interface/apiData.ts';
+import { typeColors } from '~/ui/colors.ts';
+import { pokemonEndPoint, speciesEndPoint } from '~/api/pokeapi.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { PokemonStatsCanvas } from '~/utility/statsCanvas.ts';
+import { type PokemonStats } from '~/interface/canvasData.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { extractSpeciesInfo } from '~/api/dataExtraction/extractSpeciesInfo.ts';
-import { matchPokemonSpecies } from '../../utility/fuzzy-search/pokemon.ts';
+import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon.ts';
 
 interface PokemonSprites {
 	default: string | null;

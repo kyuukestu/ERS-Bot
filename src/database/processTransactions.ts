@@ -1,6 +1,8 @@
 import OC from '~/database/models/OCSchema';
 import Item, { type ItemDocument } from '~/database/models/ItemSchema';
+import Service, { type ServiceDocument } from '~/database/models/ServiceSchema';
 import TransactionLog from '~/database/models/TransactionLogSchema';
+import ServiceLog from '~/database/models/ServiceLogSchema';
 import { v4 as uuidv4 } from 'uuid';
 
 export enum action {
@@ -11,25 +13,100 @@ export enum action {
 	SELL = 'SELL',
 	TRADE = 'TRADE',
 }
-export const modifyInventory = async ({
+export const processTransaction = async ({
 	OCName,
 	targetOC,
 	itemName,
+	serviceName,
 	quantityChange,
 	action,
 	reason,
 	value,
 	customItem,
+	isLeagueService,
+	isService,
 }: {
 	OCName: string;
 	targetOC?: string | null;
 	itemName?: string | null;
+	serviceName?: string | null;
 	quantityChange?: number;
 	action: action;
 	reason?: string | null;
 	value?: number | null;
 	customItem?: boolean;
+	isLeagueService?: boolean;
+	isService?: boolean;
 }) => {
+	if (isService) {
+		if (!serviceName) throw new Error('Service name must be specified!');
+
+		const allowedActions = ['BUY', 'SELL', 'TRADE'];
+
+		if (!allowedActions.includes(action))
+			throw new Error('Services can only be bought, sold, or traded!!');
+
+		const userOC = await OC.findOne({ name: OCName });
+
+		if (!userOC) throw new Error(`Player ${OCName} not found.`);
+
+		if (!isLeagueService) {
+			if (!value) throw new Error('Non-League services require a value!');
+
+			userOC.money -= value ?? 0;
+
+			await ServiceLog.create({
+				oc: userOC._id,
+				service: uuidv4(),
+				serviceNameSnapshot: serviceName,
+				quantity: quantityChange,
+				action,
+				reason,
+				balanceAfter: userOC.money,
+			});
+
+			return {
+				service: serviceName,
+				quantity: quantityChange,
+				newBalance: userOC.money,
+				oc: OCName,
+				targetOC,
+				action,
+				reason,
+				value,
+			};
+		}
+
+		const service = await Service.findOne<ServiceDocument>({
+			name: serviceName,
+		});
+
+		if (!service) throw new Error(`Service ${serviceName} not found.`);
+
+		userOC.money -= service.cost ?? 0;
+
+		await ServiceLog.create({
+			oc: userOC._id,
+			service: service._id,
+			serviceNameSnapshot: serviceName,
+			quantity: quantityChange,
+			action,
+			reason,
+			balanceAfter: userOC.money,
+		});
+
+		return {
+			service: serviceName,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			value: service.cost,
+		};
+	}
+
 	// Find the player and populate the inventory items
 	const userOC = await OC.findOne({ name: OCName }).populate<{
 		item: ItemDocument;
@@ -58,6 +135,7 @@ export const modifyInventory = async ({
 			});
 		}
 	}
+	itemName = itemName?.toLowerCase();
 
 	// Find the item document
 	const item = await Item.findOne<ItemDocument>({ name: itemName });

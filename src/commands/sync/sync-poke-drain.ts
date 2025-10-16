@@ -7,11 +7,11 @@ import {
 	type ChatInputCommandInteraction,
 	type SlashCommandIntegerOption,
 } from 'discord.js';
-import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { type PokemonStats } from '../../interface/canvasData.ts';
-import { pokemonEndPoint } from '../../api/pokeapi.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { type PokemonStats } from '~/interface/canvasData.ts';
+import { pokemonEndPoint } from '~/api/pokeapi.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
-import { calculateUpkeep } from '../../utility/calculators/sync-poke-drain-calculator.ts';
+import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
 
 export default {
 	data: new SlashCommandBuilder()

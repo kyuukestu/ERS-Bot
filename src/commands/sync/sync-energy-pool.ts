@@ -7,7 +7,7 @@ import {
 	calculateEnergyPool,
 	type Rank,
 	type SubRank,
-} from '../../utility/calculators/sync-rank-calculator';
+} from '~/utility/calculators/sync-rank-calculator';
 
 export default {
 	data: new SlashCommandBuilder()

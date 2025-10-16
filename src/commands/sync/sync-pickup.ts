@@ -3,7 +3,7 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { getRandomItem } from '../../utility/draws/pickup-draws';
+import { getRandomItem } from '~/utility/draws/pickup-draws';
 
 export default {
 	data: new SlashCommandBuilder()

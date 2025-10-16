@@ -1,22 +1,22 @@
 import { Schema, model, Types } from 'mongoose';
 
-const transactionLogSchema = new Schema(
+const serviceLogSchema = new Schema(
 	{
 		oc: {
 			type: Types.ObjectId,
 			ref: 'OC',
 			required: true,
 		},
-		item: {
-			type: Types.ObjectId,
+		service: {
+			type: Types.ObjectId || String,
 			ref: 'Item',
 			required: true,
 		},
-		itemNameSnapshot: { type: String, required: true }, // store name in case item is deleted
-		quantity: { type: Number, required: true },
+		serviceNameSnapshot: { type: String, required: true }, // store name in case item is deleted
+		quantity: { type: Number, default: 1, min: 1 },
 		action: {
 			type: String,
-			enum: ['ADD', 'REMOVE', 'USE', 'BUY', 'SELL', 'TRADE'],
+			enum: ['BUY', 'SELL', 'TRADE'],
 			required: true,
 		},
 		reason: { type: String, default: '' },
@@ -27,4 +27,4 @@ const transactionLogSchema = new Schema(
 	}
 );
 
-export default model('TransactionLog', transactionLogSchema);
+export default model('ServiceLog', serviceLogSchema);

@@ -2,13 +2,18 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { modifyInventory, type action } from '~/database/modify-inventory';
-import { isDBConnected } from '../../../database/mongoose/connection';
+import {
+	processTransaction,
+	type action,
+} from '~/database/processTransactions';
+import { isDBConnected } from '~/database/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('sync-change-inv')
-		.setDescription('Modifies the inventory of an Oc.')
+		.setName('sync-transaction')
+		.setDescription(
+			'Performs a monetary transaction and modifies inventory appropriately.'
+		)
 		.addStringOption((option) =>
 			option
 				.setName('oc-name')
@@ -18,7 +23,7 @@ export default {
 		.addStringOption((option) =>
 			option
 				.setName('action')
-				.setDescription('Action to be performed on inventory')
+				.setDescription('Action to be performed.')
 				.addChoices(
 					{ name: 'Add', value: 'ADD' },
 					{ name: 'Remove', value: 'REMOVE' },
@@ -37,6 +42,19 @@ export default {
 		.addStringOption((option) =>
 			option.setName('item-name').setDescription('Item name')
 		)
+		.addStringOption((option) =>
+			option
+				.setName('service-name')
+				.setDescription('Service name e.g. Transportation (Bus, Train, Plane).')
+		)
+		.addBooleanOption((option) =>
+			option.setName('custom-item').setDescription('Used for a custom item.')
+		)
+		.addBooleanOption((option) =>
+			option
+				.setName('is-league-service')
+				.setDescription('Used for a League-provided services e.g. PokeCenter')
+		)
 		.addIntegerOption((option) =>
 			option.setName('quantity').setDescription('Item amount')
 		)
@@ -50,6 +68,11 @@ export default {
 				.setDescription(
 					'Enter a custom value; only use this for custom transactions/Trades.'
 				)
+		)
+		.addBooleanOption((option) =>
+			option
+				.setName('is-service')
+				.setDescription('Is this a service? (Default False.')
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -57,34 +80,48 @@ export default {
 		const targetOC = interaction.options.getString('target-oc');
 		const action = interaction.options.getString('action', true) as action;
 		const itemName = interaction.options.getString('item-name');
+		const serviceName = interaction.options.getString('service-name');
 		const quantity = interaction.options.getInteger('quantity');
 		const reason = interaction.options.getString('reason');
 		const value = interaction.options.getNumber('value');
+		const customItem = interaction.options.getBoolean('custom-item') ?? false;
+		const isLeagueService =
+			interaction.options.getBoolean('league-service') ?? false;
+		const isService = interaction.options.getBoolean('is-service') ?? false;
 
 		try {
-			await interaction.deferReply();
-
 			if (!isDBConnected) {
 				return interaction.reply(
 					'⚠️ Database is currently unavailable. Please try again later.'
 				);
 			}
 
-			await modifyInventory({
+			const action_data = await processTransaction({
 				OCName,
 				targetOC: targetOC,
 				itemName,
+				serviceName,
 				quantityChange: quantity ?? 0,
 				action,
 				reason,
-				value: value ?? 0,
+				value: value,
+				customItem,
+				isLeagueService,
+				isService,
 			});
 
-			return interaction.editReply(`✅ ${action} successful.`);
+			return interaction.reply(`✅ ${action} successful.\n\n 
+				Initiator:${action_data?.oc}\n
+				Target:${action_data?.targetOC}\n
+				Action:  ${action_data?.action}\n
+				Reason: ${action_data?.reason}\n
+				Item: ${action_data?.item}\n
+				Quantity: ${action_data?.quantity}\n
+				Money Traded: ${action_data?.value}`);
 		} catch (error) {
 			console.error(error);
 
-			return interaction.editReply(`❌ ${action} failed. \n\nError: ${error}}`);
+			return interaction.reply(`❌ ${action} failed. \n\nError: ${error}}`);
 		}
 	},
 };

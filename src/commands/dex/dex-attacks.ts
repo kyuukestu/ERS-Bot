@@ -8,10 +8,10 @@ import {
 	type ChatInputCommandInteraction,
 	MessageFlags,
 } from 'discord.js';
-import { typeColors } from '../../ui/colors.ts';
-import { moveEmojis } from '../../ui/emojis.ts';
-import { moveEndPoint } from '../../api/pokeapi.ts';
-import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
+import { typeColors } from '~/ui/colors.ts';
+import { moveEmojis } from '~/ui/emojis.ts';
+import { moveEndPoint } from '~/api/pokeapi.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo.ts';
 
 interface MoveInfo {
