@@ -132,7 +132,9 @@ export default {
 				Reason: ${action_data?.reason}\n
 				Item: ${action_data?.item}\n
 				Quantity: ${action_data?.quantity}\n
-				Money Traded: ${action_data?.value}`);
+				Cost: ${action_data?.value}\n
+				Balance After: ${action_data?.newBalance}\n
+				RP Date: ${action_data?.rpDate}`);
 		} catch (error) {
 			console.error(error);
 

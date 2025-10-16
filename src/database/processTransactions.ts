@@ -130,24 +130,35 @@ export const processTransaction = async ({
 
 	if (customItem) {
 		if (!itemName) throw new Error('Item name must be specified.');
+		if (!quantityChange) throw new Error('Quantity change must be specified.');
+		if (quantityChange <= 0)
+			throw new Error('Quantity change must be positive.');
 
-		const existing = await Item.findOne({ name: itemName });
-		if (existing) {
-			console.log(`Item "${itemName}" already exists — skipping creation.`);
-		} else {
-			if (!value) throw new Error('Item value must be specified.');
+		if (!value) throw new Error('Value must be specified.');
 
-			Item.create({
-				id: uuidv4(),
-				name: itemName,
-				category: 'custom',
-				cost: value,
-				attributes: [],
-				effect_entries: [],
-				flavor_text_entries: [],
-				sprites: '',
-			});
-		}
+		userOC.money -= value * quantityChange;
+
+		await TransactionLog.create({
+			oc: userOC._id,
+			item: uuidv4(),
+			itemNameSnapshot: itemName,
+			quantity: quantityChange,
+			action,
+			reason,
+			balanceAfter: userOC.money,
+			rpDate: parseDate,
+		});
+
+		return {
+			item: itemName,
+			quantity: quantityChange,
+			newBalance: userOC.money,
+			oc: OCName,
+			targetOC,
+			action,
+			reason,
+			rpDate: parseDate,
+		};
 	}
 	itemName = itemName?.toLowerCase();
 
@@ -246,7 +257,7 @@ export const processTransaction = async ({
 			targetOC,
 			action,
 			reason,
-			value,
+			value: item.cost || value,
 			rpDate: parseDate,
 		};
 	}
@@ -301,7 +312,7 @@ export const processTransaction = async ({
 			targetOC,
 			action,
 			reason,
-			value,
+			value: item.cost || value,
 			rpDate: parseDate,
 		};
 	}
@@ -335,7 +346,7 @@ export const processTransaction = async ({
 			targetOC,
 			action,
 			reason,
-			value,
+			value: item.cost || value,
 			rpDate: parseDate,
 		};
 	}
@@ -380,7 +391,7 @@ export const processTransaction = async ({
 			targetOC,
 			action,
 			reason,
-			value,
+			value: item.cost || value,
 			rpDate: parseDate,
 		};
 	}
@@ -467,7 +478,7 @@ export const processTransaction = async ({
 			targetOC,
 			action,
 			reason,
-			value,
+			value: item.cost || value,
 			rpDate: parseDate,
 		};
 	}
