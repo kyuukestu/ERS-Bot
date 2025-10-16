@@ -143,7 +143,7 @@ export const processTransaction = async ({
 		userOC.money -= value * quantityChange;
 
 		const customTemplate = await Item.create({
-			name: itemName,
+			name: itemName.toLowerCase().trim(),
 			id: uuidv4(),
 			category: 'custom',
 			cost: value,
