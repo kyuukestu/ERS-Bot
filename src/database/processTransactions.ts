@@ -66,7 +66,7 @@ export const processTransaction = async ({
 			});
 
 			return {
-				service: serviceName,
+				item: serviceName,
 				quantity: quantityChange,
 				newBalance: userOC.money,
 				oc: OCName,
@@ -96,7 +96,7 @@ export const processTransaction = async ({
 		});
 
 		return {
-			service: serviceName,
+			item: serviceName,
 			quantity: quantityChange,
 			newBalance: userOC.money,
 			oc: OCName,
