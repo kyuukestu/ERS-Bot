@@ -53,7 +53,7 @@ export function matchPokemonSpecies(userInput: string) {
 		speciesName: bestMatch.speciesName,
 		formName: bestMatch.formName, // optional, if you want the specific form
 		sprite: bestMatch.sprite,
-		firstMatch: firstMatch.item.speciesName,
+		firstMatch: firstMatch.item.formName || firstMatch.item.speciesName,
 		otherMatches: otherMatches.map((match) => ({
 			speciesName: match.item.formName,
 		})),
