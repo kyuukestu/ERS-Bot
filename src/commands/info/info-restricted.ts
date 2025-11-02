@@ -138,7 +138,7 @@ const legendaryGroups: LegendaryGroup[] = [
 	},
 	{
 		group: 'Celestial Duo',
-		status: 'Restricted',
+		status: 'Banned',
 		members: ['Cosmog', 'Cosmoem', 'Solgaleo', 'Lunala'],
 	},
 	{ group: 'Light', status: 'Banned', members: ['Necrozma'] },
