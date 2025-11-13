@@ -8,37 +8,8 @@ import {
 } from 'discord.js';
 import { abilityEndPoint } from '~/api/endpoints.ts';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import {
-	extractAbilityInfo,
-	type AbilityInfo,
-} from '~/api/dataExtraction/extractAbilityInfo.ts';
-
-const createAbilityEmbed = (
-	interaction: ChatInputCommandInteraction,
-	abilityInfo: AbilityInfo
-): EmbedBuilder => {
-	return new EmbedBuilder()
-		.setColor(abilityInfo.color)
-		.setTitle(`${abilityInfo.emoji} **${abilityInfo.name}**`)
-		.setDescription(abilityInfo.effect.replace(/\r?\n|\r/g, ' '))
-		.addFields(
-			{
-				name: '📌 Generation',
-				value: abilityInfo.generation,
-				inline: true,
-			},
-			{
-				name: '🎯 Effect Chance',
-				value: abilityInfo.effectChance,
-				inline: true,
-			}
-		)
-		.setFooter({
-			text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
-			iconURL: interaction.user.displayAvatarURL(),
-		})
-		.setTimestamp();
-};
+import { extractAbilityInfo } from '~/api/dataExtraction/extractAbilityInfo.ts';
+import { createAbilityEmbed } from '~/embeds/createAbilityEmbed.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -76,25 +47,6 @@ export default {
 			);
 		} catch (error) {
 			console.error('Error fetching ability data:', error);
-
-			const errorEmbed = new EmbedBuilder()
-				.setColor(0xff0000)
-				.setTitle('❌ Ability Not Found')
-				.setDescription(
-					`Could not find an ability named "${abilityName}". Please check the spelling and try again.`
-				)
-				.addFields({
-					name: '💡 Tips',
-					value:
-						'• Use the exact ability name\n• Check for typos\n• Example: "overgrow" or "drizzle"',
-				})
-				.setTimestamp();
-
-			if (interaction.replied || interaction.deferred) {
-				await interaction.editReply({ embeds: [errorEmbed] });
-			} else {
-				await interaction.reply({ embeds: [errorEmbed] });
-			}
 		}
 	},
 };
