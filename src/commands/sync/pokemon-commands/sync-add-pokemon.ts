@@ -140,6 +140,9 @@ export default {
 				.setMaxValue(100)
 				.setRequired(true)
 		)
+		.addStringOption((option) =>
+			option.setName('nickname').setDescription('Nickname for the Pokémon')
+		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
@@ -155,9 +158,6 @@ export default {
 					{ name: 'Genderless', value: 'Genderless' },
 					{ name: 'Unknown', value: 'Unknown' }
 				)
-		)
-		.addStringOption((option) =>
-			option.setName('nickname').setDescription('Nickname for the Pokémon')
 		)
 		.addBooleanOption((option) =>
 			option.setName('shiny').setDescription('Shiny status of the Pokémon')

@@ -4,6 +4,7 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
+import { id } from 'zod/locales';
 import OC from '~/database/models/OCSchema.ts';
 import { type PokemonDocument } from '~/database/models/PokemonSchema.ts';
 import { isDBConnected } from '~/database/mongoose/connection.ts';
@@ -24,6 +25,7 @@ function formatPartyData(oc: any) {
 			if (!pokemonDoc) return null;
 
 			return {
+				id: pokemonDoc._id,
 				nickname: pokemonDoc.nickname || pokemonDoc.species,
 				species: pokemonDoc.species,
 				level: pokemonDoc.level,
@@ -36,6 +38,7 @@ function formatPartyData(oc: any) {
 			};
 		})
 		.filter(Boolean) as {
+		id: string;
 		nickname: string;
 		species: string;
 		level: number;
@@ -61,7 +64,7 @@ function buildPartyEmbed(
 	partyData.forEach((p, i) => {
 		totalDrain += p.drain;
 		embed.addFields({
-			name: `${i + 1}. ${p.nickname} (${p.species.toUpperCase()})`,
+			name: `${i + 1}. ${p.nickname} (${p.species.toUpperCase()})\n${p.id}`,
 			value: [
 				`**Level:** ${p.level}`,
 				`**BST:** ${p.bst}`,
