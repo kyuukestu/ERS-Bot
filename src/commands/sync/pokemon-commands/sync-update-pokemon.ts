@@ -23,6 +23,9 @@ export default {
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
+			option.setName('nickname').setDescription('Nickname of the Pokémon')
+		)
+		.addStringOption((option) =>
 			option.setName('species').setDescription('Species of the Pokémon')
 		)
 		.addStringOption((option) =>
@@ -70,6 +73,7 @@ export default {
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
 		const pokeId = interaction.options.getString('poke-id', true);
+		const nickname = interaction.options.getString('nickname');
 		let species = interaction.options.getString('species');
 		const level = interaction.options.getInteger('level', true);
 		const gender = interaction.options.getString('gender');
@@ -101,6 +105,7 @@ export default {
 			}
 
 			// Only update fields that were provided
+			if (nickname) pokemon.nickname = nickname;
 			if (level) pokemon.level = level;
 			if (species) {
 				pokemon.species = species;
