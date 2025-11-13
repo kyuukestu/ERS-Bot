@@ -4,7 +4,6 @@ import {
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema.ts';
 import Pokemon from '../../../database/models/PokemonSchema.ts';
 import { calculateUpkeep } from '../../../utility/calculators/sync-poke-drain-calculator.ts';
 import { pokemonEndPoint } from '../../../api/endpoints.ts';
@@ -19,14 +18,8 @@ export default {
 		.setDescription('Update a Pokémon in your party.')
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
-				.setName('oc-name')
-				.setDescription('Your registered player name')
-				.setRequired(true)
-		)
-		.addStringOption((option) =>
-			option
-				.setName('nickname')
-				.setDescription('Nickname for the Pokémon')
+				.setName('poke-id')
+				.setDescription('Unique ID for the Pokémon.')
 				.setRequired(true)
 		)
 		.addStringOption((option) =>
@@ -76,7 +69,7 @@ export default {
 				.setDescription('Total number of additional abilities')
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
-		const OCName = interaction.options.getString('oc-name', true);
+		const pokeId = interaction.options.getString('poke-id', true);
 		let species = interaction.options.getString('species');
 		const level = interaction.options.getInteger('level', true);
 		const gender = interaction.options.getString('gender');
@@ -84,7 +77,6 @@ export default {
 			.getString('ability')
 			?.split(',')
 			.map((a) => a.trim());
-		const nickname = interaction.options.getString('nickname'); // Get the nickname option value
 		const shiny = interaction.options.getBoolean('shiny') || false; // Get the shiny option value or set it as false if not provided
 		const alpha = interaction.options.getBoolean('is-alpha') || false; // Get the is-alpha option value or set it as false if not provided
 		const inBox = interaction.options.getBoolean('in-box') || false; // Get the in-box option value or set it as false if not provided
@@ -92,43 +84,18 @@ export default {
 			interaction.options.getNumber('additional-abilities') || 0;
 		const formName = interaction.options.getString('form');
 
-		const targetOC = await OC.findOne({ name: OCName });
-
 		try {
 			if (!isDBConnected()) {
 				return interaction.reply(
 					'⚠️ Database is currently unavailable. Please try again later.'
 				);
 			}
-			if (!targetOC) {
-				return interaction.reply({
-					content: `❌ OC **${OCName}** not found. Please use /sync-register-oc first.`,
-					flags: MessageFlags.Ephemeral,
-				});
-			}
-
-			await targetOC.populate(inBox ? 'storage' : 'party');
-
-			const collection = inBox ? targetOC.storage : targetOC.party;
-
-			const targetEntry = collection.find(
-				(p) => p.nickname?.toLowerCase() === nickname?.toLowerCase()
-			);
-
-			if (!targetEntry) {
-				return interaction.reply({
-					content: `❌ Pokémon with nickname **${nickname}** not found in ${
-						inBox ? 'storage' : 'party'
-					}.`,
-					flags: MessageFlags.Ephemeral,
-				});
-			}
 
 			// Fetch the actual Pokémon document
-			const pokemon = await Pokemon.findById(targetEntry.pokemon);
+			const pokemon = await Pokemon.findById(pokeId);
 			if (!pokemon) {
 				return interaction.reply({
-					content: `❌ Pokémon data for **${nickname}** could not be found.`,
+					content: `❌ Pokémon data for **${pokeId}** could not be found. Use /sync-show-party to see your party.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
@@ -199,24 +166,13 @@ export default {
 					inBox
 				);
 				pokemon.fortitude_drain = fortitude_drain;
-				targetEntry.drain = fortitude_drain;
 			}
-
-			// Update cached data in OC
-			if (pokemon.level !== undefined) targetEntry.level = pokemon.level;
-			if (pokemon.species) targetEntry.species = pokemon.species;
-			if (pokemon.nickname) targetEntry.nickname = pokemon.nickname;
-			if (pokemon.fortitude_drain !== undefined)
-				targetEntry.drain = pokemon.fortitude_drain;
 
 			// Save the Pokémon document
 			await pokemon.save();
-			await targetOC.save();
 
 			return interaction.reply({
-				content: `✅ Updated **${nickname}** in ${targetOC.name}'s ${
-					inBox ? 'storage' : 'party'
-				}.`,
+				content: `✅ Updated **${pokeId}** `,
 			});
 		} catch (error) {
 			console.error(error);

@@ -64,7 +64,8 @@ function buildPartyEmbed(
 	partyData.forEach((p, i) => {
 		totalDrain += p.drain;
 		embed.addFields({
-			name: `${i + 1}. ${p.nickname} (${p.species.toUpperCase()})\n${p.id}`,
+			name: `${i + 1}. ${p.nickname} (${p.species.toUpperCase()})
+			\n**ID:** *${p.id}*`,
 			value: [
 				`**Level:** ${p.level}`,
 				`**BST:** ${p.bst}`,
