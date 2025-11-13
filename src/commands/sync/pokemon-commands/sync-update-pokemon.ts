@@ -71,119 +71,210 @@ export default {
 				.setName('additional-abilities')
 				.setDescription('Total number of additional abilities')
 		),
+
 	async execute(interaction: ChatInputCommandInteraction) {
 		const pokeId = interaction.options.getString('poke-id', true);
-		const nickname = interaction.options.getString('nickname');
-		let species = interaction.options.getString('species');
-		const level = interaction.options.getInteger('level', true);
-		const gender = interaction.options.getString('gender');
-		const ability = interaction.options
-			.getString('ability')
-			?.split(',')
-			.map((a) => a.trim());
-		const shiny = interaction.options.getBoolean('shiny') || false; // Get the shiny option value or set it as false if not provided
-		const alpha = interaction.options.getBoolean('is-alpha') || false; // Get the is-alpha option value or set it as false if not provided
-		const inBox = interaction.options.getBoolean('in-box') || false; // Get the in-box option value or set it as false if not provided
-		const additionalAbilities =
-			interaction.options.getNumber('additional-abilities') || 0;
-		const formName = interaction.options.getString('form');
+		const nicknameOpt =
+			interaction.options.getString('nickname', false) ?? null;
+		const speciesOpt = interaction.options.getString('species', false) ?? null;
+		const formName = interaction.options.getString('form', false) ?? null;
+		const levelOpt = interaction.options.getInteger('level', false); // optional
+		const genderOpt = interaction.options.getString('gender', false) ?? null;
+		// option name is 'ability-list'
+		const abilityListOpt =
+			interaction.options.getString('ability-list', false) ?? null;
+		const shinyOpt = interaction.options.getBoolean('shiny', false); // boolean | null
+		const inBoxOpt = interaction.options.getBoolean('in-box', false); // boolean | null
+		const alphaOpt = interaction.options.getBoolean('is-alpha', false); // boolean | null
 
 		try {
+			// Check DB connection first (no defer yet)
 			if (!isDBConnected()) {
-				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
-				);
+				return interaction.reply({
+					content:
+						'⚠️ Database is currently unavailable. Please try again later.',
+					flags: MessageFlags.Ephemeral,
+				});
 			}
+
+			await interaction.deferReply();
 
 			// Fetch the actual Pokémon document
 			const pokemon = await Pokemon.findById(pokeId);
 			if (!pokemon) {
-				return interaction.reply({
+				return interaction.followUp({
 					content: `❌ Pokémon data for **${pokeId}** could not be found. Use /sync-show-party to see your party.`,
 					flags: MessageFlags.Ephemeral,
 				});
 			}
 
-			// Only update fields that were provided
-			if (nickname) pokemon.nickname = nickname;
-			if (level) pokemon.level = level;
-			if (species) {
-				pokemon.species = species;
-			} else {
-				species = pokemon.species;
+			// Track whether we actually changed any fields that require recalculation
+			let didUpdateRelevantFields = false;
+
+			// Update only fields provided
+			if (nicknameOpt !== null) {
+				pokemon.nickname = nicknameOpt;
 			}
-			if (gender)
-				pokemon.gender = gender as 'Male' | 'Female' | 'Genderless' | 'Unknown';
-			if (ability) pokemon.ability = ability;
-			if (typeof shiny === 'boolean') pokemon.shiny = shiny;
-			if (typeof alpha === 'boolean') pokemon.alpha = alpha;
 
-			// Recalculate stats/drain only if level, alpha, or additional abilities changed
-			if (level || alpha || additionalAbilities || species) {
+			// Level: only update if provided
+			if (levelOpt !== null && levelOpt !== undefined) {
+				// ensure valid range just in case
+				const levelVal = Math.max(1, Math.min(100, levelOpt));
+				if (pokemon.level !== levelVal) {
+					pokemon.level = levelVal;
+					didUpdateRelevantFields = true;
+				}
+			}
+
+			// Species: if provided, use it; otherwise keep DB species
+			let finalSpecies = pokemon.species;
+			if (speciesOpt) {
+				finalSpecies = speciesOpt;
+				if (pokemon.species !== speciesOpt) {
+					pokemon.species = speciesOpt;
+					didUpdateRelevantFields = true;
+				}
+			}
+
+			// Gender
+			if (genderOpt !== null) {
+				if (pokemon.gender !== genderOpt) {
+					pokemon.gender = genderOpt as
+						| 'Male'
+						| 'Female'
+						| 'Genderless'
+						| 'Unknown';
+				}
+			}
+
+			// Abilities list: overwrite if provided
+			if (abilityListOpt !== null) {
+				const abilities = abilityListOpt
+					.split(',')
+					.map((a) => a.trim())
+					.filter(Boolean);
+				pokemon.ability = abilities;
+				didUpdateRelevantFields = true;
+			}
+
+			// Shiny / alpha / inBox: only set when provided (not overwrite with false by default)
+			if (shinyOpt !== null && shinyOpt !== undefined) {
+				if (pokemon.shiny !== shinyOpt) {
+					pokemon.shiny = shinyOpt;
+				}
+			}
+			if (alphaOpt !== null && alphaOpt !== undefined) {
+				if (pokemon.alpha !== alphaOpt) {
+					pokemon.alpha = alphaOpt;
+					didUpdateRelevantFields = true; // alpha affects upkeep
+				}
+			}
+			if (inBoxOpt !== null && inBoxOpt !== undefined) {
+				if (pokemon.inBox !== inBoxOpt) {
+					pokemon.inBox = inBoxOpt;
+				}
+			}
+
+			// If species was not provided but a form is provided, we should keep finalSpecies as current DB species.
+			// Prepare searchName for pokeapi lookup only if recalculation needed.
+			if (didUpdateRelevantFields) {
+				// Build search name using provided species (or DB species) + form if present
 				const searchName = formName
-					? formatUserInput(`${species} ${formName}`)
-					: species;
+					? formatUserInput(`${finalSpecies} ${formName}`)
+					: formatUserInput(String(finalSpecies));
 
-				const pokemonInfo = extractPokemonInfo(
-					await pokemonEndPoint(searchName)
+				// Fetch API data and extract stats
+				const pokemonApiRaw = await pokemonEndPoint(searchName).catch(
+					async (err) => {
+						// fallback to species only if form lookup fails
+						if (formName) {
+							return pokemonEndPoint(formatUserInput(finalSpecies));
+						}
+						throw err;
+					}
 				);
 
-				interface StatObject {
-					base_stat: number;
-					stat: {
-						name: string;
-					};
-				}
+				const pokemonInfo = extractPokemonInfo(await pokemonApiRaw);
 
+				// Build stats object
+				type StatObj = { base_stat: number; stat: { name: string } };
 				const stats: PokemonStats = {
 					hp:
-						pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'hp')
-							?.base_stat || 0,
+						pokemonInfo.stats.find((s: StatObj) => s.stat.name === 'hp')
+							?.base_stat ?? 0,
 					attack:
-						pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'attack')
-							?.base_stat || 0,
+						pokemonInfo.stats.find((s: StatObj) => s.stat.name === 'attack')
+							?.base_stat ?? 0,
 					defense:
-						pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'defense')
-							?.base_stat || 0,
+						pokemonInfo.stats.find((s: StatObj) => s.stat.name === 'defense')
+							?.base_stat ?? 0,
 					spAttack:
 						pokemonInfo.stats.find(
-							(s: StatObject) => s.stat.name === 'special-attack'
-						)?.base_stat || 0,
+							(s: StatObj) => s.stat.name === 'special-attack'
+						)?.base_stat ?? 0,
 					spDefense:
 						pokemonInfo.stats.find(
-							(s: StatObject) => s.stat.name === 'special-defense'
-						)?.base_stat || 0,
+							(s: StatObj) => s.stat.name === 'special-defense'
+						)?.base_stat ?? 0,
 					speed:
-						pokemonInfo.stats.find((s: StatObject) => s.stat.name === 'speed')
-							?.base_stat || 0,
+						pokemonInfo.stats.find((s: StatObj) => s.stat.name === 'speed')
+							?.base_stat ?? 0,
 				};
 
 				const totalStats = Object.values(stats).reduce(
-					(sum, stat) => sum + stat,
+					(sum, s) => sum + (s as number),
 					0
+				);
+
+				// Use the updated pokemon.level (if provided) or DB value
+				const levelForCalc = pokemon.level ?? 1;
+				const alphaForCalc = pokemon.alpha ?? false;
+				const inBoxForCalc = pokemon.inBox ?? false;
+				const additionalAbilities = Math.max(
+					0,
+					(abilityListOpt?.length ?? 1) - 1
 				);
 
 				const fortitude_drain = await calculateUpkeep(
 					totalStats,
-					pokemon.level,
-					alpha,
+					levelForCalc,
+					Boolean(alphaForCalc),
 					additionalAbilities,
-					inBox
+					Boolean(inBoxForCalc)
 				);
+
+				// store updated drain
 				pokemon.fortitude_drain = fortitude_drain;
 			}
 
-			// Save the Pokémon document
+			// Save the Pokémon document (only once)
 			await pokemon.save();
 
-			return interaction.reply({
-				content: `✅ Updated **${pokeId}** `,
+			// Success reply
+			return interaction.editReply({
+				content: `✅ Updated Pokémon **${pokeId}** successfully.`,
 			});
 		} catch (error) {
-			console.error(error);
-			return interaction.reply({
-				content: `❌ An error occurred while adding the Pokémon.\nError: ${error}`,
-			});
+			console.error('sync-update-pokemon error:', error);
+			// If we already deferred, use editReply; otherwise reply.
+			try {
+				if (interaction.deferred || interaction.replied) {
+					return interaction.editReply({
+						content: `❌ An error occurred while updating the Pokémon.\nError: ${String(
+							error
+						)}`,
+					});
+				} else {
+					return interaction.reply({
+						content: `❌ An error occurred while updating the Pokémon.\nError: ${String(
+							error
+						)}`,
+						flags: MessageFlags.Ephemeral,
+					});
+				}
+			} catch (replyErr) {
+				console.error('Error sending failure reply:', replyErr);
+			}
 		}
 	},
 };

@@ -7,6 +7,7 @@ export interface PokemonDocument extends Document {
 	nickname?: string;
 	level: number;
 	fortitude_drain: number;
+	inBox: boolean;
 	gender: 'Male' | 'Female' | 'Genderless' | 'Unknown';
 	nature?: string;
 	ability: string[];
@@ -34,6 +35,7 @@ const pokemonSchema = new Schema(
 			type: Number,
 			default: 0,
 		},
+		inBox: { type: Boolean, default: false },
 		gender: {
 			type: String,
 			enum: ['Male', 'Female', 'Genderless', 'Unknown'],
