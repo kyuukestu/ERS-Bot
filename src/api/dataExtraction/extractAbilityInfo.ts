@@ -3,7 +3,18 @@ import { abilityColors } from '../../ui/colors';
 import { abilityEmojis } from '../../ui/emojis';
 import { formatName } from '~/utility/formatting/formatName';
 
-export const extractAbilityInfo = (rawData: unknown) => {
+export interface AbilityInfo {
+	name: string;
+	color: number;
+	emoji: string;
+	generation: string;
+	effect: string;
+	effectChance: string;
+	pokemon?: string[];
+	category: string;
+}
+
+export const extractAbilityInfo = (rawData: unknown): AbilityInfo => {
 	const data: AbilityData = AbilityDataSchema.parse(rawData);
 
 	// Destructure the data object
@@ -29,6 +40,7 @@ export const extractAbilityInfo = (rawData: unknown) => {
 	const pokemonList = pokemon.map(
 		({ pokemon: { name } }) => name.charAt(0).toUpperCase() + name.slice(1)
 	);
+
 	// Determine ability category
 	const category = effect_entries.some(
 		(e) => e.effect.includes('attack') ?? e.effect.includes('damage')

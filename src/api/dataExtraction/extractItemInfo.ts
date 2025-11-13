@@ -2,7 +2,20 @@ import { ItemDataSchema, type ItemData } from '../z-schemas/apiSchemas';
 import { formatName } from '~/utility/formatting/formatName';
 import { itemEmojis } from '~/ui/emojis';
 
-export const extractItemInfo = (rawData: unknown) => {
+export interface ItemInfo {
+	name: string;
+	category: string;
+	item_emoji: string;
+	cost: number;
+	effect: string;
+	flavor_text_entries: string;
+	flavor_text_ver: string;
+	sprites: { default: string | null };
+	fling_power: number;
+	fling_effect: string;
+}
+
+export const extractItemInfo = (rawData: unknown): ItemInfo => {
 	const data: ItemData = ItemDataSchema.parse(rawData);
 
 	const {

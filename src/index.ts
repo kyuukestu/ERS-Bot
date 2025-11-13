@@ -40,30 +40,79 @@ class ExtendedClient extends Client {
 const client = new ExtendedClient();
 
 // Load commands dynamically
-async function loadCommands(dirPath = path.join(__dirname, 'commands')) {
-	const entries = await fs.readdir(dirPath, { withFileTypes: true });
+// async function loadCommands(dirPath = path.join(__dirname, 'commands')) {
+// 	const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+// 	for (const entry of entries) {
+// 		const fullPath = path.join(dirPath, entry.name);
+
+// 		if (entry.isDirectory() && entry.name === 'commands') {
+// 			// Recursively load commands from subfolders
+// 			await loadCommands(fullPath);
+// 		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
+// 			try {
+// 				const commandImport = await import(fullPath);
+// 				const commandModule = commandImport.default;
+
+// 				if ('data' in commandModule && 'execute' in commandModule) {
+// 					client.commands.set(commandModule.data.name, commandModule);
+// 					console.log(`Loaded command: ${commandModule.data.name}`);
+// 				} else {
+// 					console.warn(
+// 						`[WARNING] The command at ${fullPath} is missing a required "data" or "execute" property.`
+// 					);
+// 				}
+// 			} catch (error) {
+// 				console.error(`[ERROR] Failed to load command at ${fullPath}:`, error);
+// 			}
+// 		}
+// 	}
+// }
+
+interface CommandModule {
+	data: { name: string };
+	execute: (interaction: any) => Promise<void>;
+}
+
+/**
+ * Recursively loads Discord command files from nested folders.
+ * Only loads folders named "commands" as command collections.
+ * Logs every file processed.
+ */
+export async function loadCommands(
+	client: Client,
+	baseDir = path.join(__dirname, 'commands')
+) {
+	const entries = await fs.readdir(baseDir, { withFileTypes: true });
 
 	for (const entry of entries) {
-		const fullPath = path.join(dirPath, entry.name);
+		const fullPath = path.join(baseDir, entry.name);
 
 		if (entry.isDirectory()) {
-			// Recursively load commands from subfolders
-			await loadCommands(fullPath);
+			const helperFolders = ['common', 'embeds', 'handlers'];
+
+			if (entry.isDirectory()) {
+				if (!helperFolders.includes(entry.name)) {
+					console.log(`📁 Entering folder: ${fullPath}`);
+					await loadCommands(client, fullPath); // recurse
+				} else {
+					console.log(`📂 Skipping helper folder: ${fullPath}`);
+				}
+			}
 		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
+			console.log(`📄 Processing file: ${fullPath}`);
 			try {
 				const commandImport = await import(fullPath);
-				const commandModule = commandImport.default;
+				const commandModule: CommandModule = commandImport.default;
 
 				if ('data' in commandModule && 'execute' in commandModule) {
-					client.commands.set(commandModule.data.name, commandModule);
-					console.log(`Loaded command: ${commandModule.data.name}`);
+					(client as any).commands.set(commandModule.data.name, commandModule);
+					console.log(`✅ Loaded command: ${commandModule.data.name}`);
 				} else {
-					console.warn(
-						`[WARNING] The command at ${fullPath} is missing a required "data" or "execute" property.`
-					);
+					console.warn(`⚠️ Skipped file (not a command): ${fullPath}`);
 				}
 			} catch (error) {
-				console.error(`[ERROR] Failed to load command at ${fullPath}:`, error);
+				console.error(`❌ Failed to load file: ${fullPath}`, error);
 			}
 		}
 	}
@@ -72,7 +121,7 @@ async function loadCommands(dirPath = path.join(__dirname, 'commands')) {
 // Load commands when the client is ready
 client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-	await loadCommands(); // Load commands after client is ready
+	await loadCommands(client); // Load commands after client is ready
 });
 
 // Handle interactions

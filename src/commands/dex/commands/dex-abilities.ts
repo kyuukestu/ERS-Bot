@@ -7,18 +7,11 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { abilityEndPoint } from '~/api/pokeapi.ts';
-import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
-import { extractAbilityInfo } from '~/api/dataExtraction/extractAbilityInfo.ts';
-
-interface AbilityInfo {
-	name: string;
-	color: number;
-	emoji: string;
-	generation: string;
-	effect: string;
-	effectChance: string;
-	pokemon?: string[];
-}
+import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
+import {
+	extractAbilityInfo,
+	type AbilityInfo,
+} from '~/api/dataExtraction/extractAbilityInfo.ts';
 
 const createAbilityEmbed = (
 	interaction: ChatInputCommandInteraction,

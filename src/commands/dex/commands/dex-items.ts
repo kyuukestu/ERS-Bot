@@ -9,21 +9,11 @@ import {
 } from 'discord.js';
 import type { ItemData } from '~/interface/apiData';
 import { itemCategoryColors } from '~/ui/colors.ts';
-import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
+import {
+	extractItemInfo,
+	type ItemInfo,
+} from '~/api/dataExtraction/extractItemInfo.ts';
 import { matchItemName } from '~/utility/fuzzy-search/items.ts';
-
-interface ItemInfo {
-	name: string;
-	category: string;
-	item_emoji: string;
-	cost: number;
-	effect: string;
-	flavor_text_entries: string;
-	flavor_text_ver: string;
-	sprites: { default: string | null };
-	fling_power: number;
-	fling_effect: string;
-}
 
 const createItemEmbed = (
 	interaction: ChatInputCommandInteraction,

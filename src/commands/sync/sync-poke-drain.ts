@@ -14,6 +14,8 @@ import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';
 
+//TODO - Extract evolution chain data to check whether the pokemon is final stage or not and pass it to calcUpkeep
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-poke-drain')
@@ -37,7 +39,7 @@ export default {
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
-				.setDescription(`Enter the pokémon's form (e.g., alolan, galar).`)
+				.setDescription(`Enter the pokémon's form (e.g., Alolan, Galar).`)
 				.setRequired(false)
 		)
 		.addBooleanOption((option: SlashCommandBooleanOption) =>
