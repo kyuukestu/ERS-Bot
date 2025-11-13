@@ -1,61 +1,35 @@
 import {
-	SlashCommandBuilder,
-	SlashCommandStringOption,
 	EmbedBuilder,
+	SlashCommandBuilder,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
 	type ChatInputCommandInteraction,
-	MessageFlags,
 } from 'discord.js';
-import { typeColors } from '~/ui/colors.ts';
-import { moveEmojis } from '~/ui/emojis.ts';
-import { moveEndPoint } from '~/api/pokeapi.ts';
-import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { abilityEndPoint } from '~/api/endpoints.ts';
+import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import {
-	extractMoveInfo,
-	type MoveInfo,
-} from '~/api/dataExtraction/extractMoveInfo.ts';
+	extractAbilityInfo,
+	type AbilityInfo,
+} from '~/api/dataExtraction/extractAbilityInfo.ts';
 
-const createAttackEmbed = (
+const createAbilityEmbed = (
 	interaction: ChatInputCommandInteraction,
-	moveInfo: MoveInfo
-) => {
-	const embed = new EmbedBuilder()
-		.setColor(typeColors[moveInfo.type] || typeColors['normal'])
-		.setTitle(
-			`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
-		)
-		.setDescription(moveInfo.flavor_text.replace(/\r?\n|\r/g, ' '))
+	abilityInfo: AbilityInfo
+): EmbedBuilder => {
+	return new EmbedBuilder()
+		.setColor(abilityInfo.color)
+		.setTitle(`${abilityInfo.emoji} **${abilityInfo.name}**`)
+		.setDescription(abilityInfo.effect.replace(/\r?\n|\r/g, ' '))
 		.addFields(
 			{
-				name: '📌 Type',
-				value: moveInfo.type.charAt(0).toUpperCase() + moveInfo.type.slice(1),
+				name: '📌 Generation',
+				value: abilityInfo.generation,
 				inline: true,
 			},
 			{
-				name: '🏹 Damage Class',
-				value:
-					moveInfo.damage_class.charAt(0).toUpperCase() +
-					moveInfo.damage_class.slice(1),
-				inline: true,
-			},
-			{ name: '💪 Power', value: moveInfo.power, inline: true },
-			{ name: '🎯 Accuracy', value: moveInfo.accuracy, inline: true },
-			{
-				name: '🎲 Effect Chance',
-				value: moveInfo.effect_chance,
-				inline: true,
-			},
-			{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-			{ name: '🔋 PP', value: moveInfo.pp, inline: true },
-			{ name: '🎯 Target', value: moveInfo.target, inline: true },
-			{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
-			{
-				name: '📅 Version',
-				value:
-					moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
-					moveInfo.flavor_text_ver.slice(1),
+				name: '🎯 Effect Chance',
+				value: abilityInfo.effectChance,
 				inline: true,
 			}
 		)
@@ -64,57 +38,55 @@ const createAttackEmbed = (
 			iconURL: interaction.user.displayAvatarURL(),
 		})
 		.setTimestamp();
-
-	return embed;
 };
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-moves')
+		.setName('dex-abilities')
 		.setDescription(
-			'Provides information about a Pokémon move e.g. Glaciate, Searing Shot, Toxic Thread, etc.'
+			'Provides information about a Pokémon ability, e.g. Speed Boost, Immunity, Huge Power, etc.'
 		)
-		.addStringOption((option: SlashCommandStringOption) =>
+		.addStringOption((option) =>
 			option
-				.setName('move')
-				.setDescription('Enter the move name.')
+				.setName('ability')
+				.setDescription("The Ability's name.")
 				.setRequired(true)
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
-		const moveName = formatUserInput(
-			interaction.options.getString('move', true)
+		const abilityName = formatUserInput(
+			interaction.options.getString('ability', true)
 		);
 
 		try {
 			await interaction.deferReply();
 
-			const moveInfo = extractMoveInfo(await moveEndPoint(moveName));
+			const abilityInfo = extractAbilityInfo(
+				await abilityEndPoint(abilityName)
+			);
 
-			// Create an embed with enhanced layout
-			const embed = createAttackEmbed(interaction, moveInfo);
+			const embed = createAbilityEmbed(interaction, abilityInfo);
 
 			await interaction.editReply({ embeds: [embed] });
 
-			// Send the paginated list of Pokémon
 			await sendPaginatedList(
 				interaction,
-				moveInfo.name,
-				moveInfo.learned_by_pokemon
+				abilityInfo.name,
+				abilityInfo.pokemon ?? []
 			);
 		} catch (error) {
-			console.error('Error fetching move data:', error);
+			console.error('Error fetching ability data:', error);
 
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
-				.setTitle('❌ Move Not Found')
+				.setTitle('❌ Ability Not Found')
 				.setDescription(
-					`Could not find a move named "${moveName}". Please check the spelling and try again.`
+					`Could not find an ability named "${abilityName}". Please check the spelling and try again.`
 				)
 				.addFields({
 					name: '💡 Tips',
 					value:
-						'• Use the exact move name\n• Check for typos\n• Example: "tackle" or "hyper-beam"',
+						'• Use the exact ability name\n• Check for typos\n• Example: "overgrow" or "drizzle"',
 				})
 				.setTimestamp();
 
@@ -127,22 +99,22 @@ export default {
 	},
 };
 
-async function sendPaginatedList(
+const sendPaginatedList = async (
 	interaction: ChatInputCommandInteraction,
-	moveName: string,
-	learnedBy: string[]
-) {
+	abilityName: string,
+	pokemon: string[]
+) => {
 	const monsPerPage = 10;
 	let currentPage = 0;
 
 	// Sort the Pokémon names alphabetically
-	const sortedLearnedBy = [...learnedBy].sort((a, b) =>
+	const sortedPossession = [...pokemon].sort((a, b) =>
 		a.localeCompare(b, undefined, { sensitivity: 'base' })
 	);
 
-	const totalPages = Math.ceil(sortedLearnedBy.length / monsPerPage);
+	const totalPages = Math.ceil(sortedPossession.length / monsPerPage);
 
-	const formattedMoveName = moveName
+	const formattedAbilityName = abilityName
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
@@ -151,20 +123,19 @@ async function sendPaginatedList(
 		const start = page * monsPerPage;
 		const end = start + monsPerPage;
 		const currentMons =
-			sortedLearnedBy
+			sortedPossession
 				.slice(start, end)
 				.map((name) => `• ${name}`)
 				.join('\n') || 'No Pokémon found.';
 
 		return new EmbedBuilder()
-			.setTitle(`${formattedMoveName} is learned by:`)
+			.setTitle(`${formattedAbilityName} is possessed by:`)
 			.setDescription(currentMons)
 			.setFooter({
 				text: `Page ${page + 1}/${totalPages} | Total: ${
-					sortedLearnedBy.length
+					sortedPossession.length
 				} Pokémon`,
-			})
-			.setColor(typeColors['normal']);
+			});
 	};
 
 	// Create buttons
@@ -193,15 +164,6 @@ async function sendPaginatedList(
 	});
 
 	collector.on('collect', async (buttonInteraction) => {
-		// Verify the user is the original command invoker
-		if (buttonInteraction.user.id !== interaction.user.id) {
-			await buttonInteraction.reply({
-				content: 'These buttons are not for you!',
-				flags: MessageFlags.Ephemeral,
-			});
-			return;
-		}
-
 		if (buttonInteraction.customId === 'previous') currentPage--;
 		if (buttonInteraction.customId === 'next') currentPage++;
 		collector.resetTimer();
@@ -242,4 +204,4 @@ async function sendPaginatedList(
 
 		message.edit({ components: [disabledRow.toJSON()] }).catch(console.error);
 	});
-}
+};

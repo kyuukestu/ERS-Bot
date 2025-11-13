@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { type PokemonStats } from '~/interface/canvasData';
-import { pokemonEndPoint } from '~/api/pokeapi.ts';
+import { pokemonEndPoint } from '~/api/endpoints';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
 import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';

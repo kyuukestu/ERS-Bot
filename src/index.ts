@@ -6,6 +6,7 @@ import {
 	GatewayIntentBits,
 	MessageFlags,
 	type Interaction,
+	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { token, mongoURI, adminURI, sshmongoURI } from './config.json';
 import * as fs from 'node:fs/promises'; // Use promises for async
@@ -28,11 +29,11 @@ try {
 }
 
 class ExtendedClient extends Client {
-	commands: Collection<string, any>;
+	commands: Collection<string, CommandModule>;
 
 	constructor() {
 		super({ intents: [GatewayIntentBits.Guilds] });
-		this.commands = new Collection();
+		this.commands = new Collection<string, CommandModule>();
 	}
 }
 
@@ -71,7 +72,7 @@ const client = new ExtendedClient();
 
 interface CommandModule {
 	data: { name: string };
-	execute: (interaction: any) => Promise<void>;
+	execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 
 /**
@@ -80,7 +81,7 @@ interface CommandModule {
  * Logs every file processed.
  */
 export async function loadCommands(
-	client: Client,
+	client: ExtendedClient,
 	baseDir = path.join(__dirname, 'commands')
 ) {
 	const entries = await fs.readdir(baseDir, { withFileTypes: true });
@@ -106,7 +107,7 @@ export async function loadCommands(
 				const commandModule: CommandModule = commandImport.default;
 
 				if ('data' in commandModule && 'execute' in commandModule) {
-					(client as any).commands.set(commandModule.data.name, commandModule);
+					client.commands.set(commandModule.data.name, commandModule);
 					console.log(`✅ Loaded command: ${commandModule.data.name}`);
 				} else {
 					console.warn(`⚠️ Skipped file (not a command): ${fullPath}`);
@@ -128,9 +129,8 @@ client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
-	const command = (interaction.client as any).commands.get(
-		interaction.commandName
-	);
+	const extendedClient = interaction.client as ExtendedClient;
+	const command = extendedClient.commands.get(interaction.commandName);
 
 	if (!command) {
 		console.error(`Command ${interaction.commandName} not found.`);

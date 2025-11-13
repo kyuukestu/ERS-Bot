@@ -1,4 +1,4 @@
-import { itemEndPoint } from '~/api/pokeapi.ts';
+import { itemEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import {
 	SlashCommandBuilder,

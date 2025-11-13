@@ -13,7 +13,7 @@ import {
 	PokemonDataSchema,
 	type PokemonData,
 } from '~/api/z-schemas/apiSchemas.ts';
-import { pokemonEndPoint } from '~/api/pokeapi.ts';
+import { pokemonEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon.ts';
 

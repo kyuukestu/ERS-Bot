@@ -16,7 +16,7 @@ import {
 	MessageFlags,
 } from 'discord.js';
 import { formatUserInput } from '~/utility/formatting/formatUserInput';
-import { speciesEndPoint } from '~/api/pokeapi';
+import { speciesEndPoint } from '~/api/endpoints';
 import { extractSpeciesInfo } from '~/api/dataExtraction/extractSpeciesInfo';
 import { calculateCatchRate } from '~/utility/calculators/sync-catchrate-calculator';
 

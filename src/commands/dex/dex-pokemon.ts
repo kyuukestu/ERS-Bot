@@ -16,7 +16,7 @@ import {
 import type { ParsedSpeciesData } from '~/api/z-schemas/apiSchemas.ts';
 // import type { PokemonData, SpeciesData } from '~/interface/apiData.ts';
 import { typeColors } from '~/ui/colors.ts';
-import { pokemonEndPoint, speciesEndPoint } from '~/api/pokeapi.ts';
+import { pokemonEndPoint, speciesEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { PokemonStatsCanvas } from '~/utility/statsCanvas.ts';
 import { type PokemonStats } from '~/interface/canvasData';
