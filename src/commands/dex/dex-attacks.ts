@@ -2,71 +2,13 @@ import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
 	EmbedBuilder,
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
 	type ChatInputCommandInteraction,
-	MessageFlags,
 } from 'discord.js';
-import { typeColors } from '~/ui/colors.ts';
-import { moveEmojis } from '~/ui/emojis.ts';
 import { moveEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
-import {
-	extractMoveInfo,
-	type MoveInfo,
-} from '~/api/dataExtraction/extractMoveInfo.ts';
-
-const createAttackEmbed = (
-	interaction: ChatInputCommandInteraction,
-	moveInfo: MoveInfo
-) => {
-	const embed = new EmbedBuilder()
-		.setColor(typeColors[moveInfo.type] || typeColors['normal'])
-		.setTitle(
-			`${moveEmojis[moveInfo.damage_class] || '❓'} **${moveInfo.name}**`
-		)
-		.setDescription(moveInfo.flavor_text.replace(/\r?\n|\r/g, ' '))
-		.addFields(
-			{
-				name: '📌 Type',
-				value: moveInfo.type.charAt(0).toUpperCase() + moveInfo.type.slice(1),
-				inline: true,
-			},
-			{
-				name: '🏹 Damage Class',
-				value:
-					moveInfo.damage_class.charAt(0).toUpperCase() +
-					moveInfo.damage_class.slice(1),
-				inline: true,
-			},
-			{ name: '💪 Power', value: moveInfo.power, inline: true },
-			{ name: '🎯 Accuracy', value: moveInfo.accuracy, inline: true },
-			{
-				name: '🎲 Effect Chance',
-				value: moveInfo.effect_chance,
-				inline: true,
-			},
-			{ name: '⏱️ Priority', value: moveInfo.priority, inline: true },
-			{ name: '🔋 PP', value: moveInfo.pp, inline: true },
-			{ name: '🎯 Target', value: moveInfo.target, inline: true },
-			{ name: '🌍 Generation', value: moveInfo.generation, inline: true },
-			{
-				name: '📅 Version',
-				value:
-					moveInfo.flavor_text_ver.charAt(0).toUpperCase() +
-					moveInfo.flavor_text_ver.slice(1),
-				inline: true,
-			}
-		)
-		.setFooter({
-			text: `Requested by ${interaction.user.username} • Powered by PokeAPI`,
-			iconURL: interaction.user.displayAvatarURL(),
-		})
-		.setTimestamp();
-
-	return embed;
-};
+import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo.ts';
+import { createAttackEmbed } from '~/components/embeds/createAttackEmbed';
+import { movePaginatedList } from '~/components/pagination/movePagination';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -97,7 +39,7 @@ export default {
 			await interaction.editReply({ embeds: [embed] });
 
 			// Send the paginated list of Pokémon
-			await sendPaginatedList(
+			await movePaginatedList(
 				interaction,
 				moveInfo.name,
 				moveInfo.learned_by_pokemon
@@ -126,120 +68,3 @@ export default {
 		}
 	},
 };
-
-async function sendPaginatedList(
-	interaction: ChatInputCommandInteraction,
-	moveName: string,
-	learnedBy: string[]
-) {
-	const monsPerPage = 10;
-	let currentPage = 0;
-
-	// Sort the Pokémon names alphabetically
-	const sortedLearnedBy = [...learnedBy].sort((a, b) =>
-		a.localeCompare(b, undefined, { sensitivity: 'base' })
-	);
-
-	const totalPages = Math.ceil(sortedLearnedBy.length / monsPerPage);
-
-	const formattedMoveName = moveName
-		.split('-')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
-
-	const generateEmbed = (page: number) => {
-		const start = page * monsPerPage;
-		const end = start + monsPerPage;
-		const currentMons =
-			sortedLearnedBy
-				.slice(start, end)
-				.map((name) => `• ${name}`)
-				.join('\n') || 'No Pokémon found.';
-
-		return new EmbedBuilder()
-			.setTitle(`${formattedMoveName} is learned by:`)
-			.setDescription(currentMons)
-			.setFooter({
-				text: `Page ${page + 1}/${totalPages} | Total: ${
-					sortedLearnedBy.length
-				} Pokémon`,
-			})
-			.setColor(typeColors['normal']);
-	};
-
-	// Create buttons
-	const row = new ActionRowBuilder().addComponents(
-		new ButtonBuilder()
-			.setCustomId('previous')
-			.setLabel('⬅️ Previous')
-			.setStyle(ButtonStyle.Secondary)
-			.setDisabled(currentPage === 0),
-		new ButtonBuilder()
-			.setCustomId('next')
-			.setLabel('➡️ Next')
-			.setStyle(ButtonStyle.Secondary)
-			.setDisabled(currentPage >= totalPages - 1)
-	);
-
-	const message = await interaction.followUp({
-		embeds: [generateEmbed(currentPage)],
-		components: [row.toJSON()],
-		fetchReply: true,
-	});
-
-	// Create a collector for button interactions
-	const collector = message.createMessageComponentCollector({
-		time: 60000, // 1 minute timeout
-	});
-
-	collector.on('collect', async (buttonInteraction) => {
-		// Verify the user is the original command invoker
-		if (buttonInteraction.user.id !== interaction.user.id) {
-			await buttonInteraction.reply({
-				content: 'These buttons are not for you!',
-				flags: MessageFlags.Ephemeral,
-			});
-			return;
-		}
-
-		if (buttonInteraction.customId === 'previous') currentPage--;
-		if (buttonInteraction.customId === 'next') currentPage++;
-		collector.resetTimer();
-
-		// Update the buttons
-		const updatedRow = new ActionRowBuilder().addComponents(
-			new ButtonBuilder()
-				.setCustomId('previous')
-				.setLabel('⬅️ Previous')
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(currentPage === 0),
-			new ButtonBuilder()
-				.setCustomId('next')
-				.setLabel('➡️ Next')
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(currentPage >= totalPages - 1)
-		);
-
-		await buttonInteraction.update({
-			embeds: [generateEmbed(currentPage)],
-			components: [updatedRow.toJSON()],
-		});
-	});
-
-	collector.on('end', () => {
-		const disabledRow = new ActionRowBuilder().addComponents(
-			new ButtonBuilder()
-				.setCustomId('previous')
-				.setLabel('⬅️ Previous')
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(true),
-			new ButtonBuilder()
-				.setCustomId('next')
-				.setLabel('➡️ Next')
-				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(true)
-		);
-
-		message.edit({ components: [disabledRow.toJSON()] }).catch(console.error);
-	});
-}
