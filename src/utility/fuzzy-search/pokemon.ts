@@ -24,13 +24,32 @@ const pokemonList: Pokemon[] = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
 
 // Configure Fuse
 const fuse = new Fuse(pokemonList, {
-	keys: ['formName', 'speciesName'], // search both form and base names
+	keys: [
+		{ name: 'formName', weight: 0.8 },
+		{ name: 'speciesName', weight: 0.2 },
+	], // search both form and base names
 	includeScore: true,
 	threshold: 0.3, // tweak for fuzzy sensitivity
 });
 
 // Function to match user input to Pokémon
 export function matchPokemonSpecies(userInput: string) {
+	const normalized = userInput.toLowerCase().trim();
+
+	const exact = pokemonList.find(
+		(p) => p.speciesName.toLowerCase() === normalized
+	);
+
+	if (exact) {
+		return {
+			speciesName: exact.speciesName,
+			formName: exact.formName,
+			sprite: exact.sprite,
+			firstMatch: exact.formName || exact.speciesName,
+			otherMatches: [],
+		};
+	}
+
 	const results = fuse.search(userInput);
 
 	if (results.length === 0) {
