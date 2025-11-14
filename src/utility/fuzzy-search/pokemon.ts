@@ -50,7 +50,7 @@ export function matchPokemonSpecies(userInput: string) {
 		};
 	}
 
-	const results = fuse.search(userInput);
+	const results = fuse.search(normalized);
 
 	if (results.length === 0) {
 		throw new Error(`No Pokémon found for "${userInput}".`);
