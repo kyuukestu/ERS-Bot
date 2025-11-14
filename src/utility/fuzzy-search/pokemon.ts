@@ -56,7 +56,7 @@ export function matchPokemonSpecies(userInput: string) {
 		throw new Error(`No Pokémon found for "${userInput}".`);
 	}
 
-	console.log('Matches: :', results);
+	console.log('Normalized: ', normalized, 'Matches: :', results);
 
 	// Pick the top match
 	const bestMatch = results[0].item as {
