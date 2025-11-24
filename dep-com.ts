@@ -9,6 +9,7 @@ import {
 	KalosId,
 	syncId,
 	token,
+	mhapokeId,
 } from './src/config.json';
 
 const commands: any[] = [];
@@ -83,11 +84,18 @@ const rest = new REST().setToken(token);
 			{ body: commands }
 		);
 
+		// Deploy to fifth guild (mhapokeid)
+		const data3: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, mhapokeId),
+			{ body: commands }
+		);
+
 		console.log(
 			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
 				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
 				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.` +
-				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.`
+				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.` +
+				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.`
 		);
 	} catch (error) {
 		console.error('Error deploying commands:', error);
