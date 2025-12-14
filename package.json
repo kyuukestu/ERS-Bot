@@ -16,6 +16,7 @@
 		"typescript": "^5.8.2"
 	},
 	"dependencies": {
+		"@napi-rs/canvas": "^0.1.84",
 		"@smogon/calc": "^0.10.0",
 		"@types/node": "^24.7.2",
 		"@types/node-fetch": "^2.6.13",
