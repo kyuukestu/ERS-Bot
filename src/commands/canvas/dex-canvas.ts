@@ -1,5 +1,6 @@
 import { extractSpeciesInfo } from '~/api/dataExtraction/extractSpeciesInfo';
-import { speciesEndPoint } from '~/api/endpoints';
+import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo';
+import { speciesEndPoint, pokemonEndPoint } from '~/api/endpoints';
 import { renderSpeciesCardCanvas } from '~/components/canvas-dex/draw-dex-entry';
 import {
 	SlashCommandBuilder,
@@ -20,9 +21,12 @@ export default {
 		const pokemonName = interaction.options.getString('pokemon', true);
 
 		const rawSpeciesData = await speciesEndPoint(pokemonName);
-		const speciesInfo = extractSpeciesInfo(rawSpeciesData);
+		const rawPokemonData = await pokemonEndPoint(pokemonName);
 
-		const image = await renderSpeciesCardCanvas(speciesInfo);
+		const speciesInfo = extractSpeciesInfo(rawSpeciesData);
+		const pokemonInfo = extractPokemonInfo(rawPokemonData);
+
+		const image = await renderSpeciesCardCanvas(speciesInfo, pokemonInfo);
 
 		await interaction.editReply({
 			files: [{ attachment: image, name: `${pokemonName}.png` }],

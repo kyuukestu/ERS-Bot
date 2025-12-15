@@ -3,18 +3,20 @@ import { abilityColors } from '../../ui/colors';
 import { abilityEmojis } from '../../ui/emojis';
 import { formatName } from '~/utility/formatting/formatName';
 
-export interface AbilityInfo {
-	name: string;
-	color: number;
-	emoji: string;
-	generation: string;
-	effect: string;
-	effectChance: string;
-	pokemon?: string[];
-	category: string;
-}
+// export interface AbilityInfo {
+// 	name: string;
+// 	color: number;
+// 	emoji: string;
+// 	generation: string;
+// 	effect: string;
+// 	effectChance: string;
+// 	pokemon?: string[];
+// 	category: string;
+// }
 
-export const extractAbilityInfo = (rawData: unknown): AbilityInfo => {
+export type AbilityInfo = ReturnType<typeof extractAbilityInfo>;
+
+export const extractAbilityInfo = (rawData: unknown) => {
 	const data: AbilityData = AbilityDataSchema.parse(rawData);
 
 	// Destructure the data object

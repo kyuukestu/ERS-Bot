@@ -73,7 +73,7 @@ export function matchPokemonSpecies(userInput: string) {
 		formName: bestMatch.formName, // optional, if you want the specific form
 		sprite: bestMatch.sprite,
 		firstMatch:
-			firstMatch.item.formName?.includes('arcues') ||
+			firstMatch.item.formName?.includes('arceus') ||
 			firstMatch.item.formName?.includes('silvally')
 				? firstMatch.item.speciesName
 				: firstMatch.item.formName || firstMatch.item.speciesName,
