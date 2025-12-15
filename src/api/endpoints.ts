@@ -49,3 +49,12 @@ export const abilityEndPoint = async (abilityName: string) => {
 		throw new Error(`Ability not found: ${abilityName} \n ${error}`);
 	}
 };
+
+export const typeEndPoint = async (type: string) => {
+	try {
+		const { data } = await pokeApi.get(`/type/${type}`);
+		return data;
+	} catch (error) {
+		throw new Error(`Types not found: ${error}`);
+	}
+};

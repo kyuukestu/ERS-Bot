@@ -169,6 +169,12 @@ export type PokemonData = z.infer<typeof PokemonDataSchema>;
 /* ---------------------------- Species Schema ---------------------------- */
 export const SpeciesDataSchema = z.object({
 	egg_groups: z.array(z.object({ name: z.string() })),
+	evolution_chain: z
+		.object({
+			url: z.string(),
+		})
+		.optional()
+		.nullable(),
 	evolves_from_species: z.object({ name: z.string() }).optional().nullable(),
 	habitat: z.object({ name: z.string() }).optional().nullable(),
 	generation: z.object({ name: z.string() }),
@@ -193,6 +199,7 @@ export type SpeciesData = z.infer<typeof SpeciesDataSchema>;
 
 export const ParsedSpeciesDataSchema = z.object({
 	egg_groups: z.string(),
+	evolution_chain: z.string(),
 	evolves_from_species: z.string(),
 	habitat: z.string(),
 	generation: z.string(),
@@ -213,6 +220,24 @@ export const ParsedSpeciesDataSchema = z.object({
 
 export type ParsedSpeciesData = z.infer<typeof ParsedSpeciesDataSchema>;
 
+/* ---------------------------- Type Schema ---------------------------- */
+
+export const TypeDataSchema = z.object({
+	id: z.number(),
+	name: z.string(),
+	sprites: z.record(
+		z.string(), // generation name (e.g., "generation-vii")
+		z.record(
+			z.string(), // version name (e.g., "brilliant-diamond-and-shining-pearl")
+			z.object({
+				name_icon: z.string(),
+			})
+		)
+	),
+});
+
+export type TypeData = z.infer<typeof TypeDataSchema>;
+
 /* --------------------------- Export Collection -------------------------- */
 export const Schemas = {
 	AbilityData: AbilityDataSchema,
@@ -221,4 +246,5 @@ export const Schemas = {
 	PokemonData: PokemonDataSchema,
 	SpeciesData: SpeciesDataSchema,
 	ParsedSpeciesData: ParsedSpeciesDataSchema,
+	TypeData: TypeDataSchema,
 };

@@ -1,7 +1,7 @@
 import { PokemonDataSchema, type PokemonData } from '../z-schemas/apiSchemas';
 import { formatName } from '~/utility/formatting/formatName';
-import { getTypeEmoji } from '../../ui/emojis';
 
+export type PokemonInfo = ReturnType<typeof extractPokemonInfo>;
 export const extractPokemonInfo = (rawData: unknown) => {
 	const data: PokemonData = PokemonDataSchema.parse(rawData);
 
@@ -13,9 +13,7 @@ export const extractPokemonInfo = (rawData: unknown) => {
 		name: formatName(name),
 		weight: (Number(weight) / 10).toFixed(2),
 		height: (Number(height) / 10).toFixed(2),
-		types: types.map(
-			(t) => `\`${getTypeEmoji(t)} ${t.charAt(0).toUpperCase() + t.slice(1)}\``
-		),
+		types: types.map((t) => `${t.charAt(0).toUpperCase() + t.slice(1)}`),
 		abilities: abilities.map((a) => {
 			const abilityName = a.ability.name
 				.split('-')

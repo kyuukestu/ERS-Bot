@@ -1,52 +1,54 @@
 import { MoveDataSchema, type MoveData } from '../z-schemas/apiSchemas';
 import { formatName } from '~/utility/formatting/formatName';
 
-export interface MoveInfo {
-	name: string;
-	stat_changes: {
-		change: number;
-		stat: {
-			name: string;
-		};
-	}[];
-	accuracy: string;
-	effect_entries: {
-		effect: string;
-		short_effect: string;
-		language: {
-			name: string;
-		};
-	}[];
-	effect_chance: string;
-	priority: string;
-	power: string;
-	pp: string;
-	damage_class: string;
-	type: string;
-	target: string;
-	generation: string;
-	flavor_text: string;
-	flavor_text_ver: string;
-	learned_by_pokemon: string[];
-	machines: string;
-	meta: {
-		ailment: {
-			name: string;
-		};
-		stat_chance: number;
-		ailment_chance: number;
-		flinch_chance: number;
-		crit_rate: number;
-		drain: number;
-		healing: number;
-		min_hits: number | null;
-		max_hits: number | null;
-		min_turns: number | null;
-		max_turns: number | null;
-	};
-}
+// export interface MoveInfo {
+// 	name: string;
+// 	stat_changes: {
+// 		change: number;
+// 		stat: {
+// 			name: string;
+// 		};
+// 	}[];
+// 	accuracy: string;
+// 	effect_entries: {
+// 		effect: string;
+// 		short_effect: string;
+// 		language: {
+// 			name: string;
+// 		};
+// 	}[];
+// 	effect_chance: string;
+// 	priority: string;
+// 	power: string;
+// 	pp: string;
+// 	damage_class: string;
+// 	type: string;
+// 	target: string;
+// 	generation: string;
+// 	flavor_text: string;
+// 	flavor_text_ver: string;
+// 	learned_by_pokemon: string[];
+// 	machines: string;
+// 	meta: {
+// 		ailment: {
+// 			name: string;
+// 		};
+// 		stat_chance: number;
+// 		ailment_chance: number;
+// 		flinch_chance: number;
+// 		crit_rate: number;
+// 		drain: number;
+// 		healing: number;
+// 		min_hits: number | null;
+// 		max_hits: number | null;
+// 		min_turns: number | null;
+// 		max_turns: number | null;
+// 	};
+// }
 
-export const extractMoveInfo = (rawData: unknown): MoveInfo => {
+export type MoveInfo = ReturnType<typeof extractMoveInfo>;
+
+export const extractMoveInfo = (rawData: unknown) => {
 	const data: MoveData = MoveDataSchema.parse(rawData);
 
 	const {

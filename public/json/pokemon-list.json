@@ -7946,6 +7946,22 @@
 		}
 	},
 	{
+		"name": "arceus",
+		"speciesName": "arceus",
+		"formName": "normal",
+		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png",
+		"types": ["normal"],
+		"abilities": ["multitype"],
+		"stats": {
+			"hp": 120,
+			"attack": 120,
+			"defense": 120,
+			"special-attack": 120,
+			"special-defense": 120,
+			"speed": 120
+		}
+	},
+	{
 		"name": "arceus-normal",
 		"speciesName": "arceus",
 		"formName": "normal",
@@ -13866,6 +13882,22 @@
 			"special-attack": 95,
 			"special-defense": 95,
 			"speed": 59
+		}
+	},
+	{
+		"name": "silvally",
+		"speciesName": "silvally",
+		"formName": "normal",
+		"sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/773.png",
+		"types": ["normal"],
+		"abilities": ["rks-system"],
+		"stats": {
+			"hp": 95,
+			"attack": 95,
+			"defense": 95,
+			"special-attack": 95,
+			"special-defense": 95,
+			"speed": 95
 		}
 	},
 	{

@@ -2,11 +2,13 @@ import { SpeciesDataSchema, type SpeciesData } from '../z-schemas/apiSchemas';
 import { gen_num_convert } from '~/utility/formatting/formatGen';
 import { getGenerationEmoji } from '../../ui/emojis';
 
+export type SpeciesInfo = ReturnType<typeof extractSpeciesInfo>;
 export const extractSpeciesInfo = (rawData: unknown) => {
 	const data: SpeciesData = SpeciesDataSchema.parse(rawData);
 
 	const {
 		egg_groups,
+		evolution_chain,
 		evolves_from_species,
 		habitat,
 		generation,
@@ -27,12 +29,13 @@ export const extractSpeciesInfo = (rawData: unknown) => {
 						.map((eg) => eg.name.charAt(0).toUpperCase() + eg.name.slice(1))
 						.join(', ')
 				: 'Unknown',
+		evolution_chain: evolution_chain?.url ?? 'Unknown',
 		evolves_from_species: evolves_from_species
-			? `⬅️ Evolves from: \n **${
+			? `Evolves from: \n **${
 					evolves_from_species.name.charAt(0).toUpperCase() +
 					evolves_from_species.name.slice(1)
 			  }**`
-			: '🥚 Base form',
+			: 'Base form',
 		habitat: habitat
 			? habitat.name.charAt(0).toUpperCase() + habitat.name.slice(1)
 			: 'Unknown',
