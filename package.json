@@ -5,12 +5,12 @@
 	"type": "module",
 	"private": true,
 	"devDependencies": {
-		"@eslint/js": "^9.37.0",
+		"@eslint/js": "^9.39.2",
 		"@types/bun": "latest",
-		"eslint": "^9.37.0",
-		"globals": "^16.4.0",
+		"eslint": "^9.39.2",
+		"globals": "^16.5.0",
 		"jiti": "^2.6.1",
-		"typescript-eslint": "^8.46.1"
+		"typescript-eslint": "^8.50.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5.8.2"
@@ -18,23 +18,23 @@
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.84",
 		"@smogon/calc": "^0.10.0",
-		"@types/node": "^24.7.2",
+		"@types/node": "^24.10.4",
 		"@types/node-fetch": "^2.6.13",
-		"axios": "^1.12.2",
-		"axios-cache-interceptor": "^1.8.3",
+		"axios": "^1.13.2",
+		"axios-cache-interceptor": "^1.9.1",
 		"canvas": "^3.2.0",
 		"date-fns": "^4.1.0",
-		"discord.js": "^14.23.2",
-		"express": "^4.21.2",
+		"discord.js": "^14.25.1",
+		"express": "^4.22.1",
 		"fetch": "^1.1.0",
 		"fuse.js": "^7.1.0",
-		"mongoose": "^8.19.1",
+		"mongoose": "^8.20.3",
 		"node-fetch": "^3.3.2",
-		"pm2": "^6.0.13",
+		"pm2": "^6.0.14",
 		"pokenode-ts": "^1.20.0",
-		"sharp": "^0.34.4",
+		"sharp": "^0.34.5",
 		"ts-node": "^10.9.2",
 		"uuid": "^13.0.0",
-		"zod": "^4.1.12"
+		"zod": "^4.2.1"
 	}
 }
