@@ -6,21 +6,16 @@ export type TypeInfo = ReturnType<typeof extractTypeInfo>;
 export const extractTypeInfo = (rawData: unknown) => {
 	const data: TypeData = TypeDataSchema.parse(rawData);
 
-	const { name, sprites } = data;
-	// Try to access generation-viii / sword-shield, fallback to first available
-	const generationKeys = Object.keys(sprites);
-	const genKey = generationKeys.includes('generation-viii')
-		? 'generation-viii'
-		: generationKeys[0];
+	const sprite =
+		data.sprites?.['generation-viii']?.['sword-shield']?.name_icon ?? null;
 
-	const versionKeys = Object.keys(sprites[genKey]);
-	const versionKey = versionKeys.includes('sword-shield')
-		? 'sword-shield'
-		: versionKeys[0];
+	if (!sprite) {
+		throw new Error(`No type icon available for type: ${data.name}`);
+	}
 
 	return {
-		name,
-		color: typeColors[name],
-		sprite: sprites[genKey][versionKey].name_icon,
+		name: data.name,
+		color: typeColors[data.name],
+		sprite,
 	};
 };

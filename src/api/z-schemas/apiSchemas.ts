@@ -230,7 +230,7 @@ export const TypeDataSchema = z.object({
 		z.record(
 			z.string(), // version name (e.g., "brilliant-diamond-and-shining-pearl")
 			z.object({
-				name_icon: z.string(),
+				name_icon: z.string().nullable().optional(),
 			})
 		)
 	),
