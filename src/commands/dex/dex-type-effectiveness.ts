@@ -33,7 +33,7 @@ export const typeChoices = TYPE_CHOICES.map((type) => ({
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-icon-effectiveness')
+		.setName('dex-type-effectiveness')
 		.setDescription(
 			'Shows type effectiveness for a combination of up to three types.'
 		)
