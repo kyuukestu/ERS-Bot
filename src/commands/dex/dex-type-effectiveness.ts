@@ -5,7 +5,10 @@ import {
 } from 'discord.js';
 import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { ALL_TYPES, type PokemonType } from '~/database/pokemonTypes';
-import { renderCombinedTypeEffectivenessCanvas } from '~/utility/typeEffectivenessCanvas.ts';
+import {
+	renderCombinedTypeEffectivenessCanvas,
+	renderSummaryBlock,
+} from '~/utility/typeEffectivenessCanvas.ts';
 import { getTypeChart } from '~/database/typeChart.ts';
 import { TYPE_CHOICES } from '~/database/typeChoices.ts';
 import fs from 'node:fs/promises';
@@ -54,6 +57,12 @@ export default {
 				.setDescription('Third Type')
 				.setRequired(false)
 				.addChoices(...typeChoices)
+		)
+		.addBooleanOption((opt) =>
+			opt
+				.setName('detailed')
+				.setDescription('Show the full effectiveness grid more prominently')
+				.setRequired(false)
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
 		try {
@@ -65,6 +74,7 @@ export default {
 				interaction.options.getString('type-2', false),
 				interaction.options.getString('type-3', false),
 			].filter(Boolean) as string[];
+			const detailed = interaction.options.getBoolean('detailed') ?? false;
 
 			const types = rawTypes.map(formatUserInput) as PokemonType[];
 
@@ -84,24 +94,34 @@ export default {
 				.map((t) => t.toUpperCase())
 				.join('-')}`;
 
-			const filename = `${normalizedTypes
-				.map((t) => t.toUpperCase())
-				.join(' / ')}.png`;
+			const filename = detailed
+				? `${normalizedTypes
+						.map((t) => t.toUpperCase())
+						.join('-')}-detailed.png`
+				: `${normalizedTypes.map((t) => t.toUpperCase()).join('-')}.png`;
 			const filepath = path.join(TypeChartDir, filename);
 
-			// Fetch type effectiveness chart
-			const { offense, defense } = getTypeChart(types);
-
-			// Render combined canvas
-			const buffer = await renderCombinedTypeEffectivenessCanvas({
-				title,
-				offense,
-				defense,
-			});
+			let buffer: Buffer;
 
 			try {
-				await fs.access(filepath);
-			} catch {
+				// Try to reuse cached image
+				buffer = await fs.readFile(filepath);
+			} catch (err: any) {
+				if (err.code !== 'ENOENT') {
+					throw err; // real error, don't hide it
+				}
+
+				// File does not exist → generate
+				const { offense, defense } = getTypeChart(types);
+
+				buffer = detailed
+					? await renderCombinedTypeEffectivenessCanvas({
+							title,
+							offense,
+							defense,
+					  })
+					: await renderSummaryBlock({ offense, defense });
+
 				await fs.writeFile(filepath, buffer);
 			}
 
