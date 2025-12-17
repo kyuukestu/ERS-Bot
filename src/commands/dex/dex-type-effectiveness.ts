@@ -7,8 +7,21 @@ import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { ALL_TYPES, type PokemonType } from '~/database/pokemonTypes';
 import { renderCombinedTypeEffectivenessCanvas } from '~/utility/typeEffectivenessCanvas.ts';
 import { getTypeChart } from '~/database/typeChart.ts';
-// src/utility/discord/typeChoices.ts
 import { TYPE_CHOICES } from '~/database/typeChoices.ts';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+const TypeChartDir = path.resolve(process.cwd(), 'public', 'typeChart');
+//'../../../public/typeChart';
+
+let dirReady = false;
+
+async function ensureDir() {
+	if (!dirReady) {
+		await fs.mkdir(TypeChartDir, { recursive: true });
+		dirReady = true;
+	}
+}
 
 export const typeChoices = TYPE_CHOICES.map((type) => ({
 	name: type.charAt(0).toUpperCase() + type.slice(1),
@@ -62,14 +75,22 @@ export default {
 					return;
 				}
 			}
+			await ensureDir();
+
+			const normalizedTypes = [...new Set(types)].sort();
+
+			// Build title string
+			const title = `Type Effectiveness: ${normalizedTypes
+				.map((t) => t.toUpperCase())
+				.join('-')}`;
+
+			const filename = `${normalizedTypes
+				.map((t) => t.toUpperCase())
+				.join(' / ')}.png`;
+			const filepath = path.join(TypeChartDir, filename);
 
 			// Fetch type effectiveness chart
 			const { offense, defense } = getTypeChart(types);
-
-			// Build title string
-			const title = `Type Effectiveness: ${types
-				.map((t) => t.toUpperCase())
-				.join(' / ')}`;
 
 			// Render combined canvas
 			const buffer = await renderCombinedTypeEffectivenessCanvas({
@@ -78,8 +99,14 @@ export default {
 				defense,
 			});
 
+			try {
+				await fs.access(filepath);
+			} catch {
+				await fs.writeFile(filepath, buffer);
+			}
+
 			const attachment = new AttachmentBuilder(buffer, {
-				name: 'type-effectiveness.png',
+				name: filename,
 			});
 
 			await interaction.editReply({ content: title, files: [attachment] });
