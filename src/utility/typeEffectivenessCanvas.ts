@@ -27,7 +27,7 @@ export async function renderCombinedTypeEffectivenessCanvas({
 	ctx.fillRect(0, 0, width, height);
 
 	// Common title font
-	const titleFont = 'bold 28px Orbitron';
+	const titleFont = 'bold 24px Orbitron';
 	const labelFont = 'bold 18px sans-serif';
 
 	ctx.font = titleFont;
