@@ -7,6 +7,13 @@ import { formatUserInput } from '../../utility/formatting/formatUserInput.ts';
 import { ALL_TYPES, type PokemonType } from '~/database/pokemonTypes';
 import { renderCombinedTypeEffectivenessCanvas } from '~/utility/typeEffectivenessCanvas.ts';
 import { getTypeChart } from '~/database/typeChart.ts';
+// src/utility/discord/typeChoices.ts
+import { TYPE_CHOICES } from '~/database/typeChoices.ts';
+
+export const typeChoices = TYPE_CHOICES.map((type) => ({
+	name: type.charAt(0).toUpperCase() + type.slice(1),
+	value: type,
+}));
 
 export default {
 	data: new SlashCommandBuilder()
@@ -15,13 +22,25 @@ export default {
 			'Shows type effectiveness for a combination of up to three types.'
 		)
 		.addStringOption((opt) =>
-			opt.setName('type-1').setDescription('First Type').setRequired(true)
+			opt
+				.setName('type-1')
+				.setDescription('First Type')
+				.setRequired(true)
+				.addChoices(...typeChoices)
 		)
 		.addStringOption((opt) =>
-			opt.setName('type-2').setDescription('Second Type').setRequired(false)
+			opt
+				.setName('type-2')
+				.setDescription('Second Type')
+				.setRequired(false)
+				.addChoices(...typeChoices)
 		)
 		.addStringOption((opt) =>
-			opt.setName('type-3').setDescription('Third Type').setRequired(false)
+			opt
+				.setName('type-3')
+				.setDescription('Third Type')
+				.setRequired(false)
+				.addChoices(...typeChoices)
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
 		try {
