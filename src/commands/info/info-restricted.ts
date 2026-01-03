@@ -1,265 +1,581 @@
 import {
 	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
 } from 'discord.js';
 import Fuse from 'fuse.js';
 
-type LegendaryGroup = {
-	group: string;
+type RestrictionType = 'pokemon' | 'move' | 'ability';
+type RestrictionEntry = {
+	name: string;
+	type: RestrictionType;
 	status: 'Restricted' | 'Banned';
-	members: string[];
+	group?: string;
 };
 
-const legendaryGroups: LegendaryGroup[] = [
+export const restrictedRegistry: RestrictionEntry[] = [
+	// Paradox Duo
 	{
+		name: 'Koraidon',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Paradox Duo',
-		status: 'Restricted',
-		members: ['Koraidon', 'Miraidon'],
 	},
 	{
+		name: 'Miraidon',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Paradox Duo',
+	},
+
+	// Treasures of Ruin
+	{
+		name: 'Wo-Chien',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Treasures of Ruin',
-		status: 'Restricted',
-		members: ['Wo-Chien', 'Chien-Pao', 'Ting-Lu', 'Chi-Yu'],
 	},
 	{
+		name: 'Chien-Pao',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
+		name: 'Ting-Lu',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
+		name: 'Chi-Yu',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+
+	// Legendary Birds
+	{
+		name: 'Articuno',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Legendary Birds',
-		status: 'Restricted',
-		members: ['Articuno', 'Zapdos', 'Moltres'],
 	},
 	{
+		name: 'Zapdos',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Birds',
+	},
+	{
+		name: 'Moltres',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Birds',
+	},
+
+	// Weather Trio
+	{ name: 'Kyogre', type: 'pokemon', status: 'Banned', group: 'Weather Trio' },
+	{ name: 'Groudon', type: 'pokemon', status: 'Banned', group: 'Weather Trio' },
+	{
+		name: 'Rayquaza',
+		type: 'pokemon',
+		status: 'Banned',
 		group: 'Weather Trio',
-		status: 'Banned',
-		members: ['Kyogre', 'Groudon', 'Rayquaza'],
 	},
+
+	// Creation Myths
 	{
+		name: 'Arceus',
+		type: 'pokemon',
+		status: 'Banned',
 		group: 'Creation Myths',
-		status: 'Banned',
-		members: ['Arceus', 'Dialga', 'Palkia', 'Giratina'],
 	},
 	{
+		name: 'Dialga',
+		type: 'pokemon',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
+		name: 'Palkia',
+		type: 'pokemon',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
+		name: 'Giratina',
+		type: 'pokemon',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+
+	// Legendary Beasts
+	{
+		name: 'Raikou',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Legendary Beasts',
-		status: 'Restricted',
-		members: ['Raikou', 'Entei', 'Suicune'],
 	},
 	{
+		name: 'Entei',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Beasts',
+	},
+	{
+		name: 'Suicune',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Beasts',
+	},
+
+	// Legendary Giants
+	{
+		name: 'Regirock',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Legendary Giants',
-		status: 'Restricted',
-		members: ['Regirock', 'Regice', 'Registeel', 'Regieleki', 'Regidrago'],
 	},
 	{
+		name: 'Regice',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+	{
+		name: 'Registeel',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+	{
+		name: 'Regieleki',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+	{
+		name: 'Regidrago',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+
+	// Lord of Giants
+	{
+		name: 'Regigigas',
+		type: 'pokemon',
+		status: 'Banned',
 		group: 'Lord of Giants',
-		status: 'Banned',
-		members: ['Regigigas'],
 	},
+
+	// Eon Duo
+	{ name: 'Latios', type: 'pokemon', status: 'Restricted', group: 'Eon Duo' },
+	{ name: 'Latias', type: 'pokemon', status: 'Restricted', group: 'Eon Duo' },
+
+	// Tower Duo
+	{ name: 'Lugia', type: 'pokemon', status: 'Banned', group: 'Tower Duo' },
+	{ name: 'Ho-oh', type: 'pokemon', status: 'Banned', group: 'Tower Duo' },
+
+	// Lunar Duo
 	{
-		group: 'Eon Duo',
+		name: 'Cresselia',
+		type: 'pokemon',
 		status: 'Restricted',
-		members: ['Latios', 'Latias'],
-	},
-	{
-		group: 'Tower Duo',
-		status: 'Banned',
-		members: ['Lugia', 'Ho-oh'],
-	},
-	{
 		group: 'Lunar Duo',
-		status: 'Restricted',
-		members: ['Cresselia', 'Darkrai'],
 	},
 	{
+		name: 'Darkrai',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Lunar Duo',
+	},
+
+	// Swords of Justice
+	{
+		name: 'Cobalion',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Swords of Justice',
-		status: 'Restricted',
-		members: ['Cobalion', 'Terrakion', 'Virizion', 'Keldeo'],
 	},
 	{
+		name: 'Terrakion',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Swords of Justice',
+	},
+	{
+		name: 'Virizion',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Swords of Justice',
+	},
+	{
+		name: 'Keldeo',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Swords of Justice',
+	},
+
+	// Lake Guardians
+	{
+		name: 'Azelf',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Lake Guardians',
+	},
+	{
+		name: 'Mesprit',
+		type: 'pokemon',
 		status: 'Restricted',
-		members: ['Azelf', 'Mesprit', 'Uxie'],
+		group: 'Lake Guardians',
 	},
 	{
-		group: 'Tao Trio',
-		status: 'Banned',
-		members: ['Reshiram', 'Zekrom', 'Kyurem'],
-	},
-	{
-		group: 'Aura Trio',
-		status: 'Banned',
-		members: ['Yveltal', 'Xerneas', 'Zygarde'],
-	},
-	{
-		group: 'Ultra Beasts',
+		name: 'Uxie',
+		type: 'pokemon',
 		status: 'Restricted',
-		members: [
-			'Nihilego',
-			'Buzzwole',
-			'Pheromosa',
-			'Xurkitree',
-			'Celesteela',
-			'Kartana',
-			'Guzzlord',
-			'Poipole',
-			'Naganadel',
-			'Stakataka',
-			'Blacephalon',
-		],
+		group: 'Lake Guardians',
 	},
+
+	// Tao Trio
+	{ name: 'Reshiram', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Zekrom', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Kyurem', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+
+	// Aura Trio
+	{ name: 'Yveltal', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Xerneas', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Zygarde', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+
+	// Guardian Deities
 	{
-		group: 'Paradox',
+		name: 'Tapu Koko',
+		type: 'pokemon',
 		status: 'Restricted',
-		members: [
-			'Great Tusk',
-			'Scream Tail',
-			'Brute Bonnet',
-			'Flutter Mane',
-			'Slither Wing',
-			'Sandy Shocks',
-			'Iron Treads',
-			'Iron Bundle',
-			'Iron Hands',
-			'Iron Jugulis',
-			'Iron Moth',
-			'Iron Thorns',
-			'Roaring Moon',
-			'Iron Valiant',
-			'Walking Wake',
-			'Iron Leaves',
-			'Gouging Fire',
-			'Raging Bolt',
-			'Iron Boulder',
-			'Iron Crown',
-		],
-	},
-	{
 		group: 'Guardian Deities',
-		status: 'Restricted',
-		members: ['Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini'],
 	},
 	{
+		name: 'Tapu Lele',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Guardian Deities',
+	},
+	{
+		name: 'Tapu Bulu',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Guardian Deities',
+	},
+	{
+		name: 'Tapu Fini',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Guardian Deities',
+	},
+
+	// Celestial
+	{ name: 'Cosmog', type: 'pokemon', status: 'Banned', group: 'Celestial Duo' },
+	{
+		name: 'Cosmoem',
+		type: 'pokemon',
+		status: 'Banned',
 		group: 'Celestial Duo',
-		status: 'Banned',
-		members: ['Cosmog', 'Cosmoem', 'Solgaleo', 'Lunala'],
 	},
-	{ group: 'Light', status: 'Banned', members: ['Necrozma'] },
-	{ group: 'Space', status: 'Banned', members: ['Eternatus'] },
-	{ group: 'Terastal', status: 'Banned', members: ['Terapagos'] },
 	{
+		name: 'Solgaleo',
+		type: 'pokemon',
+		status: 'Banned',
+		group: 'Celestial Duo',
+	},
+	{ name: 'Lunala', type: 'pokemon', status: 'Banned', group: 'Celestial Duo' },
+
+	// Singular entities
+	{ name: 'Necrozma', type: 'pokemon', status: 'Banned', group: 'Light' },
+	{ name: 'Eternatus', type: 'pokemon', status: 'Banned', group: 'Space' },
+	{ name: 'Terapagos', type: 'pokemon', status: 'Banned', group: 'Terastal' },
+
+	// Legendary Heroes
+	{
+		name: 'Zacian',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Legendary Heroes',
-		status: 'Restricted',
-		members: ['Zacian', 'Zamazenta'],
 	},
 	{
+		name: 'Zamazenta',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Heroes',
+	},
+
+	// Forces of Nature
+	{
+		name: 'Enamorus',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Forces of Nature',
-		status: 'Restricted',
-		members: ['Enamorus', 'Tornadus', 'Thundurus', 'Landorus'],
 	},
 	{
+		name: 'Tornadus',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Forces of Nature',
+	},
+	{
+		name: 'Thundurus',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Forces of Nature',
+	},
+	{
+		name: 'Landorus',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Forces of Nature',
+	},
+
+	// Loyal Three
+	{
+		name: 'Okidogi',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Loyal Three',
-		status: 'Restricted',
-		members: ['Okidogi', 'Munkidori', 'Fezandipiti'],
 	},
 	{
+		name: 'Munkidori',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Loyal Three',
+	},
+	{
+		name: 'Fezandipiti',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Loyal Three',
+	},
+
+	// Beast Killer Project
+	{
+		name: 'Type: Null',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Beast Killer Project',
-		status: 'Restricted',
-		members: ['Type: Null', 'Silvally'],
 	},
 	{
+		name: 'Silvally',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Beast Killer Project',
+	},
+
+	// Arthurian
+	{
+		name: 'Spectrier',
+		type: 'pokemon',
+		status: 'Restricted',
 		group: 'Arthurian',
-		status: 'Restricted',
-		members: ['Spectrier', 'Glastrier', 'Calyrex'],
 	},
 	{
-		group: 'Other',
+		name: 'Glastrier',
+		type: 'pokemon',
 		status: 'Restricted',
-		members: [
-			'Zeraora',
-			'Meltan',
-			'Melmetal',
-			'Kubfu',
-			'Urshifu',
-			'Zarude',
-			'Genesect',
-			'Magearna',
-			'Marshadow',
-			'Ogerpon',
-			'Meloetta',
-			'Diancie',
-			'Volcanion',
-			'Deoxys',
-			'Phione',
-			'Manaphy',
-			'Heatran',
-			'Shaymin',
-			'Mew',
-			'Mewtwo',
-			'Pecharunt',
-		],
+		group: 'Arthurian',
 	},
 	{
-		group: 'Mythicals',
-		status: 'Banned',
-		members: ['Celebi', 'Jirachi', 'Victini', 'Hoopa'],
+		name: 'Calyrex',
+		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Arthurian',
 	},
+
+	// Other
+	{ name: 'Zeraora', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Meltan', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Melmetal', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Kubfu', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Urshifu', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Zarude', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Genesect', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Magearna', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Marshadow', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Ogerpon', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Meloetta', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Diancie', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Volcanion', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Deoxys', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Phione', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Manaphy', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Heatran', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Shaymin', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Mew', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Mewtwo', type: 'pokemon', status: 'Restricted', group: 'Other' },
+	{ name: 'Pecharunt', type: 'pokemon', status: 'Restricted', group: 'Other' },
+
+	// Mythicals (Banned)
+	{ name: 'Celebi', type: 'pokemon', status: 'Banned', group: 'Mythicals' },
+	{ name: 'Jirachi', type: 'pokemon', status: 'Banned', group: 'Mythicals' },
+	{ name: 'Victini', type: 'pokemon', status: 'Banned', group: 'Mythicals' },
+	{ name: 'Hoopa', type: 'pokemon', status: 'Banned', group: 'Mythicals' },
 ];
 
-const searchList = legendaryGroups.flatMap((g) =>
-	g.members.map((m) => ({ name: m, group: g.group, status: g.status }))
-);
-
-const fuse = new Fuse(searchList, {
+const fuse = new Fuse(restrictedRegistry, {
 	keys: ['name'],
 	includeScore: true,
 	threshold: 0.3,
 });
 
+const groupByType = (entries: RestrictionEntry[]) => {
+	return entries.reduce<Record<RestrictionType, RestrictionEntry[]>>(
+		(acc, entry) => {
+			acc[entry.type].push(entry);
+			return acc;
+		},
+		{ pokemon: [], move: [], ability: [] }
+	);
+};
+
+const sortAlphabetically = (a: RestrictionEntry, b: RestrictionEntry) =>
+	a.name.localeCompare(b.name);
+
+const buildPaginatedEmbeds = (entries: RestrictionEntry[]) => {
+	const ITEMS_PER_PAGE = 20;
+
+	const grouped = groupByType(entries);
+
+	const sections = Object.entries(grouped).flatMap(([type, items]) => {
+		if (items.length === 0) return [];
+
+		const sorted = [...items].sort(sortAlphabetically);
+		const pages: EmbedBuilder[] = [];
+
+		for (let i = 0; i < sorted.length; i += ITEMS_PER_PAGE) {
+			const chunk = sorted.slice(i, i + ITEMS_PER_PAGE);
+
+			const description = chunk
+				.map(
+					(e) =>
+						`• **${e.name}** — *${e.status}${e.group ? ` (${e.group})` : ''}*`
+				)
+				.join('\n');
+
+			pages.push(
+				new EmbedBuilder()
+					.setTitle(
+						`Restricted Registry: Pokemon ${
+							type.charAt(0).toUpperCase() + type.slice(1)
+						}`
+					)
+					.setDescription(description)
+					.setColor(0x5865f2)
+			);
+		}
+
+		return pages;
+	});
+
+	return sections;
+};
+
+const getPaginationRow = (page: number, total: number) =>
+	new ActionRowBuilder<ButtonBuilder>().addComponents(
+		new ButtonBuilder()
+			.setCustomId('prev')
+			.setLabel('◀')
+			.setStyle(ButtonStyle.Secondary)
+			.setDisabled(page === 0),
+		new ButtonBuilder()
+			.setCustomId('next')
+			.setLabel('▶')
+			.setStyle(ButtonStyle.Secondary)
+			.setDisabled(page === total - 1)
+	);
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('info-restricted')
 		.setDescription(
-			"Enter a Pokemon's name to check its restricted stats. (e.g. Restricted or Banned)"
+			'Enter a Pokemon, Ability or Move to check its restricted stats. (e.g. Restricted or Banned)'
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
-			option.setName('pokemon').setDescription('Pokemon Name').setRequired(true)
+			option.setName('name').setDescription('Name').setRequired(false)
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
-		const query = interaction.options.getString('pokemon', true);
+		const query = interaction.options.getString('name', false) ?? null;
 
 		try {
 			await interaction.deferReply();
 
-			const results = fuse.search(query);
+			if (query) {
+				const results = fuse.search(query);
 
-			if (results.length === 0) {
-				await interaction.editReply(
-					`❌ No legendary or mythical Pokémon found for **${query}**.\n\n Only Legendary, Mythicals, Megas, Battle Bond, and Paradox are Restricted.`
-				);
-				return;
+				if (results.length === 0) {
+					await interaction.editReply(
+						`❌ No Pokémon, Move, or Ability found for **${query}**.
+					\n\n The Restricted list is predominantly composed of Pokemon, Moves, and Abilities which are related to the following groups: Legendary, Mythical, Mega, Battle Bond, or Paradox.`
+					);
+					return;
+				}
+
+				const best = results[0].item;
+
+				const replyEmbed = new EmbedBuilder()
+					.setColor(best.status === 'Restricted' ? 0x4ecdc4 : 0xff0000)
+					.setTitle(`Restriction Status: ${query}`)
+					.setDescription(
+						`${best.name} was the closest match ` +
+							`Please remember all Mega Pokemon & Battle Bond are **RESTRICTED**`
+					);
+
+				await interaction.editReply({
+					embeds: [replyEmbed],
+				});
+			} else {
+				const embeds = buildPaginatedEmbeds(restrictedRegistry);
+
+				let page = 0;
+
+				const message = await interaction.editReply({
+					embeds: [embeds[page]],
+					components: [getPaginationRow(page, embeds.length)],
+				});
+
+				const collector = message.createMessageComponentCollector({
+					time: 5 * 60_000,
+				});
+
+				collector.on('collect', async (i) => {
+					if (i.user.id !== interaction.user.id) {
+						await i.reply({ content: 'Not for you.', ephemeral: true });
+						return;
+					}
+
+					if (i.customId === 'prev') page--;
+					if (i.customId === 'next') page++;
+
+					await i.update({
+						embeds: [embeds[page]],
+						components: [getPaginationRow(page, embeds.length)],
+					});
+				});
+
+				collector.on('end', async () => {
+					await message.edit({ components: [] });
+				});
 			}
-
-			const best = results[0].item;
-
-			const replyEmbed = new EmbedBuilder()
-				.setColor(best.status === 'Restricted' ? 0x4ecdc4 : 0xff0000)
-				.setTitle(`Restriction Status: ${query}`)
-				.setDescription(
-					`${best.name} was the closest match and belongs to the **${best.group}** group.\n` +
-						`It falls under the category of **${best.status.toLowerCase()}** Pokémon.\n\n` +
-						`Please remember all Mega Pokemon & Battle Bond are **RESTRICTED**`
-				);
-
-			await interaction.editReply({
-				embeds: [replyEmbed],
-			});
 		} catch (error) {
 			console.error(error);
 
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
-				.setTitle('❌ Pokémon Not Found')
+				.setTitle('❌ Querry Not Found')
 				.setDescription(
-					`An error occured while searching for "${query}". Please @kyuukestu.`
+					`An error occurred while searching for "${query}". Please @kyuukestu.`
 				)
 				.addFields({
 					name: '💡 Error Details',
