@@ -26,8 +26,32 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Paradox Duo',
 	},
 	{
+		name: 'Orichalcum Pulse',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Paradox Duo',
+	},
+	{
+		name: 'Collision Course',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Paradox Duo',
+	},
+	{
 		name: 'Miraidon',
 		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Paradox Duo',
+	},
+	{
+		name: 'Hadron Engine',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Paradox Duo',
+	},
+	{
+		name: 'Electro Drift',
+		type: 'move',
 		status: 'Restricted',
 		group: 'Paradox Duo',
 	},
@@ -40,8 +64,20 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Treasures of Ruin',
 	},
 	{
+		name: 'Tablets of Ruin',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
 		name: 'Chien-Pao',
 		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
+		name: 'Sword of Ruin',
+		type: 'ability',
 		status: 'Restricted',
 		group: 'Treasures of Ruin',
 	},
@@ -52,8 +88,26 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Treasures of Ruin',
 	},
 	{
+		name: 'Vessel of Ruin',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
 		name: 'Chi-Yu',
 		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
+		name: 'Beads of Ruin',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Treasures of Ruin',
+	},
+	{
+		name: 'Ruination',
+		type: 'move',
 		status: 'Restricted',
 		group: 'Treasures of Ruin',
 	},
@@ -466,7 +520,7 @@ const buildPaginatedEmbeds = (entries: RestrictionEntry[]) => {
 			pages.push(
 				new EmbedBuilder()
 					.setTitle(
-						`Restricted Registry: Pokemon ${
+						`Restricted Registry: ${
 							type.charAt(0).toUpperCase() + type.slice(1)
 						}`
 					)
@@ -526,10 +580,10 @@ export default {
 
 				const replyEmbed = new EmbedBuilder()
 					.setColor(best.status === 'Restricted' ? 0x4ecdc4 : 0xff0000)
-					.setTitle(`Restriction Status: ${query}`)
+					.setTitle(`Restriction Status: ${best.name}`)
 					.setDescription(
-						`${best.name} was the closest match ` +
-							`Please remember all Mega Pokemon & Battle Bond are **RESTRICTED**`
+						`Status: ${best.status}\nType: ${best.type}\nGroup: ${best.group}
+					\n\nPlease remember all Mega Pokemon & Battle Bond are **RESTRICTED**`
 					);
 
 				await interaction.editReply({
@@ -539,6 +593,12 @@ export default {
 				const embeds = buildPaginatedEmbeds(restrictedRegistry);
 
 				let page = 0;
+				
+				if (embeds.length === 0) {
+	await interaction.editReply('No restricted entries available.');
+	return;
+}
+
 
 				const message = await interaction.editReply({
 					embeds: [embeds[page]],
@@ -573,13 +633,13 @@ export default {
 
 			const errorEmbed = new EmbedBuilder()
 				.setColor(0xff0000)
-				.setTitle('❌ Querry Not Found')
+				.setTitle('❌ Query Not Found')
 				.setDescription(
 					`An error occurred while searching for "${query}". Please @kyuukestu.`
 				)
 				.addFields({
 					name: '💡 Error Details',
-					value: `${error}`,
+					value: error instanceof Error ? error.message : String(error),
 				});
 
 			if (interaction.replied || interaction.deferred) {
