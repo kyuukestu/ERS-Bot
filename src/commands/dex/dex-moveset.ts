@@ -90,6 +90,18 @@ const processMoveData = (data: unknown): NormalizedMove[] => {
 	}));
 };
 
+const getLowestLevelUp = (methods: MoveMethod[]): number | undefined => {
+	const levels = methods
+		.filter(
+			(m) => m.method === 'level-up' && m.level !== undefined && m.level > 0,
+		)
+		.map((m) => m.level);
+
+	if (levels.length === 0) return undefined;
+	const filteredLevels = levels.filter((level) => typeof level === 'number');
+	return Math.min(...filteredLevels);
+};
+
 const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 	const grouped: GroupedMoves = {
 		'level-up': [],
@@ -103,18 +115,31 @@ const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 		const uniqueMethods = new Set(move.methods.map((m) => m.method));
 
 		for (const method of uniqueMethods) {
-			const detail = move.methods.find((m) => m.method === method);
+			if (method === 'level-up') {
+				grouped['level-up'].push({
+					name: formatMoveName(move.name),
+					level: getLowestLevelUp(move.methods),
+					version: '',
+					otherMethods: [...uniqueMethods].filter((m) => m !== 'level-up'),
+				});
+				continue;
+			}
 
+			// non–level-up methods
 			grouped[method].push({
 				name: formatMoveName(move.name),
-				level: detail?.level,
-				version: detail?.version ?? '',
+				version: move.methods.find((m) => m.method === method)?.version ?? '',
 				otherMethods: [...uniqueMethods].filter((m) => m !== method),
 			});
 		}
 	}
 
-	grouped['level-up'].sort((a, b) => (a.level ?? 0) - (b.level ?? 0));
+	grouped['level-up'].sort(
+		(a, b) =>
+			(a.level ?? Number.MAX_SAFE_INTEGER) -
+			(b.level ?? Number.MAX_SAFE_INTEGER),
+	);
+
 	for (const key of ['machine', 'tutor', 'egg', 'other'] as const) {
 		grouped[key].sort((a, b) => a.name.localeCompare(b.name));
 	}

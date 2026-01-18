@@ -8,6 +8,7 @@ import {
 	outbackguildId,
 	KalosId,
 	syncId,
+	syncLaeleId,
 	token,
 	mhapokeId,
 } from './src/config.json';
@@ -36,7 +37,7 @@ async function loadCommands(dirPath = path.join(__dirname, './src/commands')) {
 					console.log(`Prepared command: ${commandModule.data.name}`);
 				} else {
 					console.warn(
-						`[WARNING] The command at ${fullPath} is missing "data" or "execute".`
+						`[WARNING] The command at ${fullPath} is missing "data" or "execute".`,
 					);
 				}
 			} catch (error) {
@@ -55,7 +56,7 @@ const rest = new REST().setToken(token);
 (async () => {
 	try {
 		console.log(
-			`Started refreshing ${commands.length} application (/) commands.`
+			`Started refreshing ${commands.length} application (/) commands.`,
 		);
 
 		// Deploy to first guild
@@ -63,31 +64,37 @@ const rest = new REST().setToken(token);
 			Routes.applicationGuildCommands(clientId, guildId),
 			{
 				body: commands,
-			}
+			},
 		);
 
 		// Deploy to second guild (outbackguildId)
 		const dataO: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, outbackguildId),
-			{ body: commands }
+			{ body: commands },
 		);
 
 		// Deploy to third guild (syncId)
 		const data1: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, syncId),
-			{ body: commands }
+			{ body: commands },
 		);
 
 		// Deploy to foruth guild (syncId)
 		const data2: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, KalosId),
-			{ body: commands }
+			{ body: commands },
 		);
 
 		// Deploy to fifth guild (mhapokeid)
 		const data3: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, mhapokeId),
-			{ body: commands }
+			{ body: commands },
+		);
+
+		// Deploy to sixth guild (syncLaeleId)
+		const data4: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, syncLaeleId),
+			{ body: commands },
 		);
 
 		console.log(
@@ -95,7 +102,8 @@ const rest = new REST().setToken(token);
 				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
 				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.` +
 				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.` +
-				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.`
+				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.` +
+				`\nSuccessfully reloaded ${data4.length} application (/) commands for guild ${syncLaeleId}.`,
 		);
 	} catch (error) {
 		console.error('Error deploying commands:', error);
