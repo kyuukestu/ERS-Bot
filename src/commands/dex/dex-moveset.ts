@@ -132,11 +132,11 @@ const formatMoveLine = (move: GroupedMove, method: LearnMethodKey): string => {
 
 	if (method === 'level-up') {
 		return move.level
-			? `${config.emoji} **${move.name}** Lv.${move.level}${altIcons} (${version})`
-			: `${config.emoji} **${move.name}** Start${altIcons} (${version})`;
+			? `Gen: ${version} | ${config.emoji} **${move.name}** Lv.${move.level}${altIcons} `
+			: `Gen: ${version} | ${config.emoji} **${move.name}** Start${altIcons} `;
 	}
 
-	return `${config.emoji} **${move.name}** ${altIcons} (${version})`;
+	return `Gen: ${version} | ${config.emoji} **${move.name}** ${altIcons} `;
 };
 
 /* ============================================================
