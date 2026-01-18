@@ -120,10 +120,22 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Legendary Birds',
 	},
 	{
+		name: 'Freezing Glare',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Legendary Bird (Galar)',
+	},
+	{
 		name: 'Zapdos',
 		type: 'pokemon',
 		status: 'Restricted',
 		group: 'Legendary Birds',
+	},
+	{
+		name: 'Thunderous Kick',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Legendary Birds (Galar)',
 	},
 	{
 		name: 'Moltres',
@@ -131,13 +143,56 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Restricted',
 		group: 'Legendary Birds',
 	},
+	{
+		name: 'Fiery Wrath',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Legendary Birds (Galar)',
+	},
 
 	// Weather Trio
 	{ name: 'Kyogre', type: 'pokemon', status: 'Banned', group: 'Weather Trio' },
+	{
+		name: 'Primordial Sea',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
+	{
+		name: 'Origin Pulse',
+		type: 'move',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
 	{ name: 'Groudon', type: 'pokemon', status: 'Banned', group: 'Weather Trio' },
+	{
+		name: 'Desolate Land',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
+	{
+		name: 'Precipice Blades',
+		type: 'move',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
+
 	{
 		name: 'Rayquaza',
 		type: 'pokemon',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
+	{
+		name: 'Delta Stream',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Weather Trio',
+	},
+	{
+		name: "Dragon's Ascent",
+		type: 'move',
 		status: 'Banned',
 		group: 'Weather Trio',
 	},
@@ -150,8 +205,26 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Creation Myths',
 	},
 	{
+		name: 'Multitype',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
+		name: 'Judgement',
+		type: 'move',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
 		name: 'Dialga',
 		type: 'pokemon',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
+		name: 'Roar of Time',
+		type: 'move',
 		status: 'Banned',
 		group: 'Creation Myths',
 	},
@@ -162,8 +235,20 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Creation Myths',
 	},
 	{
+		name: 'Spatial Rend',
+		type: 'move',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
 		name: 'Giratina',
 		type: 'pokemon',
+		status: 'Banned',
+		group: 'Creation Myths',
+	},
+	{
+		name: 'Shadow Force',
+		type: 'move',
 		status: 'Banned',
 		group: 'Creation Myths',
 	},
@@ -214,8 +299,20 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Legendary Giants',
 	},
 	{
+		name: 'Transistor',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+	{
 		name: 'Regidrago',
 		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
+	{
+		name: "Dragon's Maw",
+		type: 'ability',
 		status: 'Restricted',
 		group: 'Legendary Giants',
 	},
@@ -227,14 +324,34 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Banned',
 		group: 'Lord of Giants',
 	},
+	{
+		name: 'Slow Start',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Legendary Giants',
+	},
 
 	// Eon Duo
 	{ name: 'Latios', type: 'pokemon', status: 'Restricted', group: 'Eon Duo' },
+	{
+		name: 'Lustre Purge',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Eon Duo',
+	},
 	{ name: 'Latias', type: 'pokemon', status: 'Restricted', group: 'Eon Duo' },
+	{ name: 'Mist Ball', type: 'move', status: 'Restricted', group: 'Eon Duo' },
 
 	// Tower Duo
 	{ name: 'Lugia', type: 'pokemon', status: 'Banned', group: 'Tower Duo' },
+	{ name: 'Aeroblast', type: 'move', status: 'Restricted', group: 'Tower Duo' },
 	{ name: 'Ho-oh', type: 'pokemon', status: 'Banned', group: 'Tower Duo' },
+	{
+		name: 'Sacred Fire',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Tower Duo',
+	},
 
 	// Lunar Duo
 	{
@@ -244,8 +361,20 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		group: 'Lunar Duo',
 	},
 	{
+		name: 'Lunar Dance',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Lunar Duo',
+	},
+	{
 		name: 'Darkrai',
 		type: 'pokemon',
+		status: 'Restricted',
+		group: 'Lunar Duo',
+	},
+	{
+		name: 'Dark Void',
+		type: 'move',
 		status: 'Restricted',
 		group: 'Lunar Duo',
 	},
@@ -275,6 +404,12 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Restricted',
 		group: 'Swords of Justice',
 	},
+	{
+		name: 'Secret Sword',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Swords of Justice',
+	},
 
 	// Lake Guardians
 	{
@@ -295,16 +430,68 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Restricted',
 		group: 'Lake Guardians',
 	},
+	{
+		name: 'Mystical Power',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Lake Guardians',
+	},
 
 	// Tao Trio
 	{ name: 'Reshiram', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Fusion Flare', type: 'move', status: 'Banned', group: 'Tao Trio' },
+	{
+		name: 'Turboblaze',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Tao Trio',
+	},
 	{ name: 'Zekrom', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Fusion Bold', type: 'move', status: 'Banned', group: 'Tao Trio' },
+	{
+		name: 'Teravolt',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Tao Trio',
+	},
+
 	{ name: 'Kyurem', type: 'pokemon', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Glaciate', type: 'move', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Ice Burn', type: 'move', status: 'Banned', group: 'Tao Trio' },
+	{ name: 'Freeze Shock', type: 'move', status: 'Banned', group: 'Tao Trio' },
 
 	// Aura Trio
 	{ name: 'Yveltal', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Oblivion Wing', type: 'move', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Dark Aura', type: 'ability', status: 'Banned', group: 'Aura Trio' },
 	{ name: 'Xerneas', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+
+	{ name: 'Geomancy', type: 'move', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Fairy Aura', type: 'ability', status: 'Banned', group: 'Aura Trio' },
+
 	{ name: 'Zygarde', type: 'pokemon', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Core Enforcer', type: 'move', status: 'Banned', group: 'Aura Trio' },
+	{ name: 'Nihil Light', type: 'move', status: 'Banned', group: 'Aura Trio' },
+	{
+		name: 'Thousand Arrows',
+		type: 'move',
+		status: 'Banned',
+		group: 'Aura Trio',
+	},
+	{
+		name: 'Thousand Waves',
+		type: 'move',
+		status: 'Banned',
+		group: 'Aura Trio',
+	},
+
+	{ name: 'Aura Break', type: 'ability', status: 'Banned', group: 'Aura Trio' },
+	{
+		name: 'Power Construct',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Aura Trio',
+	},
 
 	// Guardian Deities
 	{
@@ -331,6 +518,12 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Restricted',
 		group: 'Guardian Deities',
 	},
+	{
+		name: "Nature's Madness",
+		type: 'move',
+		status: 'Restricted',
+		group: 'Guardian Deities',
+	},
 
 	// Celestial
 	{ name: 'Cosmog', type: 'pokemon', status: 'Banned', group: 'Celestial Duo' },
@@ -346,10 +539,57 @@ export const restrictedRegistry: RestrictionEntry[] = [
 		status: 'Banned',
 		group: 'Celestial Duo',
 	},
+	{
+		name: 'Sunsteel Strike',
+		type: 'move',
+		status: 'Banned',
+		group: 'Celestial Duo',
+	},
+	{
+		name: 'Full Metal Body',
+		type: 'ability',
+		status: 'Banned',
+		group: 'Celestial Duo',
+	},
 	{ name: 'Lunala', type: 'pokemon', status: 'Banned', group: 'Celestial Duo' },
-
+	{
+		name: 'Shadow Shield',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Celestial Duo',
+	},
+	{
+		name: 'Moongeist Beam',
+		type: 'move',
+		status: 'Banned',
+		group: 'Celestial Duo',
+	},
 	// Singular entities
 	{ name: 'Necrozma', type: 'pokemon', status: 'Banned', group: 'Light' },
+	{
+		name: 'Prism Armor',
+		type: 'ability',
+		status: 'Restricted',
+		group: 'Light',
+	},
+	{
+		name: 'Photon Geyser',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Light',
+	},
+	{
+		name: 'Prismatic Laser',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Light',
+	},
+	{
+		name: 'Light that Burns the Sky',
+		type: 'move',
+		status: 'Restricted',
+		group: 'Light',
+	},
 	{ name: 'Eternatus', type: 'pokemon', status: 'Banned', group: 'Space' },
 	{ name: 'Terapagos', type: 'pokemon', status: 'Banned', group: 'Terastal' },
 
@@ -496,10 +736,23 @@ const groupByType = (entries: RestrictionEntry[]) => {
 const sortAlphabetically = (a: RestrictionEntry, b: RestrictionEntry) =>
 	a.name.localeCompare(b.name);
 
-const buildPaginatedEmbeds = (entries: RestrictionEntry[]) => {
+const buildPaginatedEmbeds = (
+	entries: RestrictionEntry[],
+	category?: RestrictionType | null
+) => {
 	const ITEMS_PER_PAGE = 20;
 
-	const grouped = groupByType(entries);
+	let grouped: Record<RestrictionType, RestrictionEntry[]>;
+
+	if (category) {
+		// Only include the selected category
+		grouped = {
+			[category]: entries.filter((e) => e.type === category),
+		} as Record<RestrictionType, RestrictionEntry[]>;
+	} else {
+		// Group by type normally
+		grouped = groupByType(entries);
+	}
 
 	const sections = Object.entries(grouped).flatMap(([type, items]) => {
 		if (items.length === 0) return [];
@@ -557,10 +810,22 @@ export default {
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option.setName('name').setDescription('Name').setRequired(false)
+		)
+		.addStringOption((option: SlashCommandStringOption) =>
+			option
+				.setName('category')
+				.setChoices(
+					{ name: 'Pokemon', value: 'pokemon' },
+					{ name: 'Move', value: 'move' },
+					{ name: 'Ability', value: 'ability' }
+				)
+				.setDescription('Category')
+				.setRequired(false)
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
 		const query = interaction.options.getString('name', false) ?? null;
+		const category = interaction.options.getString('category', false) ?? null;
 
 		try {
 			await interaction.deferReply();
@@ -590,15 +855,17 @@ export default {
 					embeds: [replyEmbed],
 				});
 			} else {
-				const embeds = buildPaginatedEmbeds(restrictedRegistry);
+				const embeds = buildPaginatedEmbeds(
+					restrictedRegistry,
+					category as RestrictionType | null
+				);
 
 				let page = 0;
-				
-				if (embeds.length === 0) {
-	await interaction.editReply('No restricted entries available.');
-	return;
-}
 
+				if (embeds.length === 0) {
+					await interaction.editReply('No restricted entries available.');
+					return;
+				}
 
 				const message = await interaction.editReply({
 					embeds: [embeds[page]],

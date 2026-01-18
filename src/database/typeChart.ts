@@ -279,7 +279,7 @@ const TYPE_CHART: Record<PokemonType, Record<PokemonType, number>> = {
 		rock: 1,
 		ghost: 2,
 		dragon: 1,
-		dark: 2,
+		dark: 0.5,
 		steel: 1,
 		fairy: 1,
 	},
