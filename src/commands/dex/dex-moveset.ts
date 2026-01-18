@@ -16,7 +16,7 @@ import {
 import { pokemonEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';
-import { version_convert } from '~/utility/formatting/formatVersion';
+// import { version_convert } from '~/utility/formatting/formatVersion';
 
 /* ============================================================
  * Types & Config
@@ -128,15 +128,15 @@ const formatMoveLine = (move: GroupedMove, method: LearnMethodKey): string => {
 		move.otherMethods.length > 0
 			? ` ${move.otherMethods.map((m) => learnMethodConfig[m].emoji).join('')}`
 			: '';
-	const version = version_convert(move.version);
+	// const version = version_convert(move.version);
 
 	if (method === 'level-up') {
 		return move.level
-			? `Lv.${move.level} | G-${version} - **${move.name}** ${altIcons}`
-			: `Start.${move.level} | G-${version} - **${move.name}** ${altIcons}`;
+			? `Lv.${move.level} | **${move.name}** ${altIcons}`
+			: `Start.${move.level} **${move.name}** ${altIcons}`;
 	}
 
-	return `G-${version} | **${move.name}** ${altIcons} `;
+	return `**${move.name}** ${altIcons} `;
 };
 
 /* ============================================================
