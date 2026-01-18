@@ -123,7 +123,7 @@ const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 };
 
 const formatMoveLine = (move: GroupedMove, method: LearnMethodKey): string => {
-	const config = learnMethodConfig[method];
+	// const config = learnMethodConfig[method];
 	const altIcons =
 		move.otherMethods.length > 0
 			? ` ${move.otherMethods.map((m) => learnMethodConfig[m].emoji).join('')}`
@@ -132,11 +132,11 @@ const formatMoveLine = (move: GroupedMove, method: LearnMethodKey): string => {
 
 	if (method === 'level-up') {
 		return move.level
-			? `Gen: ${version} | ${config.emoji} **${move.name}** Lv.${move.level}${altIcons} `
-			: `Gen: ${version} | ${config.emoji} **${move.name}** Start${altIcons} `;
+			? `Lv.${move.level} | G-${version} - **${move.name}** ${altIcons}`
+			: `Start.${move.level} | G-${version} - **${move.name}** ${altIcons}`;
 	}
 
-	return `Gen: ${version} | ${config.emoji} **${move.name}** ${altIcons} `;
+	return `G-${version} | **${move.name}** ${altIcons} `;
 };
 
 /* ============================================================
