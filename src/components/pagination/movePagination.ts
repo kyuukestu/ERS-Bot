@@ -10,14 +10,14 @@ import { typeColors } from '~/ui/colors';
 export const movePaginatedList = async (
 	interaction: ChatInputCommandInteraction,
 	moveName: string,
-	learnedBy: string[]
+	learnedBy: string[],
 ) => {
 	const monsPerPage = 10;
 	let currentPage = 0;
 
 	// Sort the Pokémon names alphabetically
 	const sortedLearnedBy = [...learnedBy].sort((a, b) =>
-		a.localeCompare(b, undefined, { sensitivity: 'base' })
+		a.localeCompare(b, undefined, { sensitivity: 'base' }),
 	);
 
 	const totalPages = Math.ceil(sortedLearnedBy.length / monsPerPage);
@@ -58,13 +58,14 @@ export const movePaginatedList = async (
 			.setCustomId('next')
 			.setLabel('➡️ Next')
 			.setStyle(ButtonStyle.Secondary)
-			.setDisabled(currentPage >= totalPages - 1)
+			.setDisabled(currentPage >= totalPages - 1),
 	);
 
 	const message = await interaction.followUp({
 		embeds: [generateEmbed(currentPage)],
 		components: [row.toJSON()],
 		fetchReply: true,
+		flags: MessageFlags.Ephemeral,
 	});
 
 	// Create a collector for button interactions
@@ -97,7 +98,7 @@ export const movePaginatedList = async (
 				.setCustomId('next')
 				.setLabel('➡️ Next')
 				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(currentPage >= totalPages - 1)
+				.setDisabled(currentPage >= totalPages - 1),
 		);
 
 		await buttonInteraction.update({
@@ -117,7 +118,7 @@ export const movePaginatedList = async (
 				.setCustomId('next')
 				.setLabel('➡️ Next')
 				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(true)
+				.setDisabled(true),
 		);
 
 		message.edit({ components: [disabledRow.toJSON()] }).catch(console.error);

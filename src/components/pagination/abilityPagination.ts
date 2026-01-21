@@ -4,18 +4,19 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	MessageFlags,
 } from 'discord.js';
 export const abilityPaginationList = async (
 	interaction: ChatInputCommandInteraction,
 	abilityName: string,
-	pokemon: string[]
+	pokemon: string[],
 ) => {
 	const monsPerPage = 10;
 	let currentPage = 0;
 
 	// Sort the Pokémon names alphabetically
 	const sortedPossession = [...pokemon].sort((a, b) =>
-		a.localeCompare(b, undefined, { sensitivity: 'base' })
+		a.localeCompare(b, undefined, { sensitivity: 'base' }),
 	);
 
 	const totalPages = Math.ceil(sortedPossession.length / monsPerPage);
@@ -55,13 +56,14 @@ export const abilityPaginationList = async (
 			.setCustomId('next')
 			.setLabel('➡️ Next')
 			.setStyle(ButtonStyle.Secondary)
-			.setDisabled(currentPage >= totalPages - 1)
+			.setDisabled(currentPage >= totalPages - 1),
 	);
 
 	const message = await interaction.followUp({
 		embeds: [generateEmbed(currentPage)],
 		components: [row.toJSON()],
 		fetchReply: true,
+		flags: MessageFlags.Ephemeral,
 	});
 
 	// Create a collector for button interactions
@@ -85,7 +87,7 @@ export const abilityPaginationList = async (
 				.setCustomId('next')
 				.setLabel('➡️ Next')
 				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(currentPage >= totalPages - 1)
+				.setDisabled(currentPage >= totalPages - 1),
 		);
 
 		await buttonInteraction.update({
@@ -105,7 +107,7 @@ export const abilityPaginationList = async (
 				.setCustomId('next')
 				.setLabel('➡️ Next')
 				.setStyle(ButtonStyle.Secondary)
-				.setDisabled(true)
+				.setDisabled(true),
 		);
 
 		message.edit({ components: [disabledRow.toJSON()] }).catch(console.error);

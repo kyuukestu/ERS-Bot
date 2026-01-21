@@ -170,7 +170,7 @@ const formatMoveLine = (move: GroupedMove, method: LearnMethodKey): string => {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-moveset')
+		.setName('dex-learn-set')
 		.setDescription("View a Pokémon's learnable moves.")
 		.addSubcommand((sub) =>
 			sub
