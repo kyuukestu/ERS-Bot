@@ -2,6 +2,7 @@ import {
 	SlashCommandBuilder,
 	SlashCommandStringOption,
 	EmbedBuilder,
+	MessageFlags,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { moveEndPoint } from '~/api/endpoints';
@@ -9,6 +10,7 @@ import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { extractMoveInfo } from '~/api/dataExtraction/extractMoveInfo.ts';
 import { createAttackEmbed } from '~/components/embeds/createAttackEmbed';
 import { movePaginatedList } from '~/components/pagination/movePagination';
+import { matchMoveName } from '~/utility/fuzzy-search/moves.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -30,8 +32,11 @@ export default {
 
 		try {
 			await interaction.deferReply();
+			
+			const result = matchMoveName(moveName);
 
-			const moveInfo = extractMoveInfo(await moveEndPoint(moveName));
+			const moveInfo = extractMoveInfo(await moveEndPoint(result.bestMatch.name));
+			
 
 			// Create an embed with enhanced layout
 			const embed = createAttackEmbed(interaction, moveInfo);
@@ -44,6 +49,15 @@ export default {
 				moveInfo.name,
 				moveInfo.learned_by_pokemon
 			);
+			
+			await interaction.followUp({
+				content: `Best Match for ${moveName}: ${
+					result.bestMatch.name
+				}\n\nOther matches:\n${result.otherMatches
+					.map((move) => move.name)
+					.join('\n')}`,
+				flags: MessageFlags.Ephemeral,
+			})
 		} catch (error) {
 			console.error('Error fetching move data:', error);
 
