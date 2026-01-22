@@ -389,6 +389,8 @@ export default {
 					embeds: [generateEmbed()],
 					components: updatedComponents,
 				});
+
+				collector.resetTimer();
 			});
 
 			collector.on('end', async () => {
