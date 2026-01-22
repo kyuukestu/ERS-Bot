@@ -10,7 +10,7 @@ import {
 	renderSummaryBlock,
 } from '~/utility/typeEffectivenessCanvas.ts';
 import { getTypeChart } from '~/database/typeChart.ts';
-import { TYPE_CHOICES } from '~/database/typeChoices.ts';
+import { typeChoices } from '~/database/typeChoices.ts';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -26,43 +26,38 @@ async function ensureDir() {
 	}
 }
 
-export const typeChoices = TYPE_CHOICES.map((type) => ({
-	name: type.charAt(0).toUpperCase() + type.slice(1),
-	value: type,
-}));
-
 export default {
 	data: new SlashCommandBuilder()
 		.setName('dex-type-effectiveness')
 		.setDescription(
-			'Shows type effectiveness for a combination of up to three types.'
+			'Shows type effectiveness for a combination of up to three types.',
 		)
 		.addStringOption((opt) =>
 			opt
 				.setName('type-1')
 				.setDescription('First Type')
 				.setRequired(true)
-				.addChoices(...typeChoices)
+				.addChoices(...typeChoices),
 		)
 		.addStringOption((opt) =>
 			opt
 				.setName('type-2')
 				.setDescription('Second Type')
 				.setRequired(false)
-				.addChoices(...typeChoices)
+				.addChoices(...typeChoices),
 		)
 		.addStringOption((opt) =>
 			opt
 				.setName('type-3')
 				.setDescription('Third Type')
 				.setRequired(false)
-				.addChoices(...typeChoices)
+				.addChoices(...typeChoices),
 		)
 		.addBooleanOption((opt) =>
 			opt
 				.setName('detailed')
 				.setDescription('Show the full effectiveness grid more prominently')
-				.setRequired(false)
+				.setRequired(false),
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
 		try {
@@ -119,7 +114,7 @@ export default {
 							title,
 							offense,
 							defense,
-					  })
+						})
 					: await renderSummaryBlock({ offense, defense });
 
 				await fs.writeFile(filepath, buffer);
@@ -133,7 +128,7 @@ export default {
 		} catch (err) {
 			console.error('Error executing dex-type-effectiveness:', err);
 			await interaction.editReply(
-				'An error occurred while processing your request.'
+				'An error occurred while processing your request.',
 			);
 		}
 	},
