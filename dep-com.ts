@@ -11,6 +11,7 @@ import {
 	syncLaeleId,
 	token,
 	mhapokeId,
+	TAE,
 } from './src/config.json';
 
 const commands: any[] = [];
@@ -97,6 +98,11 @@ const rest = new REST().setToken(token);
 			{ body: commands },
 		);
 
+		const data5: any = await rest.put(
+			Routes.applicationGuildCommands(clientId, TAE),
+			{ body: commands },
+		);
+
 		console.log(
 			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
 				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
@@ -104,6 +110,7 @@ const rest = new REST().setToken(token);
 				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.` +
 				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.` +
 				`\nSuccessfully reloaded ${data4.length} application (/) commands for guild ${syncLaeleId}.`,
+			`\nSuccessfully reloaded ${data5.length} application (/) commands for guild ${TAE}.`,
 		);
 	} catch (error) {
 		console.error('Error deploying commands:', error);
