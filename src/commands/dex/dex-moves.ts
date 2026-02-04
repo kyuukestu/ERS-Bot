@@ -1,10 +1,10 @@
 import {
+	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	type SlashCommandStringOption,
 	type SlashCommandIntegerOption,
 	EmbedBuilder,
 	MessageFlags,
-	type ChatInputCommandInteraction,
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
@@ -19,29 +19,65 @@ import { matchMoveName } from '~/utility/fuzzy-search/moves.ts';
 import { typeChoices } from '~/database/typeChoices.ts';
 import movesList from '~/../public/json/moves-list.json';
 
+export type MoveType = {
+	id: number;
+	name: string;
+	type: string;
+	category: string;
+	power?: number | null;
+	pp: number | null;
+	accuracy?: number | null;
+	priority: number;
+	target: string;
+	effect?: string | null;
+	stat_changes: { change: number; stat: { name: string; url: string } }[];
+	meta?: {
+		ailment?: {
+			name: string;
+			url: string;
+		} | null;
+		ailment_chance: number;
+		category: {
+			name: string;
+			url: string;
+		};
+		crit_rate: number;
+		drain?: number | null;
+		flinch_chance?: number | null;
+		healing?: number | null;
+		max_hits?: number | null;
+		max_turns?: number | null;
+		min_hits?: number | null;
+		min_turns?: number | null;
+		stat_chance?: number | null;
+	} | null;
+};
+
+export type MoveListType = MoveType[];
+
+const filterLabels = {
+	type: 'Type',
+	minPower: 'Min Power',
+	maxPower: 'Max Power',
+	minAcc: 'Min Accuracy',
+	maxAcc: 'Max Accuracy',
+	priority: 'Priority',
+	category: 'Category',
+};
+
 async function sendPaginatedMoveEmbed({
 	interaction,
 	moves,
 	activeFilters = {},
 	pageSize = 10,
-}) {
-	if (!moves.length) {
-		return interaction.editReply({
-			content: 'No moves matched your filters.',
-			ephemeral: true,
-		});
-	}
-
-	const filterLabels = {
-		type: 'Type',
-		minPower: 'Min Power',
-		maxPower: 'Max Power',
-		minAcc: 'Min Accuracy',
-		maxAcc: 'Max Accuracy',
-		priority: 'Priority',
-		category: 'Category',
+}: {
+	interaction: ChatInputCommandInteraction;
+	moves: MoveListType;
+	activeFilters?: {
+		[k: string]: string | number | null;
 	};
-
+	pageSize?: number;
+}) {
 	const filterText =
 		Object.keys(activeFilters).length > 0
 			? Object.entries(activeFilters)
@@ -49,12 +85,12 @@ async function sendPaginatedMoveEmbed({
 					.join(' • ')
 			: 'No filters applied';
 
-	const pages = [];
+	const pages: MoveListType[] = [];
 	for (let i = 0; i < moves.length; i += pageSize) {
 		pages.push(moves.slice(i, i + pageSize));
 	}
 
-	const renderPage = (pageIndex) => {
+	const renderPage = (pageIndex: number) => {
 		const page = pages[pageIndex];
 
 		return new EmbedBuilder()
@@ -62,7 +98,7 @@ async function sendPaginatedMoveEmbed({
 			.setDescription(
 				page
 					.map(
-						(move) =>
+						(move: MoveType) =>
 							`**${move.name}** — ${move.type} ${move.category}` +
 							` | Pow: ${move.power ?? '—'} | Acc: ${move.accuracy ?? '—'}`,
 					)
@@ -88,8 +124,7 @@ async function sendPaginatedMoveEmbed({
 
 	const message = await interaction.editReply({
 		embeds: [renderPage(0)],
-		components: pages.length > 1 ? [buttons] : [],
-		fetchReply: true,
+		components: pages.length > 1 ? [buttons.toJSON()] : [],
 	});
 
 	if (pages.length === 1) return;
@@ -108,7 +143,7 @@ async function sendPaginatedMoveEmbed({
 
 		await i.update({
 			embeds: [renderPage(pageIndex)],
-			components: [buttons],
+			components: [buttons.toJSON()],
 		});
 
 		collector.resetTimer();
@@ -120,7 +155,7 @@ async function sendPaginatedMoveEmbed({
 				btn.setDisabled(true);
 			}
 		});
-		await message.edit({ components: [buttons] });
+		await message.edit({ components: [buttons.toJSON()] });
 	});
 }
 
@@ -302,26 +337,44 @@ export default {
 					category,
 				};
 
-				const predicates = {
-					type: (move, value) => move.type === value,
+				const predicates: Record<
+					string,
+					(move: MoveType, value: string | number) => boolean
+				> = {
+					type: (move, value) =>
+						typeof value === 'string' ? move.type === value : false,
 
-					minPower: (move, value) => move.power !== null && move.power >= value,
+					minPower: (move, value) =>
+						typeof value === 'number'
+							? move.power !== null && (move.power ?? 0) >= value
+							: false,
 
-					maxPower: (move, value) => move.power !== null && move.power <= value,
+					maxPower: (move: MoveType, value) =>
+						typeof value === 'number'
+							? move.power !== null && (move.power ?? 0) <= value
+							: false,
+					minAcc: (move: MoveType, value) =>
+						typeof value === 'number'
+							? move.accuracy !== null && (move.accuracy ?? 101) >= value
+							: false,
 
-					minAcc: (move, value) =>
-						move.accuracy !== null && move.accuracy >= value,
+					maxAcc: (move: MoveType, value) =>
+						typeof value === 'number'
+							? move.accuracy !== null && (move.accuracy ?? 101) <= value
+							: false,
 
-					maxAcc: (move, value) =>
-						move.accuracy !== null && move.accuracy <= value,
-
-					priority: (move, value) =>
-						move.priority != null && move.priority === value,
-					category: (move, value) =>
-						move.category != null && move.category === value,
+					priority: (move: MoveType, value) =>
+						typeof value === 'number'
+							? move.priority != null && move.priority === value
+							: false,
+					category: (move: MoveType, value) =>
+						typeof value === 'string'
+							? move.category != null && move.category === value
+							: false,
 				};
 
-				const isDeclared = (value) => value !== null && value !== undefined;
+				const isDeclared = (value: string | number | null) =>
+					value !== null && value !== undefined;
 
 				const filteredList = movesList.filter((move) => {
 					return Object.entries(filters).every(([key, value]) => {
@@ -333,6 +386,13 @@ export default {
 				const activeFilters = Object.fromEntries(
 					Object.entries(filters).filter(([, value]) => isDeclared(value)),
 				);
+
+				if (!filteredList.length) {
+					return interaction.followUp({
+						content: 'No moves matched your filters.',
+						flags: MessageFlags.Ephemeral,
+					});
+				}
 
 				await sendPaginatedMoveEmbed({
 					interaction,
