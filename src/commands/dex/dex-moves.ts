@@ -126,7 +126,7 @@ async function sendPaginatedMoveEmbed({
 	});
 }
 
-async function sendPaginatedPokemonEmber({ interaction, matches }) {
+async function sendPaginatedPokemonEmbed({ interaction, matches }) {
 	// ----- config -----
 	const PAGE_SIZE = 10;
 
@@ -141,7 +141,7 @@ async function sendPaginatedPokemonEmber({ interaction, matches }) {
 
 	// ----- main logic -----
 	if (matches.length === 0) {
-		await interaction.reply('No Pokémon match that criteria.');
+		await interaction.editReply('No Pokémon match that criteria.');
 		return;
 	}
 
@@ -179,7 +179,7 @@ async function sendPaginatedPokemonEmber({ interaction, matches }) {
 	}
 
 	// ----- send initial message -----
-	const message = await interaction.reply({
+	const message = await interaction.editReply({
 		embeds: [buildEmbed(currentPage)],
 		components: pages.length > 1 ? [buildRow(currentPage)] : [],
 		fetchReply: true,
@@ -448,9 +448,9 @@ export default {
 					activeFilters,
 				});
 			} catch (err) {
-				interaction.reply(`${err}`);
+				interaction.editReply(`${err}`);
 			}
-		} else if (group === 'pokemon' && sub === 'pokemon') {
+		} else if (group === 'filter-list' && sub === 'pokemon') {
 			const type1 = interaction.options.getString('type-1');
 			const type2 = interaction.options.getString('type-2');
 			const moveName = formatUserInput(
@@ -466,24 +466,29 @@ export default {
 						.flatMap((move) => move.learned_by_pokemon),
 				);
 
-				if (!learners) {
+				if (learners.size === 0) {
 					return interaction.editReply(`${moveName} was not found.`);
 				}
 
-				const matches = pokemonList.filter(
-					(p) =>
-						learners.has(p.name) &&
-						(p.types.includes(type1 ?? '') || p.types.includes(type2 ?? '')),
-				);
+				const matches = pokemonList.filter((p) => {
+					if (!learners.has(p.name)) return false;
 
-				await sendPaginatedPokemonEmber({
+					if (!type1 && !type2) return true;
+
+					return (
+						(type1 && p.types.includes(type1)) ||
+						(type2 && p.types.includes(type2))
+					);
+				});
+
+				await sendPaginatedPokemonEmbed({
 					interaction,
 					matches,
 				});
 
 				// Search pokemonlist for each learner then check if the types match
 			} catch (err) {
-				interaction.reply(`${err}`);
+				interaction.editReply(`${err}`);
 			}
 		}
 	},
