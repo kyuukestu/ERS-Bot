@@ -18,6 +18,8 @@ import { movePaginatedList } from '~/components/pagination/movePagination';
 import { matchMoveName } from '~/utility/fuzzy-search/moves.ts';
 import { typeChoices } from '~/database/typeChoices.ts';
 import movesList from '~/../public/json/moves-list.json';
+import pokemonList from '~/../public/json/pokemon-list.json';
+import moveLearnList from '~/../public/json/moves-learn-list.json';
 
 async function sendPaginatedMoveEmbed({
 	interaction,
@@ -124,6 +126,85 @@ async function sendPaginatedMoveEmbed({
 	});
 }
 
+async function sendPaginatedPokemonEmber({ interaction, matches }) {
+	// ----- config -----
+	const PAGE_SIZE = 10;
+
+	// ----- paginate helper -----
+	function paginate<T>(items: T[], pageSize: number): T[][] {
+		const pages: T[][] = [];
+		for (let i = 0; i < items.length; i += pageSize) {
+			pages.push(items.slice(i, i + pageSize));
+		}
+		return pages;
+	}
+
+	// ----- main logic -----
+	if (matches.length === 0) {
+		await interaction.reply('No Pokémon match that criteria.');
+		return;
+	}
+
+	const pages = paginate(matches, PAGE_SIZE);
+	let currentPage = 0;
+
+	// ----- embed builder -----
+	function buildEmbed(page: number) {
+		const pageData = pages[page];
+
+		return new EmbedBuilder()
+			.setTitle(`Matching Pokémon (${page + 1}/${pages.length})`)
+			.setDescription(
+				pageData
+					.map((p) => `• **${p.name}** (${p.types.join(', ')})`)
+					.join('\n'),
+			);
+	}
+
+	// ----- button row builder -----
+	function buildRow(page: number) {
+		return new ActionRowBuilder<ButtonBuilder>().addComponents(
+			new ButtonBuilder()
+				.setCustomId('prev')
+				.setLabel('Prev')
+				.setStyle(ButtonStyle.Secondary)
+				.setDisabled(page === 0),
+
+			new ButtonBuilder()
+				.setCustomId('next')
+				.setLabel('Next')
+				.setStyle(ButtonStyle.Secondary)
+				.setDisabled(page === pages.length - 1),
+		);
+	}
+
+	// ----- send initial message -----
+	const message = await interaction.reply({
+		embeds: [buildEmbed(currentPage)],
+		components: pages.length > 1 ? [buildRow(currentPage)] : [],
+		fetchReply: true,
+	});
+
+	// ----- interaction collector -----
+	const collector = message.createMessageComponentCollector({
+		time: 60_000,
+	});
+
+	collector.on('collect', (i) => {
+		if (i.customId === 'prev') currentPage--;
+		if (i.customId === 'next') currentPage++;
+
+		i.update({
+			embeds: [buildEmbed(currentPage)],
+			components: [buildRow(currentPage)],
+		});
+	});
+
+	collector.on('end', () => {
+		message.edit({ components: [] }).catch(() => {});
+	});
+}
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('dex-moves')
@@ -215,6 +296,27 @@ export default {
 									{ name: 'Special', value: 'special' },
 									{ name: 'Status', value: 'status' },
 								)
+								.setRequired(false),
+						),
+				)
+				.addSubcommand((sub) =>
+					sub
+						.setName('pokemon')
+						.setDescription(
+							'Provides a list of Pokemon that can learn the move.',
+						)
+						.addStringOption((option) =>
+							option
+								.setName('type-1')
+								.setDescription('Enter the move type.')
+								.addChoices(...typeChoices)
+								.setRequired(false),
+						)
+						.addStringOption((option) =>
+							option
+								.setName('type-2')
+								.setDescription('Enter the move type.')
+								.addChoices(...typeChoices)
 								.setRequired(false),
 						),
 				),
@@ -339,6 +441,41 @@ export default {
 					moves: filteredList,
 					activeFilters,
 				});
+			} catch (err) {
+				interaction.reply(`${err}`);
+			}
+		} else if (group === 'pokemon' && sub === 'pokemon') {
+			const type1 = interaction.options.getString('type-1');
+			const type2 = interaction.options.getString('type-2');
+			const moveName = formatUserInput(
+				interaction.options.getString('move', true),
+			);
+
+			try {
+				await interaction.deferReply();
+
+				const learners = new Set(
+					moveLearnList
+						.filter((move) => move.name === moveName)
+						.flatMap((move) => move.learned_by_pokemon),
+				);
+
+				if (!learners) {
+					return interaction.editReply(`${moveName} was not found.`);
+				}
+
+				const matches = pokemonList.filter(
+					(p) =>
+						learners.has(p.name) &&
+						(p.types.includes(type1 ?? '') || p.types.includes(type2 ?? '')),
+				);
+
+				await sendPaginatedPokemonEmber({
+					interaction,
+					matches,
+				});
+
+				// Search pokemonlist for each learner then check if the types match
 			} catch (err) {
 				interaction.reply(`${err}`);
 			}
