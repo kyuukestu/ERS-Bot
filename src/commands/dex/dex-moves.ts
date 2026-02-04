@@ -307,6 +307,12 @@ export default {
 						)
 						.addStringOption((option) =>
 							option
+								.setName('move')
+								.setDescription('Enter the Move name.')
+								.setRequired(true),
+						)
+						.addStringOption((option) =>
+							option
 								.setName('type-1')
 								.setDescription('Enter the move type.')
 								.addChoices(...typeChoices)
