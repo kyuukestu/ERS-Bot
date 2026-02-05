@@ -5,7 +5,7 @@ import moveLearnList from '~/../public/json/moves-learn-list.json';
 import pokemonList from '~/../public/json/pokemon-list.json';
 import type { PokemonList } from '~/types/dexTypes';
 
-export async function handlePokemonList(
+export async function getFilterListPokemon(
 	interaction: ChatInputCommandInteraction,
 ) {
 	const type1 = interaction.options.getString('type-1');

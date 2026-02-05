@@ -6,9 +6,9 @@ import {
 } from 'discord.js';
 import { typeChoices } from '~/database/typeChoices.ts';
 
-import { handleMoveInfo } from './handlers/moveInfoHandler';
-import { handleFilterList } from './handlers/filterListHandler';
-import { handlePokemonList } from './handlers/pokemonListHandler';
+import { getMoveInfo } from '~/components/handlers/getMoveInfo';
+import { getFilterListMoves } from '~/components/handlers/getFilterListMove';
+import { getFilterListPokemon } from '~/components/handlers/getFilterListPokemon';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -134,15 +134,15 @@ export default {
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
-		const sub = interaction.options.getSubcommand();
-		const group = interaction.options.getSubcommandGroup();
+		const subCommand = interaction.options.getSubcommand();
+		const commandGroup = interaction.options.getSubcommandGroup();
 
-		if (group === 'move-info' && sub === 'move') {
-			await handleMoveInfo(interaction);
-		} else if (group === 'filter-list' && sub === 'filters') {
-			await handleFilterList(interaction);
-		} else if (group === 'filter-list' && sub === 'pokemon') {
-			await handlePokemonList(interaction);
+		if (commandGroup === 'move-info' && subCommand === 'move') {
+			await getMoveInfo(interaction);
+		} else if (commandGroup === 'filter-list' && subCommand === 'filters') {
+			await getFilterListMoves(interaction);
+		} else if (commandGroup === 'filter-list' && subCommand === 'pokemon') {
+			await getFilterListPokemon(interaction);
 		}
 	},
 };

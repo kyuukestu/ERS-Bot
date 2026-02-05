@@ -10,7 +10,7 @@ import { moveEndPoint } from '~/api/endpoints';
 import { createAttackEmbed } from '~/components/embeds/createAttackEmbed';
 import { movePaginatedList } from '~/components/pagination/movePagination';
 
-export async function handleMoveInfo(interaction: ChatInputCommandInteraction) {
+export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
 	const moveName = formatUserInput(interaction.options.getString('move', true));
 
 	try {
