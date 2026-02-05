@@ -3,7 +3,7 @@ import { sendFilteredPaginatedMoveEmbed } from '~/components/pagination/movePagi
 import movesList from '~/../public/json/moves-list.json';
 import type { MoveType, MoveListType } from '~/types/dexTypes';
 
-export async function handleFilterList(
+export async function getFilterListMoves(
 	interaction: ChatInputCommandInteraction,
 ) {
 	try {

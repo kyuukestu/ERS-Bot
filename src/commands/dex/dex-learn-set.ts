@@ -7,6 +7,7 @@ import {
 	ButtonStyle,
 	StringSelectMenuBuilder,
 	type ChatInputCommandInteraction,
+	MessageFlags,
 } from 'discord.js';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo';
 import {
@@ -16,33 +17,18 @@ import {
 import { pokemonEndPoint } from '~/api/endpoints';
 import { formatUserInput } from '~/utility/formatting/formatUserInput';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';
+import type {
+	LearnMethodKey,
+	NormalizedMove,
+	GroupedMove,
+	GroupedMoves,
+	MoveMethod,
+} from '~/types/learnSetTypes';
 // import { version_convert } from '~/utility/formatting/formatVersion';
 
 /* ============================================================
  * Types & Config
  * ============================================================ */
-
-type LearnMethodKey = 'level-up' | 'machine' | 'tutor' | 'egg' | 'other';
-
-type MoveMethod = {
-	method: LearnMethodKey;
-	level?: number;
-	version: string;
-};
-
-type NormalizedMove = {
-	name: string;
-	methods: MoveMethod[];
-};
-
-interface GroupedMove {
-	name: string;
-	level?: number;
-	version: string;
-	otherMethods: LearnMethodKey[];
-}
-
-type GroupedMoves = Record<LearnMethodKey, GroupedMove[]>;
 
 const learnMethodConfig: Record<
 	LearnMethodKey,
@@ -397,6 +383,21 @@ export default {
 				await interaction.editReply({
 					components: [], // remove components when collector ends
 				});
+			});
+
+			const iconLegend = new EmbedBuilder()
+				.setColor(0x4ecdc4)
+				.setTitle('Icon Legend').setDescription(`
+					This move can also be learned by: \n\n
+					Level Up - 📈\n
+					Machine - 💿\n
+					Tutor - 🎓\n
+					Breeding - 🥚\n
+					Other - ⚡`);
+
+			await interaction.followUp({
+				embeds: [iconLegend],
+				flags: MessageFlags.Ephemeral,
 			});
 		} catch (err) {
 			await interaction.editReply(
