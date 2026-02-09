@@ -1,0 +1,193 @@
+[
+	{
+		"name": "charmander-mutated",
+		"speciesName": "charmander",
+		"sprite": "../sprites-fakemon/charmander-mutated.png",
+		"types": ["poison"],
+		"abilities": ["poison-touch"],
+		"stats": {
+			"hp": 45,
+			"attack": 56,
+			"defense": 47,
+			"special-attack": 56,
+			"special-defense": 45,
+			"speed": 70
+		},
+		"moves": [
+			{
+				"name": "poison-string",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "scratch", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 3 }]
+			},
+			{ "name": "ember", "methods": [{ "method": "level-up", "level": 4 }] },
+			{ "name": "howl", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "acid-spray",
+				"methods": [{ "method": "level-up", "level": 9 }]
+			},
+			{
+				"name": "poison-fang",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "smokescreen",
+				"methods": [{ "method": "level-up", "level": 12 }]
+			},
+			{
+				"name": "dragon-breath",
+				"methods": [{ "method": "level-up", "level": 14 }]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "poison-jabr",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{
+				"name": "dragon-claw",
+				"methods": [{ "method": "level-up", "level": 18 }]
+			}
+		]
+	},
+	{
+		"name": "charmeleon-mutated",
+		"speciesName": "charmeleon",
+		"sprite": null,
+		"types": ["poison", "dragon"],
+		"abilities": ["poison-touch"],
+		"stats": {
+			"hp": 60,
+			"attack": 80,
+			"defense": 60,
+			"special-attack": 64,
+			"special-defense": 60,
+			"speed": 81
+		},
+		"moves": [
+			{
+				"name": "poison-string",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "scratch", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 3 }]
+			},
+			{ "name": "ember", "methods": [{ "method": "level-up", "level": 4 }] },
+			{ "name": "howl", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "acid-spray",
+				"methods": [{ "method": "level-up", "level": 9 }]
+			},
+			{
+				"name": "poison-fang",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "smokescreen",
+				"methods": [{ "method": "level-up", "level": 12 }]
+			},
+			{
+				"name": "dragon-breath",
+				"methods": [{ "method": "level-up", "level": 14 }]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "poison-jabr",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{
+				"name": "dragon-claw",
+				"methods": [{ "method": "level-up", "level": 18 }]
+			},
+			{
+				"name": "fire-fang",
+				"methods": [{ "method": "level-up", "level": 19 }]
+			},
+			{
+				"name": "will-o-wisp",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "brutal-swing",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "feint-attack",
+				"methods": [{ "method": "level-up", "level": 37 }]
+			}
+		]
+	},
+	{
+		"name": "charizard-mutated",
+		"speciesName": "charizard",
+		"sprite": "../sprites-fakemon/charizard-mutated.jpg",
+		"types": ["poison", "dragon"],
+		"abilities": ["poison-touch"],
+		"stats": {
+			"hp": 75,
+			"attack": 100,
+			"defense": 85,
+			"special-attack": 96,
+			"special-defense": 85,
+			"speed": 90
+		},
+		"moves": [
+			{
+				"name": "poison-string",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "scratch", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 3 }]
+			},
+			{ "name": "ember", "methods": [{ "method": "level-up", "level": 4 }] },
+			{ "name": "howl", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "acid-spray",
+				"methods": [{ "method": "level-up", "level": 9 }]
+			},
+			{
+				"name": "poison-fang",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "smokescreen",
+				"methods": [{ "method": "level-up", "level": 12 }]
+			},
+			{
+				"name": "dragon-breath",
+				"methods": [{ "method": "level-up", "level": 14 }]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "poison-jabr",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{
+				"name": "dragon-claw",
+				"methods": [{ "method": "level-up", "level": 18 }]
+			},
+			{
+				"name": "fire-fang",
+				"methods": [{ "method": "level-up", "level": 19 }]
+			},
+			{
+				"name": "will-o-wisp",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "brutal-swing",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "feint-attack",
+				"methods": [{ "method": "level-up", "level": 37 }]
+			}
+		]
+	}
+]

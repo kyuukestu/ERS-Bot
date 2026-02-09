@@ -9,20 +9,16 @@ import {
 	type ChatInputCommandInteraction,
 	MessageFlags,
 } from 'discord.js';
-import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo';
-import {
-	PokemonDataSchema,
-	type PokemonData,
-} from '~/api/z-schemas/apiSchemas';
-import { pokemonEndPoint } from '~/api/endpoints';
+import { extractFakemonInfo } from '~/api/dataExtraction/extractFakemonInfoFuse';
+import type { Fakemon } from '~/api/dataExtraction/extractFakemonInfoFuse.ts';
 import { formatUserInput } from '~/utility/formatting/formatUserInput';
 import { matchPokemonSpecies } from '~/utility/fuzzy-search/pokemon';
 import type {
 	LearnMethodKey,
-	NormalizedMove,
-	GroupedMove,
-	GroupedMoves,
-	MoveMethod,
+	NormalizeFakemonMove,
+	FakeGroupedMove,
+	FakeGroupedMoves,
+	FakeMoveMethod,
 } from '~/types/learnSetTypes';
 // import { version_convert } from '~/utility/formatting/formatVersion';
 
@@ -63,20 +59,21 @@ export const formatMoveName = (name: string): string =>
  * Data Processing
  * ============================================================ */
 
-export const processMoveData = (data: unknown): NormalizedMove[] => {
-	const parsed: PokemonData = PokemonDataSchema.parse(data);
+export const processMoveData = (data: unknown): NormalizeFakemonMove[] => {
+	const parsed: Fakemon = data as Fakemon;
 
 	return parsed.moves.map((move) => ({
-		name: move.move.name,
-		methods: move.version_group_details.map((detail) => ({
-			method: normalizeLearnMethod(detail.move_learn_method.name),
-			level: detail.level_learned_at || undefined,
-			version: detail.version_group.name,
+		name: move.name,
+		methods: move.methods.map((detail) => ({
+			method: normalizeLearnMethod(detail.method),
+			level: detail.level || undefined,
 		})),
 	}));
 };
 
-export const getLowestLevelUp = (methods: MoveMethod[]): number | undefined => {
+export const getLowestLevelUp = (
+	methods: FakeMoveMethod[],
+): number | undefined => {
 	const levels = methods
 		.filter(
 			(m) => m.method === 'level-up' && m.level !== undefined && m.level > 0,
@@ -88,8 +85,10 @@ export const getLowestLevelUp = (methods: MoveMethod[]): number | undefined => {
 	return Math.min(...filteredLevels);
 };
 
-export const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
-	const grouped: GroupedMoves = {
+export const groupAndSortMoves = (
+	moves: NormalizeFakemonMove[],
+): FakeGroupedMoves => {
+	const grouped: FakeGroupedMoves = {
 		'level-up': [],
 		machine: [],
 		tutor: [],
@@ -105,7 +104,6 @@ export const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 				grouped['level-up'].push({
 					name: formatMoveName(move.name),
 					level: getLowestLevelUp(move.methods),
-					version: '',
 					otherMethods: [...uniqueMethods].filter((m) => m !== 'level-up'),
 				});
 				continue;
@@ -114,7 +112,7 @@ export const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 			// non–level-up methods
 			grouped[method].push({
 				name: formatMoveName(move.name),
-				version: move.methods.find((m) => m.method === method)?.version ?? '',
+
 				otherMethods: [...uniqueMethods].filter((m) => m !== method),
 			});
 		}
@@ -134,7 +132,7 @@ export const groupAndSortMoves = (moves: NormalizedMove[]): GroupedMoves => {
 };
 
 export const formatMoveLine = (
-	move: GroupedMove,
+	move: FakeGroupedMove,
 	method: LearnMethodKey,
 ): string => {
 	// const config = learnMethodConfig[method];
@@ -159,7 +157,7 @@ export const formatMoveLine = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-learn-set')
+		.setName('fakedex-learn-set')
 		.setDescription("View a Pokémon's learnable moves.")
 		.addSubcommand((sub) =>
 			sub
@@ -281,12 +279,15 @@ export default {
 				return;
 			}
 
-			const pokemonData = extractPokemonInfo(await pokemonEndPoint(apiName));
+			const fakemonData = await extractFakemonInfo(
+				apiName.toLowerCase().trim(),
+			);
 
-			const name = pokemonData.name.toUpperCase();
-			const sprite = pokemonData.sprites.front_default;
+			const name = fakemonData.name;
+			const sprite = fakemonData.sprite;
+			const defaultSprite = '../../../public/sprites-fakemon/MissingNo.1.webp';
 
-			const moves = processMoveData(pokemonData);
+			const moves = processMoveData(fakemonData);
 			const groupedMoves = groupAndSortMoves(moves);
 
 			// Filter by subcommand
@@ -320,7 +321,6 @@ export default {
 
 				return new EmbedBuilder()
 					.setTitle(`📖 ${name} • ${config.emoji} ${config.label}`)
-					.setThumbnail(sprite)
 					.setColor(config.color)
 					.addFields({
 						name: `${config.label} Moves (${methodMoves.length})`,
