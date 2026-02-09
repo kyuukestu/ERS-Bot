@@ -27,25 +27,20 @@ export default {
 			// Sort alphabetically by name
 			const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
 
-			// Pagination helper
 			const generateEmbed = (page: number) => {
 				const start = page * ITEMS_PER_PAGE;
 				const paginated = sorted.slice(start, start + ITEMS_PER_PAGE);
 
-				const embed = new EmbedBuilder()
-					.setTitle('Fakemon List')
-					.setDescription(
-						`Showing fakemon ${start + 1}-${start + paginated.length} of ${sorted.length}`,
-					)
-					.addFields(
-						paginated.map((f) => ({
-							name: f.name,
-							value: f.types.join(', '),
-							inline: true,
-						})),
-					);
+				const description = paginated
+					.map((f) => `${f.name} (${f.types.join('/')})`)
+					.join('\n');
 
-				return embed;
+				return new EmbedBuilder()
+					.setTitle('Fakemon List')
+					.setDescription(description)
+					.setFooter({
+						text: `Page ${page + 1} of ${Math.ceil(sorted.length / ITEMS_PER_PAGE)}`,
+					});
 			};
 
 			let page = 0;
@@ -71,7 +66,7 @@ export default {
 
 			const collector = message.createMessageComponentCollector({
 				componentType: ComponentType.Button,
-				time: 60000, // 1 minute timeout
+				time: 60000,
 			});
 
 			collector.on('collect', (btnInteraction) => {
@@ -87,7 +82,6 @@ export default {
 				if (btnInteraction.customId === 'prev') page--;
 				if (btnInteraction.customId === 'next') page++;
 
-				// Update buttons disabled status
 				const newRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 					new ButtonBuilder()
 						.setCustomId('prev')
