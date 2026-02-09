@@ -189,5 +189,1841 @@
 				"methods": [{ "method": "level-up", "level": 37 }]
 			}
 		]
+	},
+	{
+		"name": "shuppet-preteni",
+		"speciesName": "shuppet",
+		"sprite": "../sprites-fakemon/shuppet-preteni.jpg",
+		"types": ["fairy"],
+		"abilities": ["friend guard", "aroma veil"],
+		"stats": {
+			"hp": 60,
+			"attack": 35,
+			"defense": 60,
+			"special-attack": 55,
+			"special-defense": 65,
+			"speed": 20
+		},
+		"moves": [
+			{
+				"name": "fairy-wind",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "screech", "methods": [{ "method": "level-up", "level": 4 }] },
+			{
+				"name": "play-nice",
+				"methods": [{ "method": "level-up", "level": 7 }]
+			},
+			{
+				"name": "baby-doll-eyes",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{ "name": "disable", "methods": [{ "method": "level-up", "level": 13 }] },
+			{
+				"name": "will-o-wisp",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{ "name": "encore", "methods": [{ "method": "level-up", "level": 19 }] },
+			{
+				"name": "draining-kiss",
+				"methods": [{ "method": "level-up", "level": 22 }]
+			},
+			{
+				"name": "crafty-shield",
+				"methods": [{ "method": "level-up", "level": 26 }]
+			},
+			{
+				"name": "misty-terrain",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "trick-room",
+				"methods": [{ "method": "level-up", "level": 34 }]
+			},
+			{
+				"name": "dazzling-gleam",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{ "name": "trick", "methods": [{ "method": "level-up", "level": 42 }] },
+			{
+				"name": "me-first",
+				"methods": [{ "method": "level-up", "level": 46 }]
+			},
+			{
+				"name": "moonblast",
+				"methods": [{ "method": "level-up", "level": 50 }]
+			},
+			{
+				"name": "perish-song",
+				"methods": [{ "method": "level-up", "level": 54 }]
+			}
+		]
+	},
+	{
+		"name": "banette-preteni",
+		"speciesName": "banette",
+		"types": ["fairy", "dark"],
+		"abilities": ["synchronize", "infiltrator", "prankster"],
+		"stats": {
+			"hp": 80,
+			"attack": 40,
+			"defense": 90,
+			"special-attack": 120,
+			"special-defense": 85,
+			"speed": 40
+		},
+		"moves": [
+			{
+				"name": "comeuppance",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "punishment",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "fairy-wind",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+
+			{ "name": "nasty-plot", "methods": [{ "method": "evolution" }] },
+			{ "name": "dark-pulse", "methods": [{ "method": "evolution" }] },
+
+			{ "name": "screech", "methods": [{ "method": "level-up", "level": 4 }] },
+			{
+				"name": "play-nice",
+				"methods": [{ "method": "level-up", "level": 7 }]
+			},
+			{
+				"name": "baby-doll-eyes",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{ "name": "disable", "methods": [{ "method": "level-up", "level": 13 }] },
+			{
+				"name": "will-o-wisp",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{ "name": "encore", "methods": [{ "method": "level-up", "level": 19 }] },
+			{
+				"name": "draining-kiss",
+				"methods": [{ "method": "level-up", "level": 22 }]
+			},
+			{
+				"name": "crafty-shield",
+				"methods": [{ "method": "level-up", "level": 26 }]
+			},
+			{
+				"name": "misty-terrain",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "trick-room",
+				"methods": [{ "method": "level-up", "level": 34 }]
+			},
+			{
+				"name": "dazzling-gleam",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{
+				"name": "switcheroo",
+				"methods": [{ "method": "level-up", "level": 42 }]
+			},
+			{
+				"name": "me-first",
+				"methods": [{ "method": "level-up", "level": 46 }]
+			},
+			{
+				"name": "moonblast",
+				"methods": [{ "method": "level-up", "level": 50 }]
+			},
+			{
+				"name": "perish-song",
+				"methods": [{ "method": "level-up", "level": 54 }]
+			}
+		]
+	},
+	{
+		"name": "mareanie-mx",
+		"speciesName": "mareanie",
+		"types": ["grass", "poison"],
+		"classification": "Star Seed Pokémon",
+		"abilities": ["storm-drain", "poison-point", "iron-barbs"],
+		"stats": {
+			"hp": 50,
+			"attack": 53,
+			"defense": 62,
+			"special-attack": 43,
+			"special-defense": 52,
+			"speed": 45
+		},
+		"moves": [
+			{ "name": "peck", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "absorb", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "dig", "methods": [{ "method": "level-up", "level": 1 }] },
+
+			{
+				"name": "wide-guard",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{
+				"name": "mega-drain",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "venoshock",
+				"methods": [{ "method": "level-up", "level": 15 }]
+			},
+			{ "name": "recover", "methods": [{ "method": "level-up", "level": 20 }] },
+			{
+				"name": "pin-missile",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "toxic-spikes",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "spiky-shield",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "giga-drain",
+				"methods": [{ "method": "level-up", "level": 40 }]
+			},
+			{
+				"name": "poison-jab",
+				"methods": [{ "method": "level-up", "level": 45 }]
+			},
+			{ "name": "toxic", "methods": [{ "method": "level-up", "level": 45 }] }
+		]
+	},
+	{
+		"name": "toxapex-mx",
+		"speciesName": "toxapex",
+		"types": ["grass", "poison"],
+		"classification": "Brutal Star Pokémon",
+		"abilities": ["water-absorb", "merciless", "iron-barbs"],
+		"stats": {
+			"hp": 60,
+			"attack": 53,
+			"defense": 152,
+			"special-attack": 53,
+			"special-defense": 142,
+			"speed": 35
+		},
+		"moves": [
+			{ "name": "peck", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "absorb", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "dig", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "block", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "leech-life",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "iron-defense",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+
+			{
+				"name": "strength-sap",
+				"methods": [{ "method": "level-up", "level": 0 }]
+			},
+
+			{
+				"name": "wide-guard",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{
+				"name": "mega-drain",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "venoshock",
+				"methods": [{ "method": "level-up", "level": 15 }]
+			},
+			{ "name": "recover", "methods": [{ "method": "level-up", "level": 20 }] },
+			{
+				"name": "pin-missile",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "toxic-spikes",
+				"methods": [{ "method": "level-up", "level": 30 }]
+			},
+			{
+				"name": "spiky-shield",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "giga-drain",
+				"methods": [{ "method": "level-up", "level": 40 }]
+			},
+			{
+				"name": "poison-jab",
+				"methods": [{ "method": "level-up", "level": 45 }]
+			},
+			{ "name": "toxic", "methods": [{ "method": "level-up", "level": 45 }] }
+		]
+	},
+	{
+		"name": "trapinch-mx",
+		"speciesName": "trapinch",
+		"types": ["bug", "ground"],
+		"classification": "Ant Nest Pokémon",
+		"abilities": ["hyper-cutter", "sticky-hold", "strong-jaw"],
+		"stats": {
+			"hp": 45,
+			"attack": 100,
+			"defense": 45,
+			"special-attack": 45,
+			"special-defense": 45,
+			"speed": 10
+		},
+		"moves": [
+			{
+				"name": "struggle-bug",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "string-shot",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+
+			{
+				"name": "laser-focus",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "fury-cutter",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "mud-slap",
+				"methods": [{ "method": "level-up", "level": 13 }]
+			},
+			{
+				"name": "bug-bite",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 20 }] },
+			{
+				"name": "leech-life",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "leaf-blade",
+				"methods": [{ "method": "level-up", "level": 29 }]
+			},
+			{
+				"name": "sticky-web",
+				"methods": [{ "method": "level-up", "level": 32 }]
+			},
+			{ "name": "jaw-lock", "methods": [{ "method": "level-up", "level": 35 }] }
+		]
+	},
+	{
+		"name": "vibrava-mx",
+		"speciesName": "vibrava",
+		"types": ["bug", "dragon"],
+		"classification": "Vibration Pokémon",
+		"abilities": ["levitate", "levitate", "compound-eyes"],
+		"stats": {
+			"hp": 50,
+			"attack": 70,
+			"defense": 50,
+			"special-attack": 50,
+			"special-defense": 50,
+			"speed": 70
+		},
+		"moves": [
+			{
+				"name": "struggle-bug",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "string-shot",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "dragon-breath",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "supersonic",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+
+			{
+				"name": "laser-focus",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "fury-cutter",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "mud-slap",
+				"methods": [{ "method": "level-up", "level": 13 }]
+			},
+			{
+				"name": "bug-bite",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 20 }] },
+			{
+				"name": "leech-life",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "leaf-blade",
+				"methods": [{ "method": "level-up", "level": 29 }]
+			},
+			{
+				"name": "sticky-web",
+				"methods": [{ "method": "level-up", "level": 32 }]
+			},
+			{
+				"name": "jaw-lock",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "dragon-tail",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{ "name": "screech", "methods": [{ "method": "level-up", "level": 41 }] },
+			{
+				"name": "bug-buzz",
+				"methods": [{ "method": "level-up", "level": 43 }]
+			},
+			{
+				"name": "aerial-ace",
+				"methods": [{ "method": "level-up", "level": 45 }]
+			},
+			{
+				"name": "dragon-rush",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+			{
+				"name": "boomburst",
+				"methods": [{ "method": "level-up", "level": 52 }]
+			}
+		]
+	},
+	{
+		"name": "flygon-mx",
+		"speciesName": "flygon",
+		"types": ["bug", "dragon"],
+		"classification": "Jungle Spirit Pokémon",
+		"abilities": ["levitate", "levitate", "compound-eyes"],
+		"stats": {
+			"hp": 80,
+			"attack": 90,
+			"defense": 80,
+			"special-attack": 90,
+			"special-defense": 80,
+			"speed": 100
+		},
+		"moves": [
+			{
+				"name": "struggle-bug",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "string-shot",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "dragon-breath",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "supersonic",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "dragon-dance",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "dragon-claw",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "bulldoze", "methods": [{ "method": "level-up", "level": 1 }] },
+
+			{
+				"name": "laser-focus",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 7 }] },
+			{
+				"name": "fury-cutter",
+				"methods": [{ "method": "level-up", "level": 10 }]
+			},
+			{
+				"name": "mud-slap",
+				"methods": [{ "method": "level-up", "level": 13 }]
+			},
+			{
+				"name": "bug-bite",
+				"methods": [{ "method": "level-up", "level": 16 }]
+			},
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 20 }] },
+			{
+				"name": "leech-life",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "leaf-blade",
+				"methods": [{ "method": "level-up", "level": 29 }]
+			},
+			{
+				"name": "sticky-web",
+				"methods": [{ "method": "level-up", "level": 32 }]
+			},
+			{
+				"name": "jaw-lock",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "dragon-tail",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{ "name": "screech", "methods": [{ "method": "level-up", "level": 41 }] },
+			{
+				"name": "bug-buzz",
+				"methods": [{ "method": "level-up", "level": 43 }]
+			},
+			{
+				"name": "aerial-ace",
+				"methods": [{ "method": "level-up", "level": 45 }]
+			},
+			{
+				"name": "dragon-pulse",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+			{
+				"name": "boomburst",
+				"methods": [{ "method": "level-up", "level": 52 }]
+			},
+			{
+				"name": "nature-power",
+				"methods": [{ "method": "level-up", "level": 56 }]
+			},
+			{
+				"name": "synchronoise",
+				"methods": [{ "method": "level-up", "level": 60 }]
+			},
+			{
+				"name": "earth-power",
+				"methods": [{ "method": "level-up", "level": 63 }]
+			},
+			{
+				"name": "dragon-rush",
+				"methods": [{ "method": "level-up", "level": 65 }]
+			}
+		]
+	},
+	{
+		"name": "gorochu",
+		"speciesName": "gorochu",
+		"types": ["electric", "fire"],
+		"classification": "Fire Mouse Pokémon",
+		"abilities": ["static", "flame-body", "lightning-rod"],
+		"stats": {
+			"hp": 60,
+			"attack": 80,
+			"defense": 50,
+			"special-attack": 100,
+			"special-defense": 80,
+			"speed": 115
+		},
+		"moves": [
+			{
+				"name": "fire-punch",
+				"methods": [{ "method": "level-up", "level": 0 }]
+			},
+			{ "name": "ember", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "flame-charge",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "fire-punch",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "will-o-wisp",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "heat-wave",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "overheat", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "sunny-day", "methods": [{ "method": "level-up", "level": 1 }] }
+		]
+	},
+	{
+		"name": "ostrange",
+		"speciesName": "ostrange",
+		"types": ["electric", "fairy"],
+		"classification": "Unknown",
+		"abilities": ["dazzling-daze"],
+		"stats": {
+			"hp": 95,
+			"attack": 85,
+			"defense": 55,
+			"special-attack": 125,
+			"special-defense": 65,
+			"speed": 95
+		},
+		"moves": [
+			{
+				"name": "quick-attack",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "thundershock",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "fairy-wind",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "thunder-wave",
+				"methods": [{ "method": "level-up", "level": 5 }]
+			},
+			{ "name": "nuzzle", "methods": [{ "method": "level-up", "level": 8 }] },
+			{
+				"name": "parabolic-charge",
+				"methods": [{ "method": "level-up", "level": 12 }]
+			},
+			{ "name": "psybeam", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "double-kick",
+				"methods": [{ "method": "level-up", "level": 18 }]
+			},
+			{
+				"name": "draining-kiss",
+				"methods": [{ "method": "level-up", "level": 20 }]
+			},
+			{ "name": "glare", "methods": [{ "method": "level-up", "level": 24 }] },
+			{
+				"name": "fake-tears",
+				"methods": [{ "method": "level-up", "level": 27 }]
+			},
+			{
+				"name": "air-slash",
+				"methods": [{ "method": "level-up", "level": 31 }]
+			},
+			{
+				"name": "thunderbolt",
+				"methods": [{ "method": "level-up", "level": 34 }]
+			},
+			{ "name": "screech", "methods": [{ "method": "level-up", "level": 37 }] },
+			{
+				"name": "jump-kick",
+				"methods": [{ "method": "level-up", "level": 41 }]
+			},
+			{
+				"name": "dazzling-gleam",
+				"methods": [{ "method": "level-up", "level": 45 }]
+			},
+			{
+				"name": "discharge",
+				"methods": [{ "method": "level-up", "level": 48 }]
+			},
+			{
+				"name": "moonblast",
+				"methods": [{ "method": "level-up", "level": 51 }]
+			},
+			{ "name": "wish", "methods": [{ "method": "level-up", "level": 55 }] },
+			{ "name": "thunder", "methods": [{ "method": "level-up", "level": 60 }] }
+		]
+	},
+	{
+		"name": "kotora",
+		"speciesName": "kotora",
+		"types": ["electric"],
+		"classification": "Rotund Pokémon",
+		"abilities": ["lightning-rod", "electromorphsis", "intimidate"],
+		"stats": {
+			"hp": 80,
+			"attack": 55,
+			"defense": 50,
+			"special-attack": 55,
+			"special-defense": 60,
+			"speed": 40
+		},
+		"moves": [
+			{ "name": "tackle", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "tail-whip",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "thundershock",
+				"methods": [{ "method": "level-up", "level": 6 }]
+			},
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 10 }] },
+			{ "name": "charge", "methods": [{ "method": "level-up", "level": 12 }] },
+			{
+				"name": "thunder-wave",
+				"methods": [{ "method": "level-up", "level": 15 }]
+			},
+			{
+				"name": "roar",
+				"methods": [
+					{ "method": "level-up", "level": 19 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "charm", "methods": [{ "method": "level-up", "level": 22 }] },
+			{ "name": "spark", "methods": [{ "method": "level-up", "level": 24 }] },
+			{
+				"name": "take-down",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{ "name": "agility", "methods": [{ "method": "level-up", "level": 33 }] },
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 37 }] },
+			{
+				"name": "thunderbolt",
+				"methods": [
+					{ "method": "level-up", "level": 42 },
+					{ "method": "machine" }
+				]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 46 }] },
+			{
+				"name": "zap-cannon",
+				"methods": [
+					{ "method": "level-up", "level": 50 },
+					{ "method": "machine" }
+				]
+			},
+
+			{ "name": "rollout", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "sunny-day", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{
+				"name": "pay-day",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "protect", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "thunder", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "cut", "methods": [{ "method": "machine" }] },
+			{ "name": "strength", "methods": [{ "method": "machine" }] },
+			{ "name": "flash", "methods": [{ "method": "machine" }] },
+			{ "name": "charge-beam", "methods": [{ "method": "machine" }] },
+			{ "name": "wild-charge", "methods": [{ "method": "machine" }] },
+			{ "name": "supercell-slam", "methods": [{ "method": "machine" }] },
+			{ "name": "eerie-impulse", "methods": [{ "method": "machine" }] },
+			{ "name": "discharge", "methods": [{ "method": "machine" }] },
+			{ "name": "electric-terrain", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "double-edge",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flail",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "light-screen",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "nuzzle",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+
+			{
+				"name": "thunder-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fire-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "ice-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "trailblaze",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "raitora",
+		"speciesName": "raitora",
+		"types": ["electric"],
+		"classification": "Prowler Pokémon",
+		"abilities": ["lightning-rod", "electromorphsis", "intimidate"],
+		"stats": {
+			"hp": 115,
+			"attack": 85,
+			"defense": 65,
+			"special-attack": 85,
+			"special-defense": 80,
+			"speed": 70
+		},
+		"moves": [
+			{ "name": "tackle", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "tail-whip",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{
+				"name": "thundershock",
+				"methods": [{ "method": "level-up", "level": 6 }]
+			},
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 10 }] },
+			{ "name": "charge", "methods": [{ "method": "level-up", "level": 12 }] },
+			{
+				"name": "thunder-wave",
+				"methods": [{ "method": "level-up", "level": 15 }]
+			},
+			{
+				"name": "roar",
+				"methods": [
+					{ "method": "level-up", "level": 19 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "charm", "methods": [{ "method": "level-up", "level": 22 }] },
+			{ "name": "spark", "methods": [{ "method": "level-up", "level": 24 }] },
+			{
+				"name": "take-down",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{ "name": "agility", "methods": [{ "method": "level-up", "level": 33 }] },
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 37 }] },
+			{
+				"name": "thunderbolt",
+				"methods": [
+					{ "method": "level-up", "level": 42 },
+					{ "method": "machine" }
+				]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 46 }] },
+			{
+				"name": "zap-cannon",
+				"methods": [
+					{ "method": "level-up", "level": 50 },
+					{ "method": "machine" }
+				]
+			},
+
+			{ "name": "rollout", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "sunny-day", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{
+				"name": "pay-day",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "protect", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "thunder", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "cut", "methods": [{ "method": "machine" }] },
+			{ "name": "strength", "methods": [{ "method": "machine" }] },
+			{ "name": "flash", "methods": [{ "method": "machine" }] },
+			{ "name": "charge-beam", "methods": [{ "method": "machine" }] },
+			{ "name": "wild-charge", "methods": [{ "method": "machine" }] },
+			{ "name": "supercell-slam", "methods": [{ "method": "machine" }] },
+			{ "name": "eerie-impulse", "methods": [{ "method": "machine" }] },
+			{ "name": "discharge", "methods": [{ "method": "machine" }] },
+			{ "name": "electric-terrain", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "double-edge",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flail",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "light-screen",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "nuzzle",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+
+			{
+				"name": "thunder-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fire-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "ice-fang",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "trailblaze",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "rinring",
+		"speciesName": "rinring",
+		"types": ["dark"],
+		"classification": "Loudcat Pokémon",
+		"abilities": ["cute-charm", "super-luck", "tough-claws"],
+		"stats": {
+			"hp": 45,
+			"attack": 55,
+			"defense": 30,
+			"special-attack": 30,
+			"special-defense": 45,
+			"speed": 85
+		},
+		"moves": [
+			{ "name": "scratch", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "growl", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "pursuit", "methods": [{ "method": "level-up", "level": 6 }] },
+			{ "name": "disable", "methods": [{ "method": "level-up", "level": 10 }] },
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "charm",
+				"methods": [
+					{ "method": "level-up", "level": 20 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "faint-attack",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "fury-swipes",
+				"methods": [{ "method": "level-up", "level": 29 }]
+			},
+			{
+				"name": "heal-bell",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "confuse-ray",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 43 }] },
+			{
+				"name": "sucker-punch",
+				"methods": [{ "method": "level-up", "level": 43 }]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 48 }] },
+			{
+				"name": "attract",
+				"methods": [
+					{ "method": "level-up", "level": 52 },
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "roar", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "psych-up", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "sunny-day", "methods": [{ "method": "machine" }] },
+			{
+				"name": "pay-day",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "icy-wind", "methods": [{ "method": "machine" }] },
+			{ "name": "protect", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "shadow-ball", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "swift", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "thief", "methods": [{ "method": "machine" }] },
+			{ "name": "fury-cutter", "methods": [{ "method": "machine" }] },
+			{ "name": "cut", "methods": [{ "method": "machine" }] },
+			{ "name": "flash", "methods": [{ "method": "machine" }] },
+			{ "name": "thunderbolt", "methods": [{ "method": "machine" }] },
+			{ "name": "u-turn", "methods": [{ "method": "machine" }] },
+			{ "name": "dark-pulse", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "amnesia",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "destiny-bond",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "hypnosis",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "metal-claw",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "screech",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "spite",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "encore",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flatter",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fake-tears",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fake-out",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "magic-room",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "moonlight",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "trick",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "bellrun",
+		"speciesName": "bellrun",
+		"types": ["dark"],
+		"classification": "Loudcat Pokémon",
+		"abilities": ["cute-charm", "super-luck", "tough-claws"],
+		"stats": {
+			"hp": 80,
+			"attack": 95,
+			"defense": 40,
+			"special-attack": 40,
+			"special-defense": 75,
+			"speed": 110
+		},
+		"moves": [
+			{ "name": "scratch", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "growl", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "pursuit", "methods": [{ "method": "level-up", "level": 6 }] },
+			{ "name": "disable", "methods": [{ "method": "level-up", "level": 10 }] },
+			{ "name": "bite", "methods": [{ "method": "level-up", "level": 15 }] },
+			{
+				"name": "charm",
+				"methods": [
+					{ "method": "level-up", "level": 20 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "faint-attack",
+				"methods": [{ "method": "level-up", "level": 24 }]
+			},
+			{
+				"name": "fury-swipes",
+				"methods": [{ "method": "level-up", "level": 29 }]
+			},
+			{
+				"name": "heal-bell",
+				"methods": [{ "method": "level-up", "level": 35 }]
+			},
+			{
+				"name": "confuse-ray",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{ "name": "crunch", "methods": [{ "method": "level-up", "level": 43 }] },
+			{
+				"name": "sucker-punch",
+				"methods": [{ "method": "level-up", "level": 43 }]
+			},
+			{ "name": "slash", "methods": [{ "method": "level-up", "level": 48 }] },
+			{
+				"name": "attract",
+				"methods": [
+					{ "method": "level-up", "level": 52 },
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "roar", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "psych-up", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "sunny-day", "methods": [{ "method": "machine" }] },
+			{
+				"name": "pay-day",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "icy-wind", "methods": [{ "method": "machine" }] },
+			{ "name": "protect", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "shadow-ball", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "swift", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "thief", "methods": [{ "method": "machine" }] },
+			{ "name": "fury-cutter", "methods": [{ "method": "machine" }] },
+			{ "name": "cut", "methods": [{ "method": "machine" }] },
+			{ "name": "flash", "methods": [{ "method": "machine" }] },
+			{ "name": "thunderbolt", "methods": [{ "method": "machine" }] },
+			{ "name": "u-turn", "methods": [{ "method": "machine" }] },
+			{ "name": "dark-pulse", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "amnesia",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "destiny-bond",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "hypnosis",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "metal-claw",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "screech",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "spite",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "encore",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flatter",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fake-tears",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "fake-out",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "magic-room",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "moonlight",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "trick",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "bomsheal",
+		"speciesName": "bomsheal",
+		"types": ["fire", "water"],
+		"classification": "Juggler Pokémon",
+		"abilities": ["flash-fire", "water-absorb", "ball-fetch"],
+		"stats": {
+			"hp": 65,
+			"attack": 102,
+			"defense": 67,
+			"special-attack": 112,
+			"special-defense": 77,
+			"speed": 67
+		},
+		"moves": [
+			{ "name": "tackle", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "tail-whip",
+				"methods": [{ "method": "level-up", "level": 1 }]
+			},
+			{ "name": "smog", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "ember", "methods": [{ "method": "level-up", "level": 8 }] },
+			{
+				"name": "water-gun",
+				"methods": [{ "method": "level-up", "level": 13 }]
+			},
+			{
+				"name": "encore",
+				"methods": [
+					{ "method": "level-up", "level": 20 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "stockpile",
+				"methods": [{ "method": "level-up", "level": 22 }]
+			},
+			{ "name": "swallow", "methods": [{ "method": "level-up", "level": 22 }] },
+			{ "name": "spit-up", "methods": [{ "method": "level-up", "level": 22 }] },
+			{
+				"name": "supersonic",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "aqua-jet",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{
+				"name": "flame-charge",
+				"methods": [{ "method": "level-up", "level": 32 }]
+			},
+			{
+				"name": "pyro-ball",
+				"methods": [{ "method": "level-up", "level": 36 }]
+			},
+			{
+				"name": "bubblebeam",
+				"methods": [{ "method": "level-up", "level": 36 }]
+			},
+			{ "name": "mimic", "methods": [{ "method": "level-up", "level": 44 }] },
+			{
+				"name": "body-slam",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+			{
+				"name": "fire-blast",
+				"methods": [
+					{ "method": "level-up", "level": 56 },
+					{ "method": "machine" }
+				]
+			},
+			{
+				"name": "hydro-pump",
+				"methods": [{ "method": "level-up", "level": 61 }]
+			},
+
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "sunny-day", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "scald", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "attract", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{
+				"name": "defense-curl",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "swift", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "surf", "methods": [{ "method": "machine" }] },
+			{
+				"name": "whirlpool",
+				"methods": [
+					{ "method": "machine" },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{ "name": "waterfall", "methods": [{ "method": "machine" }] },
+			{ "name": "flamethrower", "methods": [{ "method": "machine" }] },
+			{ "name": "will-o-wisp", "methods": [{ "method": "machine" }] },
+			{ "name": "weather-ball", "methods": [{ "method": "machine" }] },
+			{ "name": "echoed-voice", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "fire-spin",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "belly-drum",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "slam",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "round",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "helping-hand",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "gyro-ball",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "rollout",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "cruize",
+		"speciesName": "cruize",
+		"types": ["water"],
+		"classification": "Smooth Seal Pokémon",
+		"abilities": ["torrent", "ice-body"],
+		"stats": {
+			"hp": 55,
+			"attack": 48,
+			"defense": 57,
+			"special-attack": 62,
+			"special-defense": 57,
+			"speed": 35
+		},
+		"moves": [
+			{ "name": "pound", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "growl", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "water-gun",
+				"methods": [{ "method": "level-up", "level": 7 }]
+			},
+			{ "name": "mist", "methods": [{ "method": "level-up", "level": 12 }] },
+			{
+				"name": "powder-snow",
+				"methods": [{ "method": "level-up", "level": 17 }]
+			},
+			{
+				"name": "water-pulse",
+				"methods": [{ "method": "level-up", "level": 19 }]
+			},
+			{
+				"name": "encore",
+				"methods": [
+					{ "method": "level-up", "level": 22 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "life-dew",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "bubblebeam",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{
+				"name": "haze",
+				"methods": [
+					{ "method": "level-up", "level": 33 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "aurora-beam",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{
+				"name": "protect",
+				"methods": [
+					{ "method": "level-up", "level": 44 },
+					{ "method": "machine" }
+				]
+			},
+			{
+				"name": "hydro-pump",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+
+			{ "name": "waterfall", "methods": [{ "method": "machine" }] },
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "blizzard", "methods": [{ "method": "machine" }] },
+			{ "name": "icy-wind", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "dig", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "attract", "methods": [{ "method": "machine" }] },
+			{ "name": "surf", "methods": [{ "method": "machine" }] },
+			{ "name": "whirlpool", "methods": [{ "method": "machine" }] },
+			{ "name": "ice-beam", "methods": [{ "method": "machine" }] },
+			{ "name": "brine", "methods": [{ "method": "machine" }] },
+			{ "name": "sheer-cold", "methods": [{ "method": "machine" }] },
+			{ "name": "freeze-dry", "methods": [{ "method": "machine" }] },
+			{ "name": "bulldoze", "methods": [{ "method": "machine" }] },
+			{ "name": "zen-headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "reflect", "methods": [{ "method": "machine" }] },
+			{ "name": "light-screen", "methods": [{ "method": "machine" }] },
+			{ "name": "hail", "methods": [{ "method": "machine" }] },
+			{ "name": "alluring-voice", "methods": [{ "method": "machine" }] },
+			{ "name": "psychic-noise", "methods": [{ "method": "machine" }] },
+			{ "name": "chilling-water", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "amnesia",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "ancient-power",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "disable",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "perish-song",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "psybeam",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "camouflage",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "icicle-spear",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flip-turn",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "aqua-ring",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "energy-ball",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "helping-hand",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "scald",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "hydro-cannon",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "aquallo",
+		"speciesName": "aquallo",
+		"types": ["water"],
+		"classification": "Smooth Seal Pokémon",
+		"abilities": ["ice-body", "frost-crystal"],
+		"stats": {
+			"hp": 75,
+			"attack": 60,
+			"defense": 70,
+			"special-attack": 77,
+			"special-defense": 77,
+			"speed": 45
+		},
+		"moves": [
+			{ "name": "pound", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "growl", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "water-gun",
+				"methods": [{ "method": "level-up", "level": 7 }]
+			},
+			{ "name": "mist", "methods": [{ "method": "level-up", "level": 12 }] },
+			{
+				"name": "powder-snow",
+				"methods": [{ "method": "level-up", "level": 17 }]
+			},
+			{
+				"name": "water-pulse",
+				"methods": [{ "method": "level-up", "level": 19 }]
+			},
+			{
+				"name": "encore",
+				"methods": [
+					{ "method": "level-up", "level": 22 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "life-dew",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "bubblebeam",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{
+				"name": "haze",
+				"methods": [
+					{ "method": "level-up", "level": 33 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "aurora-beam",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{
+				"name": "protect",
+				"methods": [
+					{ "method": "level-up", "level": 44 },
+					{ "method": "machine" }
+				]
+			},
+			{
+				"name": "hydro-pump",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+
+			{ "name": "waterfall", "methods": [{ "method": "machine" }] },
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "blizzard", "methods": [{ "method": "machine" }] },
+			{ "name": "icy-wind", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "dig", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "attract", "methods": [{ "method": "machine" }] },
+			{ "name": "surf", "methods": [{ "method": "machine" }] },
+			{ "name": "whirlpool", "methods": [{ "method": "machine" }] },
+			{ "name": "ice-beam", "methods": [{ "method": "machine" }] },
+			{ "name": "brine", "methods": [{ "method": "machine" }] },
+			{ "name": "sheer-cold", "methods": [{ "method": "machine" }] },
+			{ "name": "freeze-dry", "methods": [{ "method": "machine" }] },
+			{ "name": "bulldoze", "methods": [{ "method": "machine" }] },
+			{ "name": "zen-headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "reflect", "methods": [{ "method": "machine" }] },
+			{ "name": "light-screen", "methods": [{ "method": "machine" }] },
+			{ "name": "hail", "methods": [{ "method": "machine" }] },
+			{ "name": "alluring-voice", "methods": [{ "method": "machine" }] },
+			{ "name": "psychic-noise", "methods": [{ "method": "machine" }] },
+			{ "name": "chilling-water", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "amnesia",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "ancient-power",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "disable",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "perish-song",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "psybeam",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "camouflage",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "icicle-spear",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flip-turn",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "aqua-ring",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "energy-ball",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "helping-hand",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "scald",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "hydro-cannon",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
+	},
+	{
+		"name": "aquarius",
+		"speciesName": "aquarius",
+		"types": ["water"],
+		"classification": "Majestic Pokémon",
+		"abilities": ["frost-crystal"],
+		"stats": {
+			"hp": 100,
+			"attack": 80,
+			"defense": 90,
+			"special-attack": 95,
+			"special-defense": 100,
+			"speed": 65
+		},
+		"moves": [
+			{ "name": "pound", "methods": [{ "method": "level-up", "level": 1 }] },
+			{ "name": "growl", "methods": [{ "method": "level-up", "level": 1 }] },
+			{
+				"name": "water-gun",
+				"methods": [{ "method": "level-up", "level": 7 }]
+			},
+			{ "name": "mist", "methods": [{ "method": "level-up", "level": 12 }] },
+			{
+				"name": "powder-snow",
+				"methods": [{ "method": "level-up", "level": 17 }]
+			},
+			{
+				"name": "water-pulse",
+				"methods": [{ "method": "level-up", "level": 19 }]
+			},
+			{
+				"name": "encore",
+				"methods": [
+					{ "method": "level-up", "level": 22 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "life-dew",
+				"methods": [{ "method": "level-up", "level": 25 }]
+			},
+			{
+				"name": "bubblebeam",
+				"methods": [{ "method": "level-up", "level": 28 }]
+			},
+			{
+				"name": "haze",
+				"methods": [
+					{ "method": "level-up", "level": 33 },
+					{ "method": "egg" },
+					{ "method": "tutor" }
+				]
+			},
+			{
+				"name": "aurora-beam",
+				"methods": [{ "method": "level-up", "level": 38 }]
+			},
+			{
+				"name": "protect",
+				"methods": [
+					{ "method": "level-up", "level": 44 },
+					{ "method": "machine" }
+				]
+			},
+			{
+				"name": "hydro-pump",
+				"methods": [{ "method": "level-up", "level": 49 }]
+			},
+
+			{ "name": "waterfall", "methods": [{ "method": "machine" }] },
+			{ "name": "headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "curse", "methods": [{ "method": "machine" }] },
+			{ "name": "toxic", "methods": [{ "method": "machine" }] },
+			{ "name": "hidden-power", "methods": [{ "method": "machine" }] },
+			{ "name": "blizzard", "methods": [{ "method": "machine" }] },
+			{ "name": "icy-wind", "methods": [{ "method": "machine" }] },
+			{ "name": "rain-dance", "methods": [{ "method": "machine" }] },
+			{ "name": "endure", "methods": [{ "method": "machine" }] },
+			{ "name": "iron-tail", "methods": [{ "method": "machine" }] },
+			{ "name": "return", "methods": [{ "method": "machine" }] },
+			{ "name": "dig", "methods": [{ "method": "machine" }] },
+			{ "name": "mud-slap", "methods": [{ "method": "machine" }] },
+			{ "name": "double-team", "methods": [{ "method": "machine" }] },
+			{ "name": "swagger", "methods": [{ "method": "machine" }] },
+			{ "name": "sleep-talk", "methods": [{ "method": "machine" }] },
+			{ "name": "rest", "methods": [{ "method": "machine" }] },
+			{ "name": "attract", "methods": [{ "method": "machine" }] },
+			{ "name": "surf", "methods": [{ "method": "machine" }] },
+			{ "name": "whirlpool", "methods": [{ "method": "machine" }] },
+			{ "name": "ice-beam", "methods": [{ "method": "machine" }] },
+			{ "name": "brine", "methods": [{ "method": "machine" }] },
+			{ "name": "sheer-cold", "methods": [{ "method": "machine" }] },
+			{ "name": "freeze-dry", "methods": [{ "method": "machine" }] },
+			{ "name": "bulldoze", "methods": [{ "method": "machine" }] },
+			{ "name": "zen-headbutt", "methods": [{ "method": "machine" }] },
+			{ "name": "reflect", "methods": [{ "method": "machine" }] },
+			{ "name": "light-screen", "methods": [{ "method": "machine" }] },
+			{ "name": "hail", "methods": [{ "method": "machine" }] },
+			{ "name": "alluring-voice", "methods": [{ "method": "machine" }] },
+			{ "name": "psychic-noise", "methods": [{ "method": "machine" }] },
+			{ "name": "chilling-water", "methods": [{ "method": "machine" }] },
+
+			{
+				"name": "amnesia",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "ancient-power",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "disable",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "perish-song",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "psybeam",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "camouflage",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "icicle-spear",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "flip-turn",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "aqua-ring",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "energy-ball",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "helping-hand",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "scald",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			},
+			{
+				"name": "hydro-cannon",
+				"methods": [{ "method": "egg" }, { "method": "tutor" }]
+			}
+		]
 	}
 ]
