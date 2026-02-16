@@ -281,7 +281,15 @@ export default {
 				return;
 			}
 
-			const pokemonData = extractPokemonInfo(await pokemonEndPoint(apiName));
+			let rawData;
+
+			try {
+				rawData = await pokemonEndPoint(apiName || speciesName);
+			} catch {
+				rawData = await pokemonEndPoint(speciesName);
+			}
+
+			const pokemonData = extractPokemonInfo(rawData);
 
 			const name = pokemonData.name.toUpperCase();
 			const sprite = pokemonData.sprites.front_default;
