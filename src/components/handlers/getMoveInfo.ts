@@ -47,7 +47,7 @@ export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
 			.setColor(0xff0000)
 			.setTitle('❌ Move Not Found')
 			.setDescription(
-				`Could not find a move named "${moveName}". Please check the spelling and try again.`,
+				`Could not find a move named "${moveName}". Please check the spelling and try again.\n ${error}`,
 			)
 			.addFields({
 				name: '💡 Tips',
@@ -55,6 +55,17 @@ export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
 					'• Use the exact move name\n• Check for typos\n• Example: "tackle" or "hyper-beam"',
 			})
 			.setTimestamp();
+
+		const result = matchMoveName(moveName);
+
+		await interaction.followUp({
+			content: `Best Match for ${moveName}: ${
+				result.bestMatch.name
+			}\n\nOther matches:\n${result.otherMatches
+				.map((move) => move.name)
+				.join('\n')}`,
+			flags: MessageFlags.Ephemeral,
+		});
 
 		if (interaction.replied || interaction.deferred) {
 			await interaction.editReply({ embeds: [errorEmbed] });
