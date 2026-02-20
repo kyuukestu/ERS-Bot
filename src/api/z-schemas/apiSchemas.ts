@@ -8,13 +8,13 @@ export const AbilityDataSchema = z.object({
 			effect: z.string(),
 			language: z.object({ name: z.string() }),
 			effect_chance: z.string().optional(),
-		})
+		}),
 	),
 	pokemon: z.array(
 		z.object({
 			is_hidden: z.boolean(),
 			pokemon: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	generation: z.object({ name: z.string() }),
 });
@@ -32,14 +32,14 @@ export const ItemDataSchema = z.object({
 		z.object({
 			effect: z.string(),
 			language: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	flavor_text_entries: z.array(
 		z.object({
 			language: z.object({ name: z.string() }),
 			text: z.string(),
 			version_group: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	sprites: z.object({
 		default: z.string().nullable(),
@@ -55,7 +55,7 @@ export const MoveDataSchema = z.object({
 		z.object({
 			change: z.number(),
 			stat: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	accuracy: z.number().nullable().optional(),
 	effect_chance: z.number().nullable().optional(),
@@ -64,7 +64,7 @@ export const MoveDataSchema = z.object({
 			effect: z.string(),
 			short_effect: z.string(),
 			language: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	priority: z.number(),
 	power: z.number().nullable().optional(),
@@ -78,28 +78,31 @@ export const MoveDataSchema = z.object({
 			flavor_text: z.string(),
 			language: z.object({ name: z.string() }),
 			version_group: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	learned_by_pokemon: z.array(z.object({ name: z.string() })),
 	machines: z.array(
 		z.object({
 			machine: z.object({ url: z.string() }),
 			version_group: z.object({ name: z.string() }),
-		})
+		}),
 	),
-	meta: z.object({
-		ailment: z.object({ name: z.string() }),
-		stat_chance: z.number(),
-		ailment_chance: z.number(),
-		flinch_chance: z.number(),
-		crit_rate: z.number(),
-		drain: z.number(),
-		healing: z.number(),
-		min_hits: z.number().nullable(),
-		max_hits: z.number().nullable(),
-		min_turns: z.number().nullable(),
-		max_turns: z.number().nullable(),
-	}),
+	meta: z
+		.object({
+			ailment: z.object({ name: z.string() }),
+			stat_chance: z.number(),
+			ailment_chance: z.number(),
+			flinch_chance: z.number(),
+			crit_rate: z.number(),
+			drain: z.number(),
+			healing: z.number(),
+			min_hits: z.number().nullable(),
+			max_hits: z.number().nullable(),
+			min_turns: z.number().nullable(),
+			max_turns: z.number().nullable(),
+		})
+		.nullable()
+		.optional(),
 });
 
 export type MoveData = z.infer<typeof MoveDataSchema>;
@@ -111,7 +114,7 @@ export const PokemonDataSchema = z.object({
 	types: z.array(
 		z
 			.union([z.string(), z.object({ type: z.object({ name: z.string() }) })])
-			.transform((t) => (typeof t === 'string' ? t : t.type.name))
+			.transform((t) => (typeof t === 'string' ? t : t.type.name)),
 	),
 	abilities: z
 		.array(
@@ -121,12 +124,12 @@ export const PokemonDataSchema = z.object({
 					ability: z.object({ name: z.string() }),
 					is_hidden: z.boolean(),
 				}),
-			])
+			]),
 		)
 		.transform((arr) =>
 			arr.map((a) =>
-				typeof a === 'string' ? { ability: { name: a }, is_hidden: false } : a
-			)
+				typeof a === 'string' ? { ability: { name: a }, is_hidden: false } : a,
+			),
 		),
 	height: z.union([z.number(), z.string()]).transform((h) => {
 		return Number(h);
@@ -135,7 +138,7 @@ export const PokemonDataSchema = z.object({
 		return Number(w);
 	}),
 	stats: z.array(
-		z.object({ stat: z.object({ name: z.string() }), base_stat: z.number() })
+		z.object({ stat: z.object({ name: z.string() }), base_stat: z.number() }),
 	),
 	sprites: z.object({
 		front_default: z.string().nullable(),
@@ -158,9 +161,9 @@ export const PokemonDataSchema = z.object({
 					level_learned_at: z.number(),
 					move_learn_method: z.object({ name: z.string() }),
 					version_group: z.object({ name: z.string() }),
-				})
+				}),
 			),
-		})
+		}),
 	),
 });
 
@@ -183,13 +186,13 @@ export const SpeciesDataSchema = z.object({
 			flavor_text: z.string(),
 			language: z.object({ name: z.string() }),
 			version: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	pokedex_numbers: z.array(
 		z.object({
 			entry_number: z.number(),
 			pokedex: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	growth_rate: z.object({ name: z.string() }),
 	capture_rate: z.number(),
@@ -210,7 +213,7 @@ export const ParsedSpeciesDataSchema = z.object({
 			flavor_text: z.string(),
 			language: z.object({ name: z.string() }),
 			version: z.object({ name: z.string() }),
-		})
+		}),
 	),
 	pokedex_numbers: z.union([z.number(), z.string()]),
 	growth_rate: z.string(),
@@ -231,8 +234,8 @@ export const TypeDataSchema = z.object({
 			z.string(), // version name (e.g., "brilliant-diamond-and-shining-pearl")
 			z.object({
 				name_icon: z.string().nullable().optional(),
-			})
-		)
+			}),
+		),
 	),
 });
 

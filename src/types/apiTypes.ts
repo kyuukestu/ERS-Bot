@@ -69,7 +69,7 @@ export interface MoveData {
 		machine: { url: string };
 		version_group: { name: string };
 	}[];
-	meta: {
+	meta?: {
 		ailment: { name: string };
 		stat_chance: number;
 		ailment_chance: number;
