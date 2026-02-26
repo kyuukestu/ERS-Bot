@@ -2,39 +2,39 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema';
-import Pokemon from '../../../database/models/PokemonSchema';
-import { isDBConnected } from '../../../database/mongoose/connection';
+import OC from '~/database/mongoDB/models/OCSchema';
+import Pokemon from '~/database/mongoDB/models/PokemonSchema';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-add-moves')
 		.setDescription(
-			'Add moves to your Pokemon. List of moves must be separated by a comma.'
+			'Add moves to your Pokemon. List of moves must be separated by a comma.',
 		)
 		.addStringOption((option) =>
 			option
 				.setName('oc-name')
 				.setDescription('Your registered ocs name')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('poke-nickname')
 				.setDescription("Target Pokemon's nickname.")
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('moves')
 				.setDescription('List of moves separated by a comma.')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addBooleanOption((option) =>
 			option
 				.setName('in-box')
 				.setDescription('Is this Pokemon in the box? (Defaults to false).')
-				.setRequired(false)
+				.setRequired(false),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -51,7 +51,7 @@ export default {
 
 			if (!isDBConnected()) {
 				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
+					'⚠️ Database is currently unavailable. Please try again later.',
 				);
 			}
 
@@ -73,7 +73,7 @@ export default {
 
 			if (!modifyingPokemon) {
 				return interaction.editReply(
-					`${pokeNickname} was not found in ${isInBox ? 'storage' : 'party'}.`
+					`${pokeNickname} was not found in ${isInBox ? 'storage' : 'party'}.`,
 				);
 			}
 
@@ -82,12 +82,12 @@ export default {
 				{
 					$addToSet: { moves: { $each: moveList } },
 				},
-				{ new: true }
+				{ new: true },
 			);
 
 			if (!updatedPokemon) {
 				return interaction.editReply(
-					`Something went wrong while updating ${pokeNickname}'s moves.`
+					`Something went wrong while updating ${pokeNickname}'s moves.`,
 				);
 			}
 		} catch (err) {

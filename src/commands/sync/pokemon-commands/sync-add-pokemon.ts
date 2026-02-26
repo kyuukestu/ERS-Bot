@@ -4,14 +4,14 @@ import {
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema.ts';
-import Pokemon from '../../../database/models/PokemonSchema.ts';
-import { calculateUpkeep } from '../../../utility/calculators/sync-poke-drain-calculator.ts';
-import { pokemonEndPoint } from '../../../api/endpoints.ts';
+import OC from '~/database/mongoDB/models/OCSchema.ts';
+import Pokemon from '~/database/mongoDB/models/PokemonSchema.ts';
+import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
+import { pokemonEndPoint } from '~/api/endpoints.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
-import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
-import { type PokemonStats } from '../../../interface/canvasData.ts';
-import { isDBConnected } from '../../../database/mongoose/connection.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { type PokemonStats } from '~/interface/canvasData.ts';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection.ts';
 
 /**
  * Helper: extract stats and calculate derived data
@@ -22,7 +22,7 @@ async function buildPokemonData(
 	alpha: boolean,
 	additionalAbilities: number,
 	inBox: boolean,
-	formName?: string
+	formName?: string,
 ) {
 	const searchName = formName
 		? formatUserInput(`${species} ${formName}`)
@@ -35,7 +35,7 @@ async function buildPokemonData(
 				.replace('special-attack', 'spAttack')
 				.replace('special-defense', 'spDefense'),
 			s.base_stat,
-		])
+		]),
 	) as PokemonStats;
 
 	const totalStats = Object.values(stats).reduce((a, b) => a + b, 0);
@@ -44,7 +44,7 @@ async function buildPokemonData(
 		level,
 		alpha,
 		additionalAbilities,
-		inBox
+		inBox,
 	);
 
 	return { stats, totalStats, fortitude_drain };
@@ -84,7 +84,7 @@ async function addPokemonToOC({
 		alpha,
 		additionalAbilities,
 		inBox,
-		formName || undefined
+		formName || undefined,
 	);
 
 	const pokemon = await Pokemon.create({
@@ -118,19 +118,19 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription('Your registered player name')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('species')
 				.setDescription('The Pokémon species (e.g. Pikachu)')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('ability')
 				.setDescription('Ability of the Pokémon')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addIntegerOption((option) =>
 			option
@@ -138,15 +138,15 @@ export default {
 				.setDescription('Pokémon level')
 				.setMinValue(1)
 				.setMaxValue(100)
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
-			option.setName('nickname').setDescription('Nickname for the Pokémon')
+			option.setName('nickname').setDescription('Nickname for the Pokémon'),
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
 			option
 				.setName('form')
-				.setDescription(`Enter the Pokémon's form (e.g., alolan, galar).`)
+				.setDescription(`Enter the Pokémon's form (e.g., alolan, galar).`),
 		)
 		.addStringOption((option) =>
 			option
@@ -156,22 +156,22 @@ export default {
 					{ name: 'Male', value: 'Male' },
 					{ name: 'Female', value: 'Female' },
 					{ name: 'Genderless', value: 'Genderless' },
-					{ name: 'Unknown', value: 'Unknown' }
-				)
+					{ name: 'Unknown', value: 'Unknown' },
+				),
 		)
 		.addBooleanOption((option) =>
-			option.setName('shiny').setDescription('Shiny status of the Pokémon')
+			option.setName('shiny').setDescription('Shiny status of the Pokémon'),
 		)
 		.addBooleanOption((option) =>
-			option.setName('in-box').setDescription('Is the Pokémon in box?')
+			option.setName('in-box').setDescription('Is the Pokémon in box?'),
 		)
 		.addBooleanOption((option) =>
-			option.setName('is-alpha').setDescription('Is the Pokémon an Alpha?')
+			option.setName('is-alpha').setDescription('Is the Pokémon an Alpha?'),
 		)
 		.addIntegerOption((option) =>
 			option
 				.setName('additional-abilities')
-				.setDescription('Additional Abilities File')
+				.setDescription('Additional Abilities File'),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -191,7 +191,7 @@ export default {
 		try {
 			if (!isDBConnected()) {
 				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
+					'⚠️ Database is currently unavailable. Please try again later.',
 				);
 			}
 

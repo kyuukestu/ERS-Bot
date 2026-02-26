@@ -2,8 +2,8 @@ import {
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema';
-import { isDBConnected } from '../../../database/mongoose/connection';
+import OC from '~/database/mongoDB/models/OCSchema';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -13,19 +13,19 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription('Your registered ocs name')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('poke-nickname')
 				.setDescription("Target Pokemon's nickname.")
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addBooleanOption((option) =>
 			option
 				.setName('in-box')
 				.setDescription('Is this Pokemon in the box? (Defaults to false).')
-				.setRequired(false)
+				.setRequired(false),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -38,7 +38,7 @@ export default {
 
 			if (!isDBConnected()) {
 				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
+					'⚠️ Database is currently unavailable. Please try again later.',
 				);
 			}
 
@@ -48,22 +48,22 @@ export default {
 
 			if (isInBox) {
 				const index = targetOC.storage.findIndex(
-					(p) => p.nickname === pokeNickname
+					(p) => p.nickname === pokeNickname,
 				);
 				if (index === -1)
 					return interaction.editReply(
-						`${pokeNickname} was not found in storage.`
+						`${pokeNickname} was not found in storage.`,
 					);
 
 				// Remove the entry by index
 				targetOC.storage.splice(index, 1);
 			} else {
 				const index = targetOC.party.findIndex(
-					(p) => p.nickname === pokeNickname
+					(p) => p.nickname === pokeNickname,
 				);
 				if (index === -1)
 					return interaction.editReply(
-						`${pokeNickname} was not found in party.`
+						`${pokeNickname} was not found in party.`,
 					);
 
 				targetOC.party.splice(index, 1);
@@ -72,14 +72,14 @@ export default {
 			// Save after removing
 			await targetOC.save();
 			await interaction.editReply(
-				`${pokeNickname} has been removed from ${OCName}.`
+				`${pokeNickname} has been removed from ${OCName}.`,
 			);
 			await interaction.followUp(
-				'https://pbs.twimg.com/media/GXrplDeXMAAvyyA.jpg'
+				'https://pbs.twimg.com/media/GXrplDeXMAAvyyA.jpg',
 			);
 		} catch (err) {
 			interaction.reply(
-				`Error removing ${pokeNickname} from ${OCName} \n\n ${err}`
+				`Error removing ${pokeNickname} from ${OCName} \n\n ${err}`,
 			);
 		}
 	},

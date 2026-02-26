@@ -8,10 +8,10 @@ import {
 	MessageFlags,
 	EmbedBuilder,
 } from 'discord.js';
-import OC from '../../../database/models/OCSchema';
-import Pokemon from '../../../database/models/PokemonSchema';
+import OC from '~/database/mongoDB/models/OCSchema';
+import Pokemon from '~/database/mongoDB/models/PokemonSchema';
 import { Types } from 'mongoose';
-import { isDBConnected } from '../../../database/mongoose/connection';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -21,19 +21,19 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription("Your registered OC's name")
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('poke-nickname')
 				.setDescription("Target Pokemon's nickname")
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addBooleanOption((option) =>
 			option
 				.setName('in-box')
 				.setDescription('Is this Pokemon in the box? (Defaults to false).')
-				.setRequired(false)
+				.setRequired(false),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -66,7 +66,7 @@ export default {
 		}
 
 		const pokemon = await Pokemon.findById(
-			targetPokemon.pokemon as Types.ObjectId
+			targetPokemon.pokemon as Types.ObjectId,
 		);
 		if (!pokemon) {
 			return interaction.editReply(`Pokemon data could not be retrieved.`);
@@ -105,7 +105,7 @@ export default {
 					.setCustomId('next')
 					.setLabel('Next ➡️')
 					.setStyle(ButtonStyle.Secondary)
-					.setDisabled(page === totalPages - 1)
+					.setDisabled(page === totalPages - 1),
 			);
 
 		const message = await interaction.editReply({
@@ -144,7 +144,7 @@ export default {
 							.setCustomId('expired')
 							.setLabel('Session Expired')
 							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(true)
+							.setDisabled(true),
 					),
 				],
 			});

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { mongoURI, adminURI, sshmongoURI } from '../../config.json';
+import { mongoURI, adminURI, sshmongoURI } from '~/config.json';
 
 export const isDBConnected = (): boolean => {
 	return mongoose.connection.readyState === 1;
