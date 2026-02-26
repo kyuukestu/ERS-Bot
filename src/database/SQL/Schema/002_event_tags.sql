@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS event_tags (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS event_tag_map (
+  event_id INTEGER NOT NULL,
+  tag_id INTEGER NOT NULL,
+  PRIMARY KEY (event_id, tag_id),
+  FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE,
+  FOREIGN KEY(tag_id) REFERENCES event_tags(id) ON DELETE CASCADE
+);

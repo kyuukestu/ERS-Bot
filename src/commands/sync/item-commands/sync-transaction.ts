@@ -6,20 +6,20 @@ import {
 import {
 	processTransaction,
 	type action,
-} from '~/database/processTransactions';
-import { isDBConnected } from '~/database/mongoose/connection';
+} from '~/database/mongoDB/processTransactions';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
 		.setName('sync-transaction')
 		.setDescription(
-			'Performs a monetary transaction and modifies inventory appropriately.'
+			'Performs a monetary transaction and modifies inventory appropriately.',
 		)
 		.addStringOption((option) =>
 			option
 				.setName('oc-name')
 				.setDescription('Your registered ocs name')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
@@ -31,55 +31,57 @@ export default {
 					{ name: 'Delete', value: 'DELETE' },
 					{ name: 'Buy', value: 'BUY' },
 					{ name: 'Sell', value: 'SELL' },
-					{ name: 'Trade', value: 'TRADE' }
+					{ name: 'Trade', value: 'TRADE' },
 				)
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('rp-date')
 				.setDescription('RP date of the transaction. (YYYY-MM-DD)')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('target-oc')
-				.setDescription('Target OC for the transaction.')
+				.setDescription('Target OC for the transaction.'),
 		)
 		.addStringOption((option) =>
-			option.setName('item-name').setDescription('Item name')
+			option.setName('item-name').setDescription('Item name'),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('service-name')
-				.setDescription('Service name e.g. Transportation (Bus, Train, Plane).')
+				.setDescription(
+					'Service name e.g. Transportation (Bus, Train, Plane).',
+				),
 		)
 		.addBooleanOption((option) =>
-			option.setName('custom-item').setDescription('Used for a custom item.')
+			option.setName('custom-item').setDescription('Used for a custom item.'),
 		)
 		.addBooleanOption((option) =>
 			option
 				.setName('is-league-service')
-				.setDescription('Used for a League-provided services e.g. PokeCenter')
+				.setDescription('Used for a League-provided services e.g. PokeCenter'),
 		)
 		.addIntegerOption((option) =>
-			option.setName('quantity').setDescription('Item amount')
+			option.setName('quantity').setDescription('Item amount'),
 		)
 
 		.addStringOption((option) =>
-			option.setName('reason').setDescription('Reason for the action')
+			option.setName('reason').setDescription('Reason for the action'),
 		)
 		.addNumberOption((option) =>
 			option
 				.setName('value')
 				.setDescription(
-					'Enter a custom value; only use this for custom transactions/Trades.'
-				)
+					'Enter a custom value; only use this for custom transactions/Trades.',
+				),
 		)
 		.addBooleanOption((option) =>
 			option
 				.setName('is-service')
-				.setDescription('Is this a service? (Default False.')
+				.setDescription('Is this a service? (Default False.'),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -100,14 +102,14 @@ export default {
 		try {
 			if (!isDBConnected) {
 				return interaction.reply(
-					'⚠️ Database is currently unavailable. Please try again later.'
+					'⚠️ Database is currently unavailable. Please try again later.',
 				);
 			}
 
 			const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
 			if (!dateFormatRegex.test(rpDate)) {
 				throw new Error(
-					`Invalid date format: "${rpDate}". Please use the format YYYY-MM-DD.`
+					`Invalid date format: "${rpDate}". Please use the format YYYY-MM-DD.`,
 				);
 			}
 
@@ -174,7 +176,7 @@ export default {
 								: 'N/A'
 						}`,
 						inline: true,
-					}
+					},
 				)
 				.addFields({
 					name: '📝 Reason',
