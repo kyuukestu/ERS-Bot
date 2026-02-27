@@ -4,7 +4,7 @@ import { db } from '~/database/SQL/database';
 export async function createEventQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
-	const title = interaction.options.getString('title', true);
+	const title = interaction.options.getString('event-title', true);
 	const description = interaction.options.getString('description', true);
 	const date = interaction.options.getString('date', false) ?? null;
 	const time = interaction.options.getString('time', false) ?? '00:00';

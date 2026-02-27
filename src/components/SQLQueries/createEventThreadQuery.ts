@@ -4,7 +4,7 @@ import { db } from '~/database/SQL/database';
 export async function createEventThreadQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
-	const title = interaction.options.getString('title', true);
+	const title = interaction.options.getString('event-title', true);
 
 	const event = db
 		.query(

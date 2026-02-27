@@ -27,7 +27,7 @@ export default {
 						.setDescription('Creates an event and adds it to the database.')
 						.addStringOption((option: SlashCommandStringOption) =>
 							option
-								.setName('title')
+								.setName('event-title')
 								.setDescription('Event Title.')
 								.setRequired(true),
 						)
@@ -59,7 +59,7 @@ export default {
 						.setDescription('Updates an event in the Database.')
 						.addStringOption((option: SlashCommandStringOption) =>
 							option
-								.setName('title')
+								.setName('event-title')
 								.setDescription('Event Title.')
 								.setRequired(true),
 						)
@@ -95,7 +95,7 @@ export default {
 						.setDescription('Creates a thread for an event.')
 						.addStringOption((option: SlashCommandStringOption) =>
 							option
-								.setName('title')
+								.setName('event-title')
 								.setDescription('Event Title')
 								.setRequired(true),
 						),
@@ -106,7 +106,7 @@ export default {
 						.setName('complete-event')
 						.setDescription('Sets the status of an event to finished.')
 						.addStringOption((option: SlashCommandStringOption) =>
-							option.setName('title').setDescription('Event Title'),
+							option.setName('event-title').setDescription('Event Title'),
 						),
 				)
 				.addSubcommand((sub) =>
@@ -114,7 +114,7 @@ export default {
 						.setName('delete-event')
 						.setDescription('Deletes an event from the database.')
 						.addStringOption((option: SlashCommandStringOption) =>
-							option.setName('title').setDescription('Event Title'),
+							option.setName('event-title').setDescription('Event Title'),
 						),
 				)
 				.addSubcommand((sub) =>
