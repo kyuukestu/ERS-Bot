@@ -90,7 +90,6 @@ export async function weeklyViewQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
 	const userDate = interaction.options.getString('date', false);
-	const filter = interaction.options.getInteger('status-filter', false) ?? 2; // default: Both
 
 	// Step 1: Fetch events from DB
 	let allEvents = db
@@ -103,16 +102,6 @@ export async function weeklyViewQuery(
 	`,
 		)
 		.all();
-
-	if (filter !== 2) {
-		allEvents = allEvents.filter((e) => e.completed === filter);
-	}
-
-	if (!allEvents.length) {
-		return interaction.editReply({
-			content: 'No events found for the selected filter.',
-		});
-	}
 
 	// Step 2: Determine base date
 	let baseDate: Date;
