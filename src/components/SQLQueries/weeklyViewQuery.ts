@@ -71,7 +71,8 @@ function formatDayHeader(date: Date) {
 function renderWeekCodeBlock(days: Record<string, any[]>) {
 	let output = '```';
 	for (const [dateStr, dayEvents] of Object.entries(days)) {
-		const header = formatDayHeader(new Date(dateStr));
+		const [year, month, day] = dateStr.split('-').map(Number);
+		const header = formatDayHeader(new Date(year, month - 1, day));
 		output += `\n${header}\n`;
 
 		if (!dayEvents.length) {
@@ -122,7 +123,7 @@ export async function weeklyViewQuery(
 		}
 		baseDate = parsed;
 	} else if (earliest) {
-		baseDate = new Date(earliest.event_date);
+		baseDate = new Date(earliest.event_date + 'T00:00:00');
 	} else {
 		baseDate = new Date(); // fallback to today if no dated events
 	}
