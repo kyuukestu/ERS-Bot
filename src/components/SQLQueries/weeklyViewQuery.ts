@@ -131,7 +131,7 @@ export async function weeklyViewQuery(
 		const weekEnd = new Date(currentWeekStart);
 		weekEnd.setDate(currentWeekStart.getDate() + 7);
 
-		const weekEvents = allEvents.filter(
+		const weekEvents = datedEvents.filter(
 			(e) =>
 				e.event_date >= formatDateKey(currentWeekStart) &&
 				e.event_date < formatDateKey(weekEnd),
