@@ -103,6 +103,11 @@ export async function weeklyViewQuery(
 		)
 		.all();
 
+	// Exclude events without a set date
+	allEvents = allEvents.filter(
+		(e) => e.event_date && e.event_date.trim() !== '',
+	);
+
 	if (filter !== 2) {
 		allEvents = allEvents.filter((e) => e.completed === filter);
 	}
@@ -171,9 +176,9 @@ export async function weeklyViewQuery(
 	collector.on('collect', async (i) => {
 		if (i.user.id !== interaction.user.id)
 			return i.reply({ content: 'Not your calendar.', ephemeral: true });
-		
+
 		// Acknowledge the button click so Discord doesn't show "Interaction failed"
-	await i.deferUpdate();
+		await i.deferUpdate();
 
 		if (i.customId === 'prev')
 			currentWeekStart.setDate(currentWeekStart.getDate() - 7);
