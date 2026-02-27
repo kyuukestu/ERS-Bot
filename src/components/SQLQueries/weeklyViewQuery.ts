@@ -98,15 +98,11 @@ export async function weeklyViewQuery(
 			`
 		SELECT title, event_date, completed
 		FROM events
+		WHERE event_date IS NOT NULL AND event_date != ''
 		ORDER BY event_date ASC
 	`,
 		)
 		.all();
-
-	// Exclude events without a set date
-	allEvents = allEvents.filter(
-		(e) => e.event_date && e.event_date.trim() !== '',
-	);
 
 	if (filter !== 2) {
 		allEvents = allEvents.filter((e) => e.completed === filter);
