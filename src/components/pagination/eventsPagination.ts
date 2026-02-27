@@ -31,7 +31,7 @@ export async function paginateEvents(
 		const rows = pageItems
 			.map((e) => {
 				const title = e.title.padEnd(20).slice(0, 20);
-				const date = e.event_date.padEnd(10);
+				const date = (e.event_date ?? 'None').padEnd(10);
 				const status = e.completed ? 'Completed' : 'Pending';
 				return `${title} | ${date} | ${status}`;
 			})
