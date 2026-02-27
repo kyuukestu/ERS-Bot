@@ -103,7 +103,14 @@ export async function weeklyViewQuery(
 		)
 		.all();
 
-	// Step 2: Determine base date
+	// Filter out events without a date for week calculations
+	const datedEvents = allEvents.filter(
+		(e) => e.event_date && e.event_date.trim() !== '',
+	);
+
+	// Earliest unfinished event with a date
+	const earliest = datedEvents.find((e) => e.completed === 0);
+
 	let baseDate: Date;
 	if (userDate) {
 		const parsed = new Date(userDate);
@@ -111,10 +118,10 @@ export async function weeklyViewQuery(
 			return interaction.editReply({ content: 'Invalid date format.' });
 		}
 		baseDate = parsed;
+	} else if (earliest) {
+		baseDate = new Date(earliest.event_date);
 	} else {
-		// Earliest unfinished event
-		const earliest = allEvents.find((e) => e.completed === 0);
-		baseDate = earliest ? new Date(earliest.event_date) : new Date();
+		baseDate = new Date(); // fallback to today if no dated events
 	}
 
 	// Step 3: Initialize pagination state
