@@ -4,13 +4,13 @@ import {
 	type ChatInputCommandInteraction,
 	type SlashCommandStringOption,
 } from 'discord.js';
-import Pokemon from '../../../database/models/PokemonSchema.ts';
-import { calculateUpkeep } from '../../../utility/calculators/sync-poke-drain-calculator.ts';
-import { pokemonEndPoint } from '../../../api/endpoints.ts';
+import Pokemon from '~/database/mongoDB/models/PokemonSchema.ts';
+import { calculateUpkeep } from '~/utility/calculators/sync-poke-drain-calculator.ts';
+import { pokemonEndPoint } from '~/api/endpoints.ts';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo.ts';
-import { formatUserInput } from '../../../utility/formatting/formatUserInput.ts';
-import { type PokemonStats } from '../../../interface/canvasData.ts';
-import { isDBConnected } from '../../../database/mongoose/connection.ts';
+import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
+import { type PokemonStats } from '~/interface/canvasData.ts';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection.ts';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -20,16 +20,16 @@ export default {
 			option
 				.setName('poke-id')
 				.setDescription('Unique ID for the Pokémon.')
-				.setRequired(true)
+				.setRequired(true),
 		)
 		.addStringOption((option) =>
-			option.setName('nickname').setDescription('Nickname of the Pokémon')
+			option.setName('nickname').setDescription('Nickname of the Pokémon'),
 		)
 		.addStringOption((option) =>
-			option.setName('species').setDescription('Species of the Pokémon')
+			option.setName('species').setDescription('Species of the Pokémon'),
 		)
 		.addStringOption((option) =>
-			option.setName('form').setDescription('Form of the Pokémon')
+			option.setName('form').setDescription('Form of the Pokémon'),
 		)
 		.addIntegerOption((option) =>
 			option
@@ -37,7 +37,7 @@ export default {
 				.setDescription('Pokémon level')
 				.setMinValue(1)
 				.setMaxValue(100)
-				.setRequired(false)
+				.setRequired(false),
 		)
 		.addStringOption((option) =>
 			option
@@ -47,29 +47,29 @@ export default {
 					{ name: 'Male', value: 'Male' },
 					{ name: 'Female', value: 'Female' },
 					{ name: 'Genderless', value: 'Genderless' },
-					{ name: 'Unknown', value: 'Unknown' }
-				)
+					{ name: 'Unknown', value: 'Unknown' },
+				),
 		)
 		.addStringOption((option) =>
 			option
 				.setName('ability-list')
 				.setDescription(
-					"Pokemon's abilities; separate by commas. Note: overwrite any existing abilities"
-				)
+					"Pokemon's abilities; separate by commas. Note: overwrite any existing abilities",
+				),
 		)
 		.addBooleanOption((option) =>
-			option.setName('shiny').setDescription('Shiny status of the Pokémon')
+			option.setName('shiny').setDescription('Shiny status of the Pokémon'),
 		)
 		.addBooleanOption((option) =>
-			option.setName('in-box').setDescription('Is the Pokémon in box?')
+			option.setName('in-box').setDescription('Is the Pokémon in box?'),
 		)
 		.addBooleanOption((option) =>
-			option.setName('is-alpha').setDescription('Is the Pokémon an Alpha?')
+			option.setName('is-alpha').setDescription('Is the Pokémon an Alpha?'),
 		)
 		.addIntegerOption((option) =>
 			option
 				.setName('additional-abilities')
-				.setDescription('Total number of additional abilities')
+				.setDescription('Total number of additional abilities'),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -191,7 +191,7 @@ export default {
 							return pokemonEndPoint(formatUserInput(finalSpecies));
 						}
 						throw err;
-					}
+					},
 				);
 
 				const pokemonInfo = extractPokemonInfo(await pokemonApiRaw);
@@ -210,11 +210,11 @@ export default {
 							?.base_stat ?? 0,
 					spAttack:
 						pokemonInfo.stats.find(
-							(s: StatObj) => s.stat.name === 'special-attack'
+							(s: StatObj) => s.stat.name === 'special-attack',
 						)?.base_stat ?? 0,
 					spDefense:
 						pokemonInfo.stats.find(
-							(s: StatObj) => s.stat.name === 'special-defense'
+							(s: StatObj) => s.stat.name === 'special-defense',
 						)?.base_stat ?? 0,
 					speed:
 						pokemonInfo.stats.find((s: StatObj) => s.stat.name === 'speed')
@@ -223,7 +223,7 @@ export default {
 
 				const totalStats = Object.values(stats).reduce(
 					(sum, s) => sum + (s as number),
-					0
+					0,
 				);
 
 				// Use the updated pokemon.level (if provided) or DB value
@@ -232,7 +232,7 @@ export default {
 				const inBoxForCalc = pokemon.inBox ?? false;
 				const additionalAbilities = Math.max(
 					0,
-					(abilityListOpt?.length ?? 1) - 1
+					(abilityListOpt?.length ?? 1) - 1,
 				);
 
 				const fortitude_drain = await calculateUpkeep(
@@ -240,7 +240,7 @@ export default {
 					levelForCalc,
 					Boolean(alphaForCalc),
 					additionalAbilities,
-					Boolean(inBoxForCalc)
+					Boolean(inBoxForCalc),
 				);
 
 				// store updated drain
@@ -261,13 +261,13 @@ export default {
 				if (interaction.deferred || interaction.replied) {
 					return interaction.editReply({
 						content: `❌ An error occurred while updating the Pokémon.\nError: ${String(
-							error
+							error,
 						)}`,
 					});
 				} else {
 					return interaction.reply({
 						content: `❌ An error occurred while updating the Pokémon.\nError: ${String(
-							error
+							error,
 						)}`,
 						flags: MessageFlags.Ephemeral,
 					});

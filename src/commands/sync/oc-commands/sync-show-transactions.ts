@@ -8,10 +8,10 @@ import {
 	ComponentType,
 	MessageFlags,
 } from 'discord.js';
-import OC from '~/database/models/OCSchema.ts';
-import TransactionLog from '~/database/models/TransactionLogSchema.ts';
-import ServiceLog from '~/database/models/ServiceLogSchema.ts';
-import { isDBConnected } from '~/database/mongoose/connection.ts';
+import OC from '~/database/mongoDB/models/OCSchema.ts';
+import TransactionLog from '~/database/mongoDB/models/TransactionLogSchema.ts';
+import ServiceLog from '~/database/mongoDB/models/ServiceLogSchema.ts';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection.ts';
 
 async function fetchOCid(OCName: string) {
 	const oc = await OC.findOne({ name: OCName });
@@ -27,7 +27,7 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription('Your registered OC’s name')
-				.setRequired(true)
+				.setRequired(true),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -70,7 +70,7 @@ export default {
 					rpDate: log.rpDate,
 				})),
 			].sort(
-				(a, b) => new Date(b.rpDate).getTime() - new Date(a.rpDate).getTime()
+				(a, b) => new Date(b.rpDate).getTime() - new Date(a.rpDate).getTime(),
 			);
 
 			if (combinedLogs.length === 0) {
@@ -119,7 +119,7 @@ export default {
 					.setCustomId('next')
 					.setLabel('Next ▶️')
 					.setStyle(ButtonStyle.Secondary)
-					.setDisabled(totalPages <= 1)
+					.setDisabled(totalPages <= 1),
 			);
 
 			const message = await interaction.reply({

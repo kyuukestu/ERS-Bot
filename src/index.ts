@@ -12,6 +12,7 @@ import { token, mongoURI, adminURI, sshmongoURI } from './config.json';
 import * as fs from 'node:fs/promises'; // Use promises for async
 import * as path from 'node:path';
 import mongoose from 'mongoose';
+import { initializeSQLDB } from './database/SQL/database';
 
 // const connectDB = async () => {
 // 	try {
@@ -27,6 +28,20 @@ import mongoose from 'mongoose';
 // } catch (error) {
 // 	console.error('❌ Error connecting to MongoDB:', error);
 // }
+
+const connectDB = async () => {
+	try {
+		await initializeSQLDB();
+	} catch (error) {
+		console.error('❌ SQL Initializing Failed:', error);
+	}
+};
+
+try {
+	await connectDB();
+} catch (error) {
+	console.error('❌ Error connecting to MySQL:', error);
+}
 
 class ExtendedClient extends Client {
 	commands: Collection<string, CommandModule>;

@@ -8,9 +8,9 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
-import OC from '~/database/models/OCSchema';
-import { type ItemDocument } from '~/database/models/ItemSchema';
-import { isDBConnected } from '~/database/mongoose/connection';
+import OC from '~/database/mongoDB/models/OCSchema';
+import { type ItemDocument } from '~/database/mongoDB/models/ItemSchema';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -20,7 +20,7 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription("Your registered OC's name")
-				.setRequired(true)
+				.setRequired(true),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
@@ -74,7 +74,7 @@ export default {
 			const description = pageItems
 				.map(
 					(item, idx) =>
-						`${start + idx + 1}. **${item.name}** × ${item.quantity}`
+						`${start + idx + 1}. **${item.name}** × ${item.quantity}`,
 				)
 				.join('\n');
 
@@ -101,7 +101,7 @@ export default {
 					.setCustomId('next')
 					.setLabel('Next ➡️')
 					.setStyle(ButtonStyle.Secondary)
-					.setDisabled(page === totalPages - 1)
+					.setDisabled(page === totalPages - 1),
 			);
 		};
 
@@ -145,7 +145,7 @@ export default {
 							.setCustomId('expired')
 							.setLabel('Session Expired')
 							.setStyle(ButtonStyle.Secondary)
-							.setDisabled(true)
+							.setDisabled(true),
 					),
 				],
 			});

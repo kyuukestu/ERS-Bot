@@ -36,3 +36,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # config
 config.js
 config.json
+
+# DB files
+*.db

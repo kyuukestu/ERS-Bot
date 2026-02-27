@@ -1,8 +1,10 @@
-import OC from '~/database/models/OCSchema';
-import Item, { type ItemDocument } from '~/database/models/ItemSchema';
-import Service, { type ServiceDocument } from '~/database/models/ServiceSchema';
-import TransactionLog from '~/database/models/TransactionLogSchema';
-import ServiceLog from '~/database/models/ServiceLogSchema';
+import OC from '~/database/mongoDB/models/OCSchema';
+import Item, { type ItemDocument } from '~/database/mongoDB/models/ItemSchema';
+import Service, {
+	type ServiceDocument,
+} from '~/database/mongoDB/models/ServiceSchema';
+import TransactionLog from '~/database/mongoDB/models/TransactionLogSchema';
+import ServiceLog from '~/database/mongoDB/models/ServiceLogSchema';
 import { v4 as uuidv4 } from 'uuid';
 import { parse, isValid } from 'date-fns';
 
@@ -188,7 +190,7 @@ export const processTransaction = async ({
 
 	// Find the inventory entry
 	const invEntry = userOC.inventory.find(
-		(entry) => entry.item.id === getItemId
+		(entry) => entry.item.id === getItemId,
 	);
 
 	if (!invEntry && action !== 'BUY' && action !== 'ADD')
@@ -285,7 +287,7 @@ export const processTransaction = async ({
 		}
 
 		const invEntry = userOC.inventory.find(
-			(entry) => entry.item.id === getItemId
+			(entry) => entry.item.id === getItemId,
 		);
 		if (!invEntry) {
 			throw new Error(`${OCName} does not have that item.`);
@@ -336,7 +338,7 @@ export const processTransaction = async ({
 
 	if (action === 'DELETE') {
 		const invEntry = userOC.inventory.find(
-			(entry) => entry.item.id === getItemId
+			(entry) => entry.item.id === getItemId,
 		);
 		if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 
@@ -374,7 +376,7 @@ export const processTransaction = async ({
 		}
 
 		const invEntry = userOC.inventory.find(
-			(entry) => entry.item.id === getItemId
+			(entry) => entry.item.id === getItemId,
 		);
 		if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 
@@ -432,7 +434,7 @@ export const processTransaction = async ({
 			}
 
 			const invEntry = userOC.inventory.find(
-				(entry) => entry.item.id === getItemId
+				(entry) => entry.item.id === getItemId,
 			);
 			if (!invEntry) throw new Error(`${OCName} does not have that item.`);
 			if (invEntry.quantity < quantityChange)
@@ -444,7 +446,7 @@ export const processTransaction = async ({
 
 			// Receiver gains item(s)
 			const receiverInv = target.inventory.find(
-				(entry) => entry.item.id === getItemId
+				(entry) => entry.item.id === getItemId,
 			);
 			if (receiverInv) receiverInv.quantity += quantityChange;
 			else target.inventory.push({ item: item._id, quantity: quantityChange });
@@ -455,7 +457,7 @@ export const processTransaction = async ({
 			if (value <= 0) throw new Error('Trade value must be a positive number.');
 			if (userOC.money < value)
 				throw new Error(
-					`${OCName} does not have enough money to trade ${value}.`
+					`${OCName} does not have enough money to trade ${value}.`,
 				);
 
 			userOC.money -= value;

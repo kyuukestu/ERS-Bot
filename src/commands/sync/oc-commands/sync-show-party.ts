@@ -4,10 +4,9 @@ import {
 	EmbedBuilder,
 	MessageFlags,
 } from 'discord.js';
-import { id } from 'zod/locales';
-import OC from '~/database/models/OCSchema.ts';
-import { type PokemonDocument } from '~/database/models/PokemonSchema.ts';
-import { isDBConnected } from '~/database/mongoose/connection.ts';
+import OC from '~/database/mongoDB/models/OCSchema.ts';
+import { type PokemonDocument } from '~/database/mongoDB/models/PokemonSchema.ts';
+import { isDBConnected } from '~/database/mongoDB/mongoose/connection.ts';
 
 /** 🧠 Helper: Fetch OC and populate their party */
 async function fetchOCParty(OCName: string) {
@@ -52,7 +51,7 @@ function formatPartyData(oc: any) {
 /** 🎨 Helper: Create a nice embed from the data */
 function buildPartyEmbed(
 	OCName: string,
-	partyData: ReturnType<typeof formatPartyData>
+	partyData: ReturnType<typeof formatPartyData>,
 ) {
 	const embed = new EmbedBuilder()
 		.setTitle(`🎯 ${OCName}'s Party`)
@@ -89,7 +88,7 @@ export default {
 			option
 				.setName('oc-name')
 				.setDescription('Your registered OC’s name')
-				.setRequired(true)
+				.setRequired(true),
 		),
 
 	async execute(interaction: ChatInputCommandInteraction) {
