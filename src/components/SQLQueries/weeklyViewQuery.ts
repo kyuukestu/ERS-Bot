@@ -175,6 +175,7 @@ export async function weeklyViewQuery(
 
 		// Acknowledge the button click so Discord doesn't show "Interaction failed"
 		await i.deferUpdate();
+		collector.resetTimer();
 
 		if (i.customId === 'prev')
 			currentWeekStart.setDate(currentWeekStart.getDate() - 7);
