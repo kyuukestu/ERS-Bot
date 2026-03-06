@@ -5,7 +5,7 @@ import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 const parser = new Parser();
 
 const FEED_URL = 'https://www.rpnation.com/forums/-/index.rss';
-const CHANNEL_ID = '1479329634792505508';
+const CHANNEL_ID = '1479352827003273359';
 
 export class RSSService {
 	private client: Client;
@@ -103,6 +103,10 @@ export class RSSService {
 				.setTimestamp();
 
 			await this.channel?.send({ embeds: [embed] });
+
+			// if (this.channel?.type === ChannelType.GuildAnnouncement) {
+			// 	await msg.crosspost();
+			// }
 		}
 
 		this.initialized = true;
