@@ -1,6 +1,6 @@
 import Parser from 'rss-parser';
 import { rssDB } from '~/database/SQL/database';
-import { Client, TextChannel } from 'discord.js';
+import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 
 const parser = new Parser();
 
@@ -84,7 +84,21 @@ export class RSSService {
 
 			if (!this.initialized) continue;
 
-			await this.channel?.send(`📢 **${item.title}**\n${item.link}`);
+			const embed = new EmbedBuilder()
+				.setTitle(item.title ?? 'Unknown')
+				.setURL(item.link ?? 'Unknown')
+				.setColor(0x3498db)
+				.setDescription(
+					item.contentSnippet?.slice(0, 300) || 'New post detected.',
+				)
+				.addFields(
+					{ name: 'Thread', value: item.thread || 'Unknown', inline: true },
+					{ name: 'Author', value: item.author || 'Unknown', inline: true },
+				)
+				.setFooter({ text: 'RPNation Thread Monitor' })
+				.setTimestamp();
+
+			await this.channel?.send({ embeds: [embed] });
 		}
 
 		this.initialized = true;
