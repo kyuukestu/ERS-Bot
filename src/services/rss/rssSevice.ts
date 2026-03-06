@@ -92,7 +92,7 @@ export class RSSService {
 
 			rssDB
 				.prepare(
-					'INSERT INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
+					'INSERT OR IGNORE INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
 				)
 				.run(
 					String(guid),
