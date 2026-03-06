@@ -45,9 +45,10 @@ export class RSSService {
 			.prepare('SELECT guid FROM rss_seen ORDER BY pubDate DESC LIMIT 500')
 			.all();
 
-		const knownGuids = new Set(rows.map((r) => r.guid));
+		const knownGuids = new Set(rows.map((r: any) => r.guid));
 
 		const items = [...feed.items].reverse();
+
 		const allowedThreadIDs = new Set([
 			'536653', // Kanto IC
 			'536282', // Johto IC
@@ -70,11 +71,14 @@ export class RSSService {
 		]);
 
 		for (const item of items) {
-			const guid = item.guid ?? item.link;
-			if (!guid) continue;
-
 			const threadID = getThreadID(item.link);
 			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
+
+			// 🔑 Extract post ID instead of using thread GUID
+			const postID = getPostID(item.link);
+
+			const guid = postID ?? item.link;
+			if (!guid) continue;
 
 			if (knownGuids.has(guid)) continue;
 
@@ -90,23 +94,19 @@ export class RSSService {
 
 			const embed = new EmbedBuilder()
 				.setTitle(item.title ?? 'Unknown')
-				.setURL(item.link ?? 'Unknown')
+				.setURL(item.link ?? '')
 				.setColor(0x3498db)
 				.setDescription(
-					item.contentSnippet?.slice(0, 300) || 'New post detected.',
+					item.contentSnippet?.slice(0, 300) ?? 'New post detected.',
 				)
 				.addFields(
-					{ name: 'Thread', value: item.thread || 'Unknown', inline: true },
-					{ name: 'Author', value: item.author || 'Unknown', inline: true },
+					{ name: 'Thread', value: item.title ?? 'Unknown', inline: true },
+					{ name: 'Author', value: item.author ?? 'Unknown', inline: true },
 				)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
 
 			await this.channel?.send({ embeds: [embed] });
-
-			// if (this.channel?.type === ChannelType.GuildAnnouncement) {
-			// 	await msg.crosspost();
-			// }
 		}
 
 		this.initialized = true;
@@ -115,7 +115,12 @@ export class RSSService {
 
 function getThreadID(url: string | undefined): string | null {
 	if (!url) return null;
-	// match the last dot followed by digits before optional slash
-	const match = url.match(/\.([0-9]+)\/?$/);
+	const match = url.match(/\.([0-9]+)\//);
+	return match ? match[1] : null;
+}
+
+function getPostID(url: string | undefined): string | null {
+	if (!url) return null;
+	const match = url.match(/post-(\d+)/);
 	return match ? match[1] : null;
 }
