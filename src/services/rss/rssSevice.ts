@@ -74,11 +74,17 @@ export class RSSService {
 		]);
 
 		for (const item of items) {
-			const threadID = getThreadID(item.link);
-			const pubDateMs = item.pubDate ? new Date(item.pubDate).getTime() : null;
+			const link = resolveValue(item.link);
+			const title = resolveValue(item.title);
+			const author = resolveValue(item.author);
+			const contentSnippet = resolveValue(item.contentSnippet);
+
+			const threadID = getThreadID(link);
 			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
 
-			const guid = getGuid(item.link);
+			const pubDateMs = item.pubDate ? new Date(item.pubDate).getTime() : null;
+
+			const guid = getGuid({ ...item, link });
 			if (!guid) continue;
 
 			if (knownGuids.has(guid)) continue;
@@ -94,12 +100,7 @@ export class RSSService {
 				.prepare(
 					'INSERT OR IGNORE INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
 				)
-				.run(
-					String(guid),
-					item.title ? String(item.title) : null,
-					item.link ? String(item.link) : null,
-					pubDateMs ?? null,
-				);
+				.run(String(guid), title, link, pubDateMs ?? null);
 
 			console.log('item types:', {
 				title: typeof item.title,
@@ -112,15 +113,15 @@ export class RSSService {
 
 			if (!this.initialized) continue;
 
-			const username = getAuthorName(item.author);
-			const profile = getAuthorProfile(item.author);
+			const username = getAuthorName(author);
+			const profile = getAuthorProfile(author);
 
 			const embed = new EmbedBuilder()
 				.setTitle(item.title ?? 'New Post')
 				.setURL(item.link ?? '')
 				.setColor(0x3498db)
 				.setDescription(
-					`[${username}](${profile})\n\n${item.contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
+					`[${username}](${profile})\n\n${contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
 				)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
@@ -158,6 +159,13 @@ function getAuthorName(author: unknown): string {
 function getAuthorProfile(author: unknown): string {
 	const name = getAuthorName(author);
 	return `https://www.rpnation.com/members/${name.replace(/ /g, '-')}/`;
+}
+
+function resolveValue(val: unknown): string | null {
+	if (!val) return null;
+	if (typeof val === 'function') return resolveValue(val());
+	if (typeof val === 'string') return val;
+	return String(val);
 }
 
 function getGuid(item: any): string | null {
