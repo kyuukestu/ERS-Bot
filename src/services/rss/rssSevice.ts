@@ -116,27 +116,29 @@ export class RSSService {
 	}
 }
 
-function getThreadID(url: unknown): string | null {
-	if (!url || typeof url !== 'string') return null;
-	const match = url.match(/\/threads\/[^/]+\.(\d+)\//);
+function getPostID(url: unknown): string | null {
+	console.log('getPostID raw input:', typeof url, url);
+	const str = String(url ?? '');
+	const match = /post-(\d+)/.exec(str);
 	return match ? match[1] : null;
 }
 
-function getPostID(url: unknown): string | null {
-	if (!url || typeof url !== 'string') return null;
-	const match = url.match(/post-(\d+)/);
+function getThreadID(url: unknown): string | null {
+	const str = String(url ?? '');
+	const match = /\/threads\/[^/]+\.(\d+)\//.exec(str);
 	return match ? match[1] : null;
+}
+
+function getAuthorName(author: unknown): string {
+	const str = String(author ?? '');
+	if (!str) return 'Unknown';
+	const match = /\((.*?)\)/.exec(str);
+	return match ? match[1] : str;
 }
 
 function getAuthorProfile(author: unknown): string {
 	const name = getAuthorName(author);
 	return `https://www.rpnation.com/members/${name.replace(/ /g, '-')}/`;
-}
-
-function getAuthorName(author: unknown): string {
-	if (!author || typeof author !== 'string') return 'Unknown';
-	const match = author.match(/\((.*?)\)/);
-	return match ? match[1] : author;
 }
 
 function getGuid(item: any): string | null {
