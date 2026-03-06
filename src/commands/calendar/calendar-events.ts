@@ -159,8 +159,6 @@ export default {
 		const commandGroup = interaction.options.getSubcommandGroup();
 
 		try {
-			await interaction.deferReply();
-
 			// Test Date format YYYY-MM-DD
 			const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
