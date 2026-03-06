@@ -63,6 +63,10 @@ export class RSSService {
 			'560446', // Sanguine Swarms IC
 			'565794', // Lilycove WCS IC
 			'555337', // Medieval Festival IC
+			'536418', // Main OOC
+			'560252', // Sanguine Swarm OOC
+			'566603', // Chatter
+			'536117', // Main CS
 		]);
 
 		for (const item of items) {
