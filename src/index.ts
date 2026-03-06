@@ -8,26 +8,11 @@ import {
 	type Interaction,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
-import { token, mongoURI, adminURI, sshmongoURI } from './config.json';
+import { token } from './config.json';
 import * as fs from 'node:fs/promises'; // Use promises for async
 import * as path from 'node:path';
-import mongoose from 'mongoose';
 import { initializeSQLDB } from './database/SQL/database';
-
-// const connectDB = async () => {
-// 	try {
-// 		await mongoose.connect(mongoURI || adminURI || sshmongoURI);
-// 		console.log('✅ Connected to MongoDB');
-// 	} catch (error) {
-// 		console.error('❌ Error connecting to MongoDB:', error);
-// 	}
-// };
-
-// try {
-// 	await connectDB();
-// } catch (error) {
-// 	console.error('❌ Error connecting to MongoDB:', error);
-// }
+import { RSSService } from './services/rss/rssSevice';
 
 const connectDB = async () => {
 	try {
@@ -54,36 +39,6 @@ class ExtendedClient extends Client {
 
 // Create a new client instance
 const client = new ExtendedClient();
-
-// Load commands dynamically
-// async function loadCommands(dirPath = path.join(__dirname, 'commands')) {
-// 	const entries = await fs.readdir(dirPath, { withFileTypes: true });
-
-// 	for (const entry of entries) {
-// 		const fullPath = path.join(dirPath, entry.name);
-
-// 		if (entry.isDirectory() && entry.name === 'commands') {
-// 			// Recursively load commands from subfolders
-// 			await loadCommands(fullPath);
-// 		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
-// 			try {
-// 				const commandImport = await import(fullPath);
-// 				const commandModule = commandImport.default;
-
-// 				if ('data' in commandModule && 'execute' in commandModule) {
-// 					client.commands.set(commandModule.data.name, commandModule);
-// 					console.log(`Loaded command: ${commandModule.data.name}`);
-// 				} else {
-// 					console.warn(
-// 						`[WARNING] The command at ${fullPath} is missing a required "data" or "execute" property.`
-// 					);
-// 				}
-// 			} catch (error) {
-// 				console.error(`[ERROR] Failed to load command at ${fullPath}:`, error);
-// 			}
-// 		}
-// 	}
-// }
 
 interface CommandModule {
 	data: { name: string };
@@ -138,6 +93,9 @@ export async function loadCommands(
 client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	await loadCommands(client); // Load commands after client is ready
+
+	const rssService = new RSSService(client);
+	rssService.start();
 });
 
 // Handle interactions
