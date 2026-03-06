@@ -83,11 +83,30 @@ export class RSSService {
 
 			if (knownGuids.has(guid)) continue;
 
+			console.log('item types:', {
+				title: typeof item.title,
+				link: typeof item.link,
+				pubDate: typeof item.pubDate,
+				guid: typeof item.guid,
+			});
+
 			rssDB
 				.prepare(
 					'INSERT INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
 				)
-				.run(guid, item.title ?? null, item.link ?? null, pubDateMs ?? null);
+				.run(
+					String(guid),
+					item.title ? String(item.title) : null,
+					item.link ? String(item.link) : null,
+					pubDateMs ?? null,
+				);
+
+			console.log('item types:', {
+				title: typeof item.title,
+				link: typeof item.link,
+				pubDate: typeof item.pubDate,
+				guid: typeof item.guid,
+			});
 
 			knownGuids.add(guid);
 
