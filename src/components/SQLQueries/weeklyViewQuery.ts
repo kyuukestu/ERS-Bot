@@ -93,10 +93,12 @@ function renderWeekCodeBlock(days: Record<string, any[]>) {
 export async function weeklyViewQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
+	await interaction.deferReply();
+
 	const userDate = interaction.options.getString('date', false);
 
 	// Step 1: Fetch events from DB
-	let allEvents = db
+	const allEvents = db
 		.query(
 			`
 		SELECT title, event_date, completed

@@ -4,6 +4,8 @@ import { db } from '~/database/SQL/database';
 export async function createEventQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
+	await interaction.deferReply();
+
 	const title = interaction.options.getString('event-title', true);
 	const description = interaction.options.getString('description', true);
 	const date = interaction.options.getString('date', false) ?? null;

@@ -4,6 +4,8 @@ import { db } from '~/database/SQL/database';
 export async function updateEventQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
+	await interaction.deferReply();
+
 	const title = interaction.options.getString('event-title', true);
 	const newTitle = interaction.options.getString('new-title', false) ?? null;
 	const newDescription =

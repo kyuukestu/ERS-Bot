@@ -5,6 +5,8 @@ import { paginateEvents } from '~/components/pagination/eventsPagination';
 export async function listEventsQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
+	await interaction.deferReply();
+
 	const filter = interaction.options.getInteger('status-filter', true); // 0 | 1 | 2
 
 	try {

@@ -4,6 +4,8 @@ import { db } from '~/database/SQL/database';
 export async function changeCompletionStatusQuery(
 	interaction: ChatInputCommandInteraction,
 ) {
+	await interaction.deferReply();
+
 	const title = interaction.options.getString('event-title', true);
 
 	try {
