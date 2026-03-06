@@ -9,10 +9,41 @@ import {
 	type ChatInputCommandInteraction,
 } from 'discord.js';
 import { token } from './config.json';
-import * as fs from 'node:fs/promises'; // Use promises for async
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { initializeSQLDB } from './database/SQL/database';
 import { RSSService } from './services/rss/rssSevice';
+
+// --------------------------------------------------------
+// Process-level guards — prevent crash loops from
+// hammering the Discord gateway and triggering shard limits
+// --------------------------------------------------------
+
+process.on('unhandledRejection', (err) => {
+	console.error('Unhandled rejection:', err);
+	// Log but do NOT exit — keep the bot alive
+});
+
+process.on('uncaughtException', (err) => {
+	console.error('Uncaught exception:', err);
+	// Log but do NOT exit — keep the bot alive
+});
+
+process.on('SIGTERM', async () => {
+	console.log('SIGTERM received — shutting down gracefully');
+	await client.destroy();
+	process.exit(0);
+});
+
+process.on('SIGINT', async () => {
+	console.log('SIGINT received — shutting down gracefully');
+	await client.destroy();
+	process.exit(0);
+});
+
+// --------------------------------------------------------
+// Database
+// --------------------------------------------------------
 
 const connectDB = async () => {
 	try {
@@ -25,31 +56,62 @@ const connectDB = async () => {
 try {
 	await connectDB();
 } catch (error) {
-	console.error('❌ Error connecting to MySQL:', error);
+	console.error('❌ Error connecting to database:', error);
 }
 
-class ExtendedClient extends Client {
-	commands: Collection<string, CommandModule>;
-
-	constructor() {
-		super({ intents: [GatewayIntentBits.Guilds] });
-		this.commands = new Collection<string, CommandModule>();
-	}
-}
-
-// Create a new client instance
-const client = new ExtendedClient();
+// --------------------------------------------------------
+// Client
+// --------------------------------------------------------
 
 interface CommandModule {
 	data: { name: string };
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 }
 
-/**
- * Recursively loads Discord command files from nested folders.
- * Only loads folders named "commands" as command collections.
- * Logs every file processed.
- */
+class ExtendedClient extends Client {
+	commands: Collection<string, CommandModule>;
+
+	constructor() {
+		super({
+			intents: [GatewayIntentBits.Guilds],
+			rest: {
+				retries: 3,
+				timeout: 15_000,
+			},
+			failIfNotExists: false,
+		});
+		this.commands = new Collection<string, CommandModule>();
+	}
+}
+
+const client = new ExtendedClient();
+
+// --------------------------------------------------------
+// Shard event logging
+// --------------------------------------------------------
+
+client.on('shardDisconnect', (event, shardID) => {
+	console.warn(`⚠️ Shard ${shardID} disconnected:`, event);
+});
+
+client.on('shardReconnecting', (shardID) => {
+	console.log(`🔄 Shard ${shardID} reconnecting...`);
+});
+
+client.on('shardResume', (shardID, replayedEvents) => {
+	console.log(
+		`✅ Shard ${shardID} resumed — replayed ${replayedEvents} events`,
+	);
+});
+
+client.on('shardError', (err, shardID) => {
+	console.error(`❌ Shard ${shardID} error:`, err);
+});
+
+// --------------------------------------------------------
+// Command loader
+// --------------------------------------------------------
+
 export async function loadCommands(
 	client: ExtendedClient,
 	baseDir = path.join(__dirname, 'commands'),
@@ -61,21 +123,17 @@ export async function loadCommands(
 
 		if (entry.isDirectory()) {
 			const helperFolders = ['common', 'embeds', 'handlers'];
-
-			if (entry.isDirectory()) {
-				if (!helperFolders.includes(entry.name)) {
-					console.log(`📁 Entering folder: ${fullPath}`);
-					await loadCommands(client, fullPath); // recurse
-				} else {
-					console.log(`📂 Skipping helper folder: ${fullPath}`);
-				}
+			if (!helperFolders.includes(entry.name)) {
+				console.log(`📁 Entering folder: ${fullPath}`);
+				await loadCommands(client, fullPath);
+			} else {
+				console.log(`📂 Skipping helper folder: ${fullPath}`);
 			}
 		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
 			console.log(`📄 Processing file: ${fullPath}`);
 			try {
 				const commandImport = await import(fullPath);
 				const commandModule: CommandModule = commandImport.default;
-
 				if ('data' in commandModule && 'execute' in commandModule) {
 					client.commands.set(commandModule.data.name, commandModule);
 					console.log(`✅ Loaded command: ${commandModule.data.name}`);
@@ -89,16 +147,30 @@ export async function loadCommands(
 	}
 }
 
-// Load commands when the client is ready
-client.once(Events.ClientReady, async (readyClient: Client<true>) => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-	await loadCommands(client); // Load commands after client is ready
+// --------------------------------------------------------
+// Ready — only fires once, guards against duplicate RSS
+// service initialisation on reconnect
+// --------------------------------------------------------
 
-	const rssService = new RSSService(client);
-	rssService.start();
+let rssService: RSSService | null = null;
+
+client.once(Events.ClientReady, async (readyClient: Client<true>) => {
+	console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
+
+	await loadCommands(client);
+
+	// Guard: only ever start one RSS service instance
+	// regardless of how many times the bot reconnects
+	if (!rssService) {
+		rssService = new RSSService(client);
+		await rssService.start();
+	}
 });
 
-// Handle interactions
+// --------------------------------------------------------
+// Interaction handler
+// --------------------------------------------------------
+
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
@@ -128,5 +200,8 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 	}
 });
 
-// Log in to Discord
+// --------------------------------------------------------
+// Login
+// --------------------------------------------------------
+
 client.login(token || import.meta.env.token);

@@ -1,12 +1,12 @@
 import { XMLParser } from 'fast-xml-parser';
 import { rssDB } from '~/database/SQL/database';
-import { Client, TextChannel, EmbedBuilder } from 'discord.js';
+// import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 import { initializeSQLDB } from '~/database/SQL/database';
 
 initializeSQLDB();
 
 const FEED_URL = 'https://www.rpnation.com/forums/-/index.rss';
-const CHANNEL_ID = '1479329634792505508';
+// const CHANNEL_ID = '1479329634792505508';
 
 const xmlParser = new XMLParser({
 	ignoreAttributes: false,
@@ -39,21 +39,21 @@ const allowedThreadIDs = new Set([
 ]);
 
 export class RSSService {
-	private client: Client;
-	private channel: TextChannel | null = null;
+	// private client: Client;
+	// private channel: TextChannel | null = null;
 	private initialized = false;
 
-	constructor(client: Client) {
-		this.client = client;
-	}
+	// constructor(client: Client) {
+	// 	this.client = client;
+	// }
 
 	async start() {
-		const channel = await this.client.channels.fetch(CHANNEL_ID);
-		if (!channel || !channel.isTextBased()) {
-			console.error('Could not find or access the RSS notification channel.');
-			return;
-		}
-		this.channel = channel as TextChannel;
+		// const channel = await this.client.channels.fetch(CHANNEL_ID);
+		// if (!channel || !channel.isTextBased()) {
+		// 	console.error('Could not find or access the RSS notification channel.');
+		// 	return;
+		// }
+		// this.channel = channel as TextChannel;
 
 		console.log('RSS Service started');
 		await this.pollFeed();
@@ -174,19 +174,22 @@ export class RSSService {
 			console.log(`Preview:  ${item.contentSnippet?.slice(0, 200)}`);
 			console.log('----------------------------');
 
-			const embed = new EmbedBuilder()
-				.setTitle(item.title ?? 'New Post')
-				.setURL(item.link ?? '')
-				.setColor(0x3498db)
-				.setDescription(`New post detected!`)
-				.setFooter({
-					text: `RPNation Thread Monitor • ${item.replyCount ?? 0} replies`,
-				})
-				.setTimestamp(pubDateMs ? new Date(pubDateMs) : undefined);
+			// const embed = new EmbedBuilder()
+			// 	.setTitle(item.title ?? 'New Post')
+			// 	.setURL(item.link ?? '')
+			// 	.setColor(0x3498db)
+			// 	.setDescription(
+			// 		`[${item.author}](${profile})\n\n${(item.contentSnippet ?? 'New post detected.').slice(0, 200)}`,
+			// 	)
+			// 	.setFooter({
+			// 		text: `RPNation Thread Monitor • ${item.replyCount ?? 0} replies`,
+			// 	})
+			// 	.setTimestamp(pubDateMs ? new Date(pubDateMs) : undefined);
 
-			await this.channel?.send({
-				embeds: [embed],
-			});
+			// await this.channel?.send({
+			// 	content: `${item.title} - New Reply Detected`,
+			// 	embeds: [embed],
+			// });
 		}
 
 		this.initialized = true;
