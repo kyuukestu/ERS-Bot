@@ -138,23 +138,23 @@ function getAuthorName(author: string | undefined): string {
 	return match ? match[1] : author;
 }
 
-function getGuid(link: string | undefined): string | null {
-	if (!link) return null;
+function getGuid(item: any): string | null {
+	const threadID = getThreadID(item.link);
 
-	const threadID = getThreadID(link);
-	const postID = getPostID(link);
-
-	// Best case: both IDs present — fully unique per post
+	// Best case: thread + post ID (guaranteed unique)
+	const postID = getPostID(item.link);
 	if (threadID && postID) return `${threadID}:${postID}`;
 
-	// Thread-only (e.g. first post, no post- fragment)
-	if (threadID) return `thread:${threadID}`;
+	// Fallback: thread + publish timestamp (unique per reply in practice)
+	if (threadID && item.pubDate) {
+		return `${threadID}:${new Date(item.pubDate).getTime()}`;
+	}
 
-	// Last resort: strip query params and trailing slash for consistency
+	// Last resort: normalized URL
 	try {
-		const url = new URL(link);
+		const url = new URL(item.link);
 		return url.pathname.replace(/\/$/, '');
 	} catch {
-		return link;
+		return item.link ?? null;
 	}
 }
