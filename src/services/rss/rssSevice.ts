@@ -23,9 +23,7 @@ export class RSSService {
 			return;
 		}
 		this.channel = channel as TextChannel;
-
 		await this.pollFeed();
-
 		setInterval(
 			() => {
 				this.pollFeed().catch(console.error);
@@ -36,7 +34,6 @@ export class RSSService {
 
 	private async pollFeed() {
 		let feed;
-
 		try {
 			feed = await parser.parseURL(FEED_URL);
 		} catch (err) {
@@ -44,12 +41,18 @@ export class RSSService {
 			return;
 		}
 
-		const rows = rssDB
-			.prepare('SELECT guid FROM rss_seen ORDER BY pubDate DESC LIMIT 500')
-			.all();
+		// Change your DB query to get the latest pubDate per threadID
+		const threadRows = rssDB
+			.prepare(
+				'SELECT threadID, MAX(pubDate) as lastSeen FROM rss_seen GROUP BY threadID',
+			)
+			.all() as { threadID: string; lastSeen: number }[];
 
-		const knownGuids = new Set(rows.map((r: any) => r.guid));
+		const lastSeenByThread = new Map(
+			threadRows.map((r) => [r.threadID, r.lastSeen]),
+		);
 
+		const knownGuids = new Set(threadRows.map((r: any) => r.guid));
 		const items = [...feed.items].reverse();
 
 		const allowedThreadIDs = new Set([
@@ -81,18 +84,23 @@ export class RSSService {
 				resolveValue(item.contentSnippet) ??
 				'New post detected.';
 
-			const threadID = getThreadID(link);
-			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
-
 			const guid = getGuid(item);
 			if (!guid) continue;
 			if (knownGuids.has(guid)) continue;
+
+			const threadID = getThreadID(link);
+			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
 
 			const pubDateMs = item.isoDate
 				? new Date(item.isoDate).getTime()
 				: item.pubDate
 					? new Date(item.pubDate).getTime()
 					: null;
+
+			// Skip if we've seen something newer or equal from this thread
+			if (pubDateMs && lastSeenByThread.has(threadID)) {
+				if (pubDateMs <= lastSeenByThread.get(threadID)!) continue;
+			}
 
 			rssDB
 				.prepare(
@@ -105,13 +113,15 @@ export class RSSService {
 			if (!this.initialized) continue;
 
 			const username = getAuthorName(item);
-			const profile = getAuthorProfile(item.author);
+			const profile = getAuthorProfile(item);
 
 			const embed = new EmbedBuilder()
 				.setTitle(title)
 				.setURL(link ?? '')
 				.setColor(0x3498db)
-				.setDescription(`${username}\n\n${contentSnippet.slice(0, 200)}`)
+				.setDescription(
+					`[${username}](${profile})\n\n${contentSnippet.slice(0, 200)}`,
+				)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
 
@@ -125,8 +135,14 @@ export class RSSService {
 	}
 }
 
+function resolveValue(val: unknown): string | null {
+	if (!val) return null;
+	if (typeof val === 'function') return resolveValue(val());
+	if (typeof val === 'string') return val;
+	return String(val);
+}
+
 function getPostID(url: unknown): string | null {
-	console.log('getPostID raw input:', typeof url, url);
 	const str = String(url ?? '');
 	const match = /post-(\d+)/.exec(str);
 	return match ? match[1] : null;
@@ -141,23 +157,15 @@ function getThreadID(url: unknown): string | null {
 function getAuthorName(item: any): string {
 	const creator = resolveValue(item['dc:creator']);
 	if (creator) return creator;
-	// Fallback to parsing author field
 	const author = resolveValue(item.author);
 	if (!author) return 'Unknown';
 	const match = /\(([^)]+)\)/.exec(author);
 	return match ? match[1] : author;
 }
 
-function getAuthorProfile(author: unknown): string {
-	const name = getAuthorName(author);
+function getAuthorProfile(item: any): string {
+	const name = getAuthorName(item);
 	return `https://www.rpnation.com/members/${name.replace(/ /g, '-')}/`;
-}
-
-function resolveValue(val: unknown): string | null {
-	if (!val) return null;
-	if (typeof val === 'function') return resolveValue(val());
-	if (typeof val === 'string') return val;
-	return String(val);
 }
 
 function getGuid(item: any): string | null {
@@ -167,7 +175,6 @@ function getGuid(item: any): string | null {
 
 	if (threadID && postID) return `${threadID}:${postID}`;
 
-	// This is the path this feed will usually take
 	if (threadID && item.isoDate)
 		return `${threadID}:${new Date(item.isoDate).getTime()}`;
 	if (threadID && item.pubDate)
