@@ -75,58 +75,48 @@ export class RSSService {
 
 		for (const item of items) {
 			const link = resolveValue(item.link);
-			const title = resolveValue(item.title);
-			const author = resolveValue(item.author);
-			const contentSnippet = resolveValue(item.contentSnippet);
+			const title = resolveValue(item.title) ?? 'New Post';
+			const contentSnippet =
+				resolveValue(item['content:encodedSnippet']) ??
+				resolveValue(item.contentSnippet) ??
+				'New post detected.';
 
 			const threadID = getThreadID(link);
 			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
 
-			const pubDateMs = item.pubDate ? new Date(item.pubDate).getTime() : null;
-
-			const guid = getGuid({ ...item, link });
+			const guid = getGuid(item);
 			if (!guid) continue;
-
 			if (knownGuids.has(guid)) continue;
 
-			console.log('author fields:', {
-				author: item.author,
-				creator: item['dc:creator'],
-				raw: JSON.stringify(item),
-			});
+			const pubDateMs = item.isoDate
+				? new Date(item.isoDate).getTime()
+				: item.pubDate
+					? new Date(item.pubDate).getTime()
+					: null;
 
 			rssDB
 				.prepare(
 					'INSERT OR IGNORE INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
 				)
-				.run(String(guid), title, link, pubDateMs ?? null);
-
-			console.log('item types:', {
-				title: typeof item.title,
-				link: typeof item.link,
-				pubDate: typeof item.pubDate,
-				guid: typeof item.guid,
-			});
+				.run(String(guid), title, link ?? null, pubDateMs ?? null);
 
 			knownGuids.add(guid);
 
 			if (!this.initialized) continue;
 
-			const username = getAuthorName(author);
-			const profile = getAuthorProfile(author);
+			const username = getAuthorName(item);
+			const profile = getAuthorProfile(item.author);
 
 			const embed = new EmbedBuilder()
-				.setTitle(item.title ?? 'New Post')
-				.setURL(item.link ?? '')
+				.setTitle(title)
+				.setURL(link ?? '')
 				.setColor(0x3498db)
-				.setDescription(
-					`[${username}](${profile})\n\n${contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
-				)
+				.setDescription(`${username}\n\n${contentSnippet.slice(0, 200)}`)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
 
 			await this.channel?.send({
-				content: `${item.title} - New Reply Detected`,
+				content: `${title} - New Reply Detected`,
 				embeds: [embed],
 			});
 		}
@@ -148,11 +138,14 @@ function getThreadID(url: unknown): string | null {
 	return match ? match[1] : null;
 }
 
-function getAuthorName(author: unknown): string {
-	const str = String(author ?? '');
-	if (!str) return 'Unknown';
-	const match = /\((.*?)\)/.exec(str);
-	return match ? match[1] : str;
+function getAuthorName(item: any): string {
+	const creator = resolveValue(item['dc:creator']);
+	if (creator) return creator;
+	// Fallback to parsing author field
+	const author = resolveValue(item.author);
+	if (!author) return 'Unknown';
+	const match = /\(([^)]+)\)/.exec(author);
+	return match ? match[1] : author;
 }
 
 function getAuthorProfile(author: unknown): string {
@@ -168,22 +161,22 @@ function resolveValue(val: unknown): string | null {
 }
 
 function getGuid(item: any): string | null {
-	const threadID = getThreadID(item.link);
+	const link = resolveValue(item.link);
+	const threadID = getThreadID(link);
+	const postID = getPostID(link);
 
-	// Best case: thread + post ID (guaranteed unique)
-	const postID = getPostID(item.link);
 	if (threadID && postID) return `${threadID}:${postID}`;
 
-	// Fallback: thread + publish timestamp (unique per reply in practice)
-	if (threadID && item.pubDate) {
+	// This is the path this feed will usually take
+	if (threadID && item.isoDate)
+		return `${threadID}:${new Date(item.isoDate).getTime()}`;
+	if (threadID && item.pubDate)
 		return `${threadID}:${new Date(item.pubDate).getTime()}`;
-	}
 
-	// Last resort: normalized URL
 	try {
-		const url = new URL(item.link);
+		const url = new URL(String(link));
 		return url.pathname.replace(/\/$/, '');
 	} catch {
-		return item.link ?? null;
+		return link;
 	}
 }
