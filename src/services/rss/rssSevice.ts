@@ -115,25 +115,26 @@ export class RSSService {
 		this.initialized = true;
 	}
 }
-function getThreadID(url: string | undefined): string | null {
-	if (!url) return null;
+
+function getThreadID(url: unknown): string | null {
+	if (!url || typeof url !== 'string') return null;
 	const match = url.match(/\/threads\/[^/]+\.(\d+)\//);
 	return match ? match[1] : null;
 }
 
-function getPostID(url: string | undefined): string | null {
-	if (!url) return null;
+function getPostID(url: unknown): string | null {
+	if (!url || typeof url !== 'string') return null;
 	const match = url.match(/post-(\d+)/);
 	return match ? match[1] : null;
 }
 
-function getAuthorProfile(author: string | undefined): string {
+function getAuthorProfile(author: unknown): string {
 	const name = getAuthorName(author);
 	return `https://www.rpnation.com/members/${name.replace(/ /g, '-')}/`;
 }
 
-function getAuthorName(author: string | undefined): string {
-	if (!author) return 'Unknown';
+function getAuthorName(author: unknown): string {
+	if (!author || typeof author !== 'string') return 'Unknown';
 	const match = author.match(/\((.*?)\)/);
 	return match ? match[1] : author;
 }
