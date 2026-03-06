@@ -89,11 +89,10 @@ export class RSSService {
 
 			if (knownGuids.has(guid)) continue;
 
-			console.log('item types:', {
-				title: typeof item.title,
-				link: typeof item.link,
-				pubDate: typeof item.pubDate,
-				guid: typeof item.guid,
+			console.log('author fields:', {
+				author: item.author,
+				creator: item['dc:creator'],
+				raw: JSON.stringify(item),
 			});
 
 			rssDB
