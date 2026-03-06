@@ -5,7 +5,7 @@ import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 const parser = new Parser();
 
 const FEED_URL = 'https://www.rpnation.com/forums/-/index.rss';
-const CHANNEL_ID = '1479352827003273359';
+const CHANNEL_ID = '1479329634792505508';
 
 export class RSSService {
 	private client: Client;
@@ -92,21 +92,25 @@ export class RSSService {
 
 			if (!this.initialized) continue;
 
+			const username = getAuthorName(item.author);
+			const profile = getAuthorProfile(item.author);
+
 			const embed = new EmbedBuilder()
-				.setTitle(item.title ?? 'Unknown')
+				.setTitle(item.title ?? 'New Post')
 				.setURL(item.link ?? '')
 				.setColor(0x3498db)
 				.setDescription(
-					item.contentSnippet?.slice(0, 300) ?? 'New post detected.',
-				)
-				.addFields(
-					{ name: 'Thread', value: item.title ?? 'Unknown', inline: true },
-					{ name: 'Author', value: item.author ?? 'Unknown', inline: true },
+					`[${username}](${profile})\n\n
+					
+					${item.contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
 				)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
 
-			await this.channel?.send({ embeds: [embed] });
+			await this.channel?.send({
+				content: `${item.title} - New Reply Detected`,
+				embeds: [embed],
+			});
 		}
 
 		this.initialized = true;
@@ -123,4 +127,16 @@ function getPostID(url: string | undefined): string | null {
 	if (!url) return null;
 	const match = url.match(/post-(\d+)/);
 	return match ? match[1] : null;
+}
+
+function getAuthorProfile(author: string | undefined): string {
+	const name = getAuthorName(author);
+	return `https://www.rpnation.com/members/${encodeURIComponent(name)}/`;
+}
+
+function getAuthorName(author: string | undefined): string {
+	if (!author) return 'Unknown';
+
+	const match = author.match(/\((.*?)\)/);
+	return match ? match[1] : author;
 }
