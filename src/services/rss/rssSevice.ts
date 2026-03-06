@@ -17,9 +17,12 @@ export class RSSService {
 	}
 
 	async start() {
-		this.channel = (await this.client.channels.fetch(
-			CHANNEL_ID,
-		)) as TextChannel;
+		const channel = await this.client.channels.fetch(CHANNEL_ID);
+		if (!channel || !channel.isTextBased()) {
+			console.error('Could not find or access the RSS notification channel.');
+			return;
+		}
+		this.channel = channel as TextChannel;
 
 		await this.pollFeed();
 
@@ -72,12 +75,10 @@ export class RSSService {
 
 		for (const item of items) {
 			const threadID = getThreadID(item.link);
+			const pubDateMs = item.pubDate ? new Date(item.pubDate).getTime() : null;
 			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
 
-			// 🔑 Extract post ID instead of using thread GUID
-			const postID = getPostID(item.link);
-
-			const guid = postID ?? item.link;
+			const guid = getGuid(item.link);
 			if (!guid) continue;
 
 			if (knownGuids.has(guid)) continue;
@@ -86,7 +87,7 @@ export class RSSService {
 				.prepare(
 					'INSERT INTO rss_seen (guid, title, link, pubDate) VALUES (?, ?, ?, ?)',
 				)
-				.run(guid, item.title ?? null, item.link ?? null, item.pubDate ?? null);
+				.run(guid, item.title ?? null, item.link ?? null, pubDateMs ?? null);
 
 			knownGuids.add(guid);
 
@@ -100,9 +101,7 @@ export class RSSService {
 				.setURL(item.link ?? '')
 				.setColor(0x3498db)
 				.setDescription(
-					`[${username}](${profile})\n\n
-					
-					${item.contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
+					`[${username}](${profile})\n\n${item.contentSnippet?.slice(0, 200) ?? 'New post detected.'}`,
 				)
 				.setFooter({ text: 'RPNation Thread Monitor' })
 				.setTimestamp();
@@ -116,10 +115,9 @@ export class RSSService {
 		this.initialized = true;
 	}
 }
-
 function getThreadID(url: string | undefined): string | null {
 	if (!url) return null;
-	const match = url.match(/\.([0-9]+)\//);
+	const match = url.match(/\/threads\/[^/]+\.(\d+)\//);
 	return match ? match[1] : null;
 }
 
@@ -131,12 +129,32 @@ function getPostID(url: string | undefined): string | null {
 
 function getAuthorProfile(author: string | undefined): string {
 	const name = getAuthorName(author);
-	return `https://www.rpnation.com/members/${encodeURIComponent(name)}/`;
+	return `https://www.rpnation.com/members/${name.replace(/ /g, '-')}/`;
 }
 
 function getAuthorName(author: string | undefined): string {
 	if (!author) return 'Unknown';
-
 	const match = author.match(/\((.*?)\)/);
 	return match ? match[1] : author;
+}
+
+function getGuid(link: string | undefined): string | null {
+	if (!link) return null;
+
+	const threadID = getThreadID(link);
+	const postID = getPostID(link);
+
+	// Best case: both IDs present — fully unique per post
+	if (threadID && postID) return `${threadID}:${postID}`;
+
+	// Thread-only (e.g. first post, no post- fragment)
+	if (threadID) return `thread:${threadID}`;
+
+	// Last resort: strip query params and trailing slash for consistency
+	try {
+		const url = new URL(link);
+		return url.pathname.replace(/\/$/, '');
+	} catch {
+		return link;
+	}
 }
