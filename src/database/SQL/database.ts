@@ -14,19 +14,28 @@ if (!fs.existsSync(dataDir)) {
 }
 
 const dbPath = path.join(dataDir, 'events.db');
+const rssDBPath = path.join(dataDir, 'rss_feed.db');
 export const db = new Database(dbPath);
+export const rssDB = new Database(rssDBPath);
 
 //NOTE - Legacy from better-sqlite3; consider usage if Bun ABI ever matches back up
 // db.pragma('journal_mode = WAL');
 // db.pragma('foreign_keys = ON');
 
 // Read the SQL file
-const sqlDir = path.join(__dirname, 'Schema');
+const sqlDir = path.join(__dirname, 'Event_Schema');
+const rssDir = path.join(__dirname, 'RSS_Schema');
 const files = fs.readdirSync(sqlDir).filter((f) => f.endsWith('.sql'));
+const rssFiles = fs.readdirSync(rssDir).filter((f) => f.endsWith('.sql'));
 
 export function initializeSQLDB() {
 	for (const file of files) {
 		const sql = fs.readFileSync(path.join(sqlDir, file), 'utf-8');
 		db.run(sql);
+	}
+
+	for (const file of rssFiles) {
+		const sql = fs.readFileSync(path.join(rssDir, file), 'utf-8');
+		rssDB.run(sql);
 	}
 }
