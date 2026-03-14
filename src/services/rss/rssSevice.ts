@@ -36,6 +36,7 @@ const allowedThreadIDs = new Set([
 	'536117', // Main CS
 	'570906', // Elder Carp
 	'570988', // Elder Carp CS
+	'571433', // Lumiose Blues
 ]);
 
 export class RSSService {

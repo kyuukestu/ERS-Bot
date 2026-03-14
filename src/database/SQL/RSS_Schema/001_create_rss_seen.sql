@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS rss_feed;
-
 CREATE TABLE IF NOT EXISTS rss_feed (
   threadID    TEXT PRIMARY KEY,
   title       TEXT,
