@@ -2,6 +2,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { rssDB } from '~/database/SQL/database';
 import { Client, TextChannel, EmbedBuilder } from 'discord.js';
 import { initializeSQLDB } from '~/database/SQL/database';
+import { THREAD_CONFIG } from '~/database/SQL/database';
 
 initializeSQLDB();
 
@@ -14,32 +15,6 @@ const xmlParser = new XMLParser({
 	parseTagValue: true,
 	isArray: (name) => name === 'item',
 });
-
-export const THREAD_CONFIG = new Map<string, string>([
-	// [ 'ID', 'Human Readable Name' ]
-	['536653', 'Kanto IC'],
-	['536282', 'Johto IC'],
-	['536427', 'Hoenn IC'],
-	['536347', 'Sinnoh IC'],
-	['536371', 'Unova IC'],
-	['536922', 'Kalos IC'],
-	['536341', 'Alola IC'],
-	['536350', 'Galar IC'],
-	['536348', 'Paldea IC'],
-	['536297', 'Orange Islands IC'],
-	['551406', 'Oblivia IC'],
-	['560446', 'Sanguine Swarms IC'],
-	['565794', 'Lilycove WCS IC'],
-	['555337', 'Medieval Festival IC'],
-	['536418', 'Main OOC'],
-	['560252', 'Sanguine Swarm OOC'],
-	['566603', 'Chatter'],
-	['536117', 'Main CS'],
-	['570906', 'Elder Carp'],
-	['570988', 'Elder Carp CS'],
-	['571433', 'Lumiose Blues'],
-	['560392', 'Road to Mahogaony Town'],
-]);
 
 export class RSSService {
 	private client: Client;

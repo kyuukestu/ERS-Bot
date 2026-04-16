@@ -7,7 +7,7 @@ import {
 	MessageFlags,
 	ComponentType,
 } from 'discord.js';
-import { THREAD_CONFIG } from '~/services/rss/rssSevice';
+import { THREAD_CONFIG } from '~/database/SQL/database';
 import { rssDB } from '~/database/SQL/database';
 
 // Pre-build options outside the execute function for better performance
