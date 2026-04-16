@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Database from 'bun:sqlite';
 import { fileURLToPath } from 'url';
+import { THREAD_CONFIG } from '~/services/rss/rssSevice';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,4 +39,20 @@ export function initializeSQLDB() {
 		const sql = fs.readFileSync(path.join(rssDir, file), 'utf-8');
 		rssDB.run(sql);
 	}
+
+	syncDatabaseWithConfig();
+}
+
+function syncDatabaseWithConfig() {
+	const insertStmt = rssDB.prepare(`
+        INSERT OR IGNORE INTO rss_feed (threadID, title, replyCount) 
+        VALUES (?, ?, 0)
+    `);
+
+	// Loop through your Map and ensure every thread has a row
+	for (const [id, name] of THREAD_CONFIG.entries()) {
+		insertStmt.run(id, name);
+	}
+
+	console.log('Database synced with Thread Config.');
 }
