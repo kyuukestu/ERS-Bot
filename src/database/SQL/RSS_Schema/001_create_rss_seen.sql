@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS rss_feed (
 
 CREATE INDEX IF NOT EXISTS idx_rss_threadID ON rss_feed(threadID);
 CREATE INDEX IF NOT EXISTS idx_rss_pubDate ON rss_feed(pubDate DESC);
+
+ALTER TABLE rss_feed ADD COLUMN tags TEXT;

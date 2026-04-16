@@ -15,28 +15,30 @@ const xmlParser = new XMLParser({
 	isArray: (name) => name === 'item',
 });
 
-const allowedThreadIDs = new Set([
-	'536653', // Kanto IC
-	'536282', // Johto IC
-	'536427', // Hoenn IC
-	'536347', // Sinnoh IC
-	'536371', // Unova IC
-	'536922', // Kalos IC
-	'536341', // Alola IC
-	'536350', // Galar IC
-	'536348', // Paldea IC
-	'536297', // Orange Islands IC
-	'551406', // Oblivia IC
-	'560446', // Sanguine Swarms IC
-	'565794', // Lilycove WCS IC
-	'555337', // Medieval Festival IC
-	'536418', // Main OOC
-	'560252', // Sanguine Swarm OOC
-	'566603', // Chatter
-	'536117', // Main CS
-	'570906', // Elder Carp
-	'570988', // Elder Carp CS
-	'571433', // Lumiose Blues
+export const THREAD_CONFIG = new Map<string, string>([
+	// [ 'ID', 'Human Readable Name' ]
+	['536653', 'Kanto IC'],
+	['536282', 'Johto IC'],
+	['536427', 'Hoenn IC'],
+	['536347', 'Sinnoh IC'],
+	['536371', 'Unova IC'],
+	['536922', 'Kalos IC'],
+	['536341', 'Alola IC'],
+	['536350', 'Galar IC'],
+	['536348', 'Paldea IC'],
+	['536297', 'Orange Islands IC'],
+	['551406', 'Oblivia IC'],
+	['560446', 'Sanguine Swarms IC'],
+	['565794', 'Lilycove WCS IC'],
+	['555337', 'Medieval Festival IC'],
+	['536418', 'Main OOC'],
+	['560252', 'Sanguine Swarm OOC'],
+	['566603', 'Chatter'],
+	['536117', 'Main CS'],
+	['570906', 'Elder Carp'],
+	['570988', 'Elder Carp CS'],
+	['571433', 'Lumiose Blues'],
+	['560392', 'Road to Mahogaony Town'],
 ]);
 
 export class RSSService {
@@ -91,7 +93,7 @@ export class RSSService {
 
 		for (const item of items) {
 			const threadID = getThreadID(item.link);
-			if (!threadID || !allowedThreadIDs.has(threadID)) continue;
+			if (!threadID || !THREAD_CONFIG.has(threadID)) continue;
 
 			const pubDateMs = item.pubDate ? new Date(item.pubDate).getTime() : null;
 			const stored = threadState.get(threadID);
@@ -175,11 +177,19 @@ export class RSSService {
 			console.log(`Preview:  ${item.contentSnippet?.slice(0, 200)}`);
 			console.log('----------------------------');
 
+			// 1. Fetch only the tags for this specific thread
+			const row = rssDB
+				.prepare('SELECT tags FROM rss_feed WHERE threadID = ?')
+				.get(threadID) as { tags: string | null } | undefined;
+
+			// 2. Format the tags (assuming they are stored as a string like "@user, @role")
+			const mentionTags = row?.tags ? row.tags : '';
+
 			const embed = new EmbedBuilder()
 				.setTitle(item.title ?? 'New Post')
 				.setURL(item.link ?? '')
 				.setColor(0x3498db)
-				.setDescription(`New post detected!`)
+				.setDescription(`New post detected`)
 				.setFooter({
 					text: `RPNation Thread Monitor • ${item.replyCount ?? 0} replies`,
 				})
@@ -187,6 +197,7 @@ export class RSSService {
 
 			await this.channel?.send({
 				embeds: [embed],
+				content: mentionTags,
 			});
 		}
 
