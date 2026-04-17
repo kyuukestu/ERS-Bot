@@ -126,7 +126,7 @@ export default {
 			\`\`\` `;
 
 			await interaction.editReply(message);
-			await interaction.followUp(`<@188130519274225664>`);
+			await interaction.followUp(`<@${188130519274225664}>`);
 		} catch (err) {
 			console.log(err);
 		}
