@@ -12,7 +12,9 @@ import { token } from './config.json';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { initializeSQLDB } from './database/SQL/database';
+import { initializeSQLDBSeal } from './database/SQL/database-seal';
 import { RSSService } from './services/rss/rssSevice';
+import { RSSServiceSeal } from './services/rss/rssServiceSeal';
 
 // --------------------------------------------------------
 // Process-level guards — prevent crash loops from
@@ -55,6 +57,20 @@ const connectDB = async () => {
 
 try {
 	await connectDB();
+} catch (error) {
+	console.error('❌ Error connecting to database:', error);
+}
+
+const connectDBSeal = async () => {
+	try {
+		await initializeSQLDBSeal();
+	} catch (error) {
+		console.error('❌ SQL Initializing Failed:', error);
+	}
+};
+
+try {
+	await connectDBSeal();
 } catch (error) {
 	console.error('❌ Error connecting to database:', error);
 }
@@ -153,6 +169,7 @@ export async function loadCommands(
 // --------------------------------------------------------
 
 let rssService: RSSService | null = null;
+let rssServiceSeal: RSSServiceSeal | null = null;
 
 client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 	console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
@@ -164,6 +181,20 @@ client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 	if (!rssService) {
 		rssService = new RSSService(client);
 		await rssService.start();
+	}
+});
+
+client.once(Events.ClientReady, async (readyClient: Client<true>) => {
+	console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
+
+	await loadCommands(client);
+
+	// Guard: only ever start one RSS service instance
+	// regardless of how many times the bot reconnects
+
+	if (!rssServiceSeal) {
+		rssServiceSeal = new RSSServiceSeal(client);
+		await rssServiceSeal.start();
 	}
 });
 
