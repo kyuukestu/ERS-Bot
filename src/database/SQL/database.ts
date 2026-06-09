@@ -88,4 +88,7 @@ export const THREAD_CONFIG = new Map<string, string>([
 	['570988', 'Elder Carp CS'],
 	['571433', 'Lumiose Blues'],
 	['560392', 'Road to Mahogaony Town'],
+	['575111', 'Mantine Surf Interest Check'],
+	['575462', 'Mantine Surf OOC'],
+	['575571', 'Mantine Surf RP Thread'],
 ]);
