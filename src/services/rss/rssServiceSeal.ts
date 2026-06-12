@@ -7,7 +7,7 @@ import { THREAD_CONFIG } from '~/database/SQL/database-seal';
 initializeSQLDBSeal();
 
 const FEED_URL = 'https://www.rpnation.com/forums/-/index.rss';
-const CHANNEL_ID = '1479329634792505508'; //TODO - fill with SEAL Channel
+const CHANNEL_ID = '1294640403596840963'; //Summaries Channel
 
 const xmlParser = new XMLParser({
 	ignoreAttributes: false,
