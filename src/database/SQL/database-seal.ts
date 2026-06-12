@@ -60,4 +60,5 @@ export const THREAD_CONFIG = new Map<string, string>([
 	['547855', 'Shadow of The Seal IC'],
 	['548719', 'Shadow of The Seal RP'],
 	['547883', 'Shadow of The Seal OOC'],
+	['547881', 'Shadow of The Seal CS'],
 ]);
