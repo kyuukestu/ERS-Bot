@@ -1,9 +1,11 @@
 import {
+	type ButtonInteraction,
 	type StringSelectMenuInteraction,
+	ComponentType,
+	MessageFlags,
 	EmbedBuilder,
 	StringSelectMenuBuilder,
 	ActionRowBuilder,
-	MessageFlags,
 } from 'discord.js';
 
 interface PokemonSprites {
@@ -17,10 +19,10 @@ interface PokemonSprites {
 }
 
 export const handleSpriteGallery = async (
-	interaction: StringSelectMenuInteraction,
+	interaction: ButtonInteraction,
 	sprites: PokemonSprites,
 	name: string,
-	currentlyShiny: boolean
+	currentlyShiny: boolean,
 ) => {
 	const spriteOptions = [
 		{ label: 'Default Front', value: 'default', sprite: sprites.default },
@@ -64,18 +66,20 @@ export const handleSpriteGallery = async (
 				value: option.value,
 				description: `View ${option.label.toLowerCase()}`,
 				default: option.value === currentSprite,
-			}))
+			})),
 		);
 
 	const spriteRow = new ActionRowBuilder().addComponents(spriteSelect);
 
-	const spriteMessage = await interaction.followUp({
+	const spriteMessage = await interaction.reply({
 		embeds: [createSpriteEmbed(currentSprite)],
 		components: [spriteRow.toJSON()],
 		flags: MessageFlags.Ephemeral,
 	});
 
 	const spriteCollector = spriteMessage.createMessageComponentCollector({
+		componentType: ComponentType.StringSelect,
+		filter: (select) => select.user.id === interaction.user.id,
 		time: 120000,
 	});
 
@@ -95,7 +99,7 @@ export const handleSpriteGallery = async (
 					new ActionRowBuilder().addComponents(spriteSelect).toJSON(),
 				],
 			});
-		}
+		},
 	);
 
 	spriteCollector.on('end', () => {

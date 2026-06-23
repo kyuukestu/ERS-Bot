@@ -38,13 +38,14 @@ export type GroupedMoves = Record<LearnMethodKey, GroupedMove[]>;
 
 export type FakeGroupedMoves = Record<LearnMethodKey, FakeGroupedMove[]>;
 
-export interface LearnMethodConfig {
-	[key: string]: {
+export type LearnMethodConfig = Record<
+	LearnMethodKey,
+	{
 		label: string;
 		emoji: string;
 		color: number;
-	};
-}
+	}
+>;
 
 export interface PaginationState {
 	methodIndex: number;
