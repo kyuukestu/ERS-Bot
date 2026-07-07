@@ -46,6 +46,7 @@ const addPokemonAndFormOptions = (sub: SlashCommandSubcommandBuilder) =>
 			o
 				.setName('pokemon')
 				.setDescription('Enter the Pokémon name.')
+				.setAutocomplete(true)
 				.setRequired(true),
 		)
 		.addStringOption((o) =>
@@ -93,20 +94,20 @@ export default {
 				sub.setName('other').setDescription('View other moves.'),
 			),
 		),
-		async autocomplete(interaction: AutocompleteInteraction) {
-				const query = interaction.options.getFocused();
-		
-				// console.log('Autocomplete Query:', query);
-		
-				const results = pokemonSearchService.search(query);
-		
-				await interaction.respond(
-					results.map((pokemon) => ({
-						name: pokemon.name,
-						value: pokemon.name,
-					})),
-				);
-			},
+	async autocomplete(interaction: AutocompleteInteraction) {
+		const query = interaction.options.getFocused();
+
+		// console.log('Autocomplete Query:', query);
+
+		const results = pokemonSearchService.search(query);
+
+		await interaction.respond(
+			results.map((pokemon) => ({
+				name: pokemon.name,
+				value: pokemon.name,
+			})),
+		);
+	},
 	async execute(interaction: ChatInputCommandInteraction) {
 		const sub = interaction.options.getSubcommand();
 		const pokemonInput = formatUserInput(
