@@ -5,6 +5,8 @@ import {
 	Events,
 	GatewayIntentBits,
 	MessageFlags,
+	AutocompleteInteraction,
+	SlashCommandBuilder,
 	type Interaction,
 	type ChatInputCommandInteraction,
 } from 'discord.js';
@@ -80,8 +82,13 @@ try {
 // --------------------------------------------------------
 
 interface CommandModule {
-	data: { name: string };
-	execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+	// data: { name: string };
+	data: SlashCommandBuilder;
+
+	// execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+	execute(interaction: ChatInputCommandInteraction): Promise<void>;
+
+	autocomplete?(interaction: AutocompleteInteraction): Promise<void>;
 }
 
 class ExtendedClient extends Client {
@@ -203,9 +210,25 @@ client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 // --------------------------------------------------------
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-	if (!interaction.isChatInputCommand()) return;
+	if (interaction.isAutocomplete()) {
+		const extendedClient = interaction.client as ExtendedClient;
 
+		const command = extendedClient.commands.get(interaction.commandName);
+
+		if (!command?.autocomplete) return;
+
+		try {
+			await command.autocomplete(interaction);
+		} catch (err) {
+			console.error(err);
+		}
+
+		return;
+	}
+
+	if (!interaction.isChatInputCommand()) return;
 	const extendedClient = interaction.client as ExtendedClient;
+
 	const command = extendedClient.commands.get(interaction.commandName);
 
 	if (!command) {

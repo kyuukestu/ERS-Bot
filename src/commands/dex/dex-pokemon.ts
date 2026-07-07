@@ -4,6 +4,7 @@ import {
 	SlashCommandBooleanOption,
 	EmbedBuilder,
 	ComponentType,
+	type AutocompleteInteraction,
 	type ChatInputCommandInteraction,
 	type ButtonInteraction,
 } from 'discord.js';
@@ -26,6 +27,7 @@ import {
 	handlePokedexEntries,
 } from '~/services/dex/pokemonUiService.ts';
 import { handleSpriteGallery } from '~/components/handleSpriteGallery';
+import { pokemonSearchService } from '~/services/dex/pokemonSearchService';
 
 export default {
 	data: new SlashCommandBuilder()
@@ -35,6 +37,7 @@ export default {
 			option
 				.setName('name')
 				.setDescription('Enter the Pokémon name.')
+				.setAutocomplete(true)
 				.setRequired(true),
 		)
 		.addStringOption((option: SlashCommandStringOption) =>
@@ -49,6 +52,21 @@ export default {
 				.setDescription('Show shiny variant by default.')
 				.setRequired(false),
 		),
+
+	async autocomplete(interaction: AutocompleteInteraction) {
+		const query = interaction.options.getFocused();
+
+		// console.log('Autocomplete Query:', query);
+
+		const results = pokemonSearchService.search(query);
+
+		await interaction.respond(
+			results.map((pokemon) => ({
+				name: pokemon.name,
+				value: pokemon.name,
+			})),
+		);
+	},
 	async execute(interaction: ChatInputCommandInteraction) {
 		const pokemonName = formatUserInput(
 			interaction.options.getString('name', true),

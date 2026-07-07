@@ -3,6 +3,7 @@ import {
 	SlashCommandBuilder,
 	type SlashCommandSubcommandBuilder,
 	type ChatInputCommandInteraction,
+	type AutocompleteInteraction,
 	MessageFlags,
 } from 'discord.js';
 import { extractPokemonInfo } from '~/api/dataExtraction/extractPokemonInfo';
@@ -24,6 +25,7 @@ import type {
 	GroupedMove,
 	LearnMethodConfig,
 } from '~/types/learnSetTypes';
+import { pokemonSearchService } from '~/services/dex/pokemonSearchService';
 // import { version_convert } from '~/utility/formatting/formatVersion';
 
 /* ============================================================
@@ -91,6 +93,20 @@ export default {
 				sub.setName('other').setDescription('View other moves.'),
 			),
 		),
+		async autocomplete(interaction: AutocompleteInteraction) {
+				const query = interaction.options.getFocused();
+		
+				// console.log('Autocomplete Query:', query);
+		
+				const results = pokemonSearchService.search(query);
+		
+				await interaction.respond(
+					results.map((pokemon) => ({
+						name: pokemon.name,
+						value: pokemon.name,
+					})),
+				);
+			},
 	async execute(interaction: ChatInputCommandInteraction) {
 		const sub = interaction.options.getSubcommand();
 		const pokemonInput = formatUserInput(
