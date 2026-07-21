@@ -6,7 +6,6 @@ import {
 	clientId,
 	guildId,
 	outbackguildId,
-	KalosId,
 	syncId,
 	syncLaeleId,
 	token,
@@ -80,12 +79,6 @@ const rest = new REST().setToken(token);
 			{ body: commands },
 		);
 
-		// Deploy to foruth guild (syncId)
-		const data2: any = await rest.put(
-			Routes.applicationGuildCommands(clientId, KalosId),
-			{ body: commands },
-		);
-
 		// Deploy to fifth guild (mhapokeid)
 		const data3: any = await rest.put(
 			Routes.applicationGuildCommands(clientId, mhapokeId),
@@ -107,7 +100,6 @@ const rest = new REST().setToken(token);
 			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
 				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
 				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.` +
-				`\nSuccessfully reloaded ${data2.length} application (/) commands for guild ${KalosId}.` +
 				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.` +
 				`\nSuccessfully reloaded ${data4.length} application (/) commands for guild ${syncLaeleId}.`,
 			`\nSuccessfully reloaded ${data5.length} application (/) commands for guild ${TAE}.`,

@@ -1,0 +1,5 @@
+open /home/cloudyskyloftymoon/.supabase/profile: no such file or directory
+Supabase CLI 2.109.1
+Using profile: supabase (supabase.co)
+2026/07/19 00:54:51 HTTP POST: https://eu.i.posthog.com/batch/
+supabase start is not running.

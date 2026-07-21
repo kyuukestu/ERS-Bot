@@ -1,48 +1,51 @@
 // index.ts
 import {
-	Client,
-	Collection,
-	Events,
-	GatewayIntentBits,
-	MessageFlags,
-	AutocompleteInteraction,
-	SlashCommandBuilder,
-	type Interaction,
-	type ChatInputCommandInteraction,
-} from 'discord.js';
-import { token } from './config.json';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { initializeSQLDB } from './database/SQL/database';
-import { initializeSQLDBSeal } from './database/SQL/database-seal';
-import { RSSService } from './services/rss/rssSevice';
-import { RSSServiceSeal } from './services/rss/rssServiceSeal';
+  Client,
+  Collection,
+  Events,
+  GatewayIntentBits,
+  MessageFlags,
+  AutocompleteInteraction,
+  SlashCommandBuilder,
+  type Interaction,
+  type ChatInputCommandInteraction,
+} from "discord.js";
+import { token } from "./config.json";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { initializeSQLDB } from "./database/SQL/database";
+import { initializeSQLDBSeal } from "./database/SQL/database-seal";
+import { RSSService } from "./services/rss/rssSevice";
+import { RSSServiceSeal } from "./services/rss/rssServiceSeal";
+import { characterWizardService } from "./services/character/characterWizardService";
+import { checkDatabase } from "./database/supabase/checkConnection";
+
 
 // --------------------------------------------------------
 // Process-level guards — prevent crash loops from
 // hammering the Discord gateway and triggering shard limits
 // --------------------------------------------------------
 
-process.on('unhandledRejection', (err) => {
-	console.error('Unhandled rejection:', err);
-	// Log but do NOT exit — keep the bot alive
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled rejection:", err);
+  // Log but do NOT exit — keep the bot alive
 });
 
-process.on('uncaughtException', (err) => {
-	console.error('Uncaught exception:', err);
-	// Log but do NOT exit — keep the bot alive
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught exception:", err);
+  // Log but do NOT exit — keep the bot alive
 });
 
-process.on('SIGTERM', async () => {
-	console.log('SIGTERM received — shutting down gracefully');
-	await client.destroy();
-	process.exit(0);
+process.on("SIGTERM", async () => {
+  console.log("SIGTERM received — shutting down gracefully");
+  await client.destroy();
+  process.exit(0);
 });
 
-process.on('SIGINT', async () => {
-	console.log('SIGINT received — shutting down gracefully');
-	await client.destroy();
-	process.exit(0);
+process.on("SIGINT", async () => {
+  console.log("SIGINT received — shutting down gracefully");
+  await client.destroy();
+  process.exit(0);
 });
 
 // --------------------------------------------------------
@@ -50,31 +53,31 @@ process.on('SIGINT', async () => {
 // --------------------------------------------------------
 
 const connectDB = async () => {
-	try {
-		await initializeSQLDB();
-	} catch (error) {
-		console.error('❌ SQL Initializing Failed:', error);
-	}
+  try {
+    await initializeSQLDB();
+  } catch (error) {
+    console.error("❌ SQL Initializing Failed:", error);
+  }
 };
 
 try {
-	await connectDB();
+  await connectDB();
 } catch (error) {
-	console.error('❌ Error connecting to database:', error);
+  console.error("❌ Error connecting to database:", error);
 }
 
 const connectDBSeal = async () => {
-	try {
-		await initializeSQLDBSeal();
-	} catch (error) {
-		console.error('❌ SQL Initializing Failed:', error);
-	}
+  try {
+    await initializeSQLDBSeal();
+  } catch (error) {
+    console.error("❌ SQL Initializing Failed:", error);
+  }
 };
 
 try {
-	await connectDBSeal();
+  await connectDBSeal();
 } catch (error) {
-	console.error('❌ Error connecting to database:', error);
+  console.error("❌ Error connecting to database:", error);
 }
 
 // --------------------------------------------------------
@@ -82,29 +85,29 @@ try {
 // --------------------------------------------------------
 
 interface CommandModule {
-	// data: { name: string };
-	data: SlashCommandBuilder;
+  // data: { name: string };
+  data: SlashCommandBuilder;
 
-	// execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
-	execute(interaction: ChatInputCommandInteraction): Promise<void>;
+  // execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+  execute(interaction: ChatInputCommandInteraction): Promise<void>;
 
-	autocomplete?(interaction: AutocompleteInteraction): Promise<void>;
+  autocomplete?(interaction: AutocompleteInteraction): Promise<void>;
 }
 
 class ExtendedClient extends Client {
-	commands: Collection<string, CommandModule>;
+  commands: Collection<string, CommandModule>;
 
-	constructor() {
-		super({
-			intents: [GatewayIntentBits.Guilds],
-			rest: {
-				retries: 3,
-				timeout: 15_000,
-			},
-			failIfNotExists: false,
-		});
-		this.commands = new Collection<string, CommandModule>();
-	}
+  constructor() {
+    super({
+      intents: [GatewayIntentBits.Guilds],
+      rest: {
+        retries: 3,
+        timeout: 15_000,
+      },
+      failIfNotExists: false,
+    });
+    this.commands = new Collection<string, CommandModule>();
+  }
 }
 
 const client = new ExtendedClient();
@@ -113,22 +116,22 @@ const client = new ExtendedClient();
 // Shard event logging
 // --------------------------------------------------------
 
-client.on('shardDisconnect', (event, shardID) => {
-	console.warn(`⚠️ Shard ${shardID} disconnected:`, event);
+client.on("shardDisconnect", (event, shardID) => {
+  console.warn(`⚠️ Shard ${shardID} disconnected:`, event);
 });
 
-client.on('shardReconnecting', (shardID) => {
-	console.log(`🔄 Shard ${shardID} reconnecting...`);
+client.on("shardReconnecting", (shardID) => {
+  console.log(`🔄 Shard ${shardID} reconnecting...`);
 });
 
-client.on('shardResume', (shardID, replayedEvents) => {
-	console.log(
-		`✅ Shard ${shardID} resumed — replayed ${replayedEvents} events`,
-	);
+client.on("shardResume", (shardID, replayedEvents) => {
+  console.log(
+    `✅ Shard ${shardID} resumed — replayed ${replayedEvents} events`,
+  );
 });
 
-client.on('shardError', (err, shardID) => {
-	console.error(`❌ Shard ${shardID} error:`, err);
+client.on("shardError", (err, shardID) => {
+  console.error(`❌ Shard ${shardID} error:`, err);
 });
 
 // --------------------------------------------------------
@@ -136,38 +139,38 @@ client.on('shardError', (err, shardID) => {
 // --------------------------------------------------------
 
 export async function loadCommands(
-	client: ExtendedClient,
-	baseDir = path.join(__dirname, 'commands'),
+  client: ExtendedClient,
+  baseDir = path.join(__dirname, "commands"),
 ) {
-	const entries = await fs.readdir(baseDir, { withFileTypes: true });
+  const entries = await fs.readdir(baseDir, { withFileTypes: true });
 
-	for (const entry of entries) {
-		const fullPath = path.join(baseDir, entry.name);
+  for (const entry of entries) {
+    const fullPath = path.join(baseDir, entry.name);
 
-		if (entry.isDirectory()) {
-			const helperFolders = ['common', 'embeds', 'handlers'];
-			if (!helperFolders.includes(entry.name)) {
-				console.log(`📁 Entering folder: ${fullPath}`);
-				await loadCommands(client, fullPath);
-			} else {
-				console.log(`📂 Skipping helper folder: ${fullPath}`);
-			}
-		} else if (entry.isFile() && entry.name.endsWith('.ts')) {
-			console.log(`📄 Processing file: ${fullPath}`);
-			try {
-				const commandImport = await import(fullPath);
-				const commandModule: CommandModule = commandImport.default;
-				if ('data' in commandModule && 'execute' in commandModule) {
-					client.commands.set(commandModule.data.name, commandModule);
-					console.log(`✅ Loaded command: ${commandModule.data.name}`);
-				} else {
-					console.warn(`⚠️ Skipped file (not a command): ${fullPath}`);
-				}
-			} catch (error) {
-				console.error(`❌ Failed to load file: ${fullPath}`, error);
-			}
-		}
-	}
+    if (entry.isDirectory()) {
+      const helperFolders = ["common", "embeds", "handlers"];
+      if (!helperFolders.includes(entry.name)) {
+        console.log(`📁 Entering folder: ${fullPath}`);
+        await loadCommands(client, fullPath);
+      } else {
+        console.log(`📂 Skipping helper folder: ${fullPath}`);
+      }
+    } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      console.log(`📄 Processing file: ${fullPath}`);
+      try {
+        const commandImport = await import(fullPath);
+        const commandModule: CommandModule = commandImport.default;
+        if ("data" in commandModule && "execute" in commandModule) {
+          client.commands.set(commandModule.data.name, commandModule);
+          console.log(`✅ Loaded command: ${commandModule.data.name}`);
+        } else {
+          console.warn(`⚠️ Skipped file (not a command): ${fullPath}`);
+        }
+      } catch (error) {
+        console.error(`❌ Failed to load file: ${fullPath}`, error);
+      }
+    }
+  }
 }
 
 // --------------------------------------------------------
@@ -179,29 +182,41 @@ let rssService: RSSService | null = null;
 let rssServiceSeal: RSSServiceSeal | null = null;
 
 client.once(Events.ClientReady, async (readyClient: Client<true>) => {
-	console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
+  console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
 
-	await loadCommands(client);
+  await loadCommands(client);
 
-	// Guard: only ever start one RSS service instance
-	// regardless of how many times the bot reconnects
-	if (!rssService) {
-		rssService = new RSSService(client);
-		await rssService.start();
-	}
+  // Guard: only ever start one RSS service instance
+  // regardless of how many times the bot reconnects
+  if (!rssService) {
+    rssService = new RSSService(client);
+    await rssService.start();
+  }
 });
 
 client.once(Events.ClientReady, async (readyClient: Client<true>) => {
-	console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
+  console.log(`✅ Ready! Logged in as ${readyClient.user.tag}`);
 
-	await loadCommands(client);
+  await loadCommands(client);
 
-	// Guard: only ever start one RSS service instance
-	// regardless of how many times the bot reconnects
+  // Guard: only ever start one RSS service instance
+  // regardless of how many times the bot reconnects
 
-	if (!rssServiceSeal) {
-		rssServiceSeal = new RSSServiceSeal(client);
-		await rssServiceSeal.start();
+  if (!rssServiceSeal) {
+    rssServiceSeal = new RSSServiceSeal(client);
+    await rssServiceSeal.start();
+  }
+});
+
+client.once(Events.ClientReady, async (client) => {
+	console.log(`Logged in as ${client.user.tag}`);
+
+	const connected = await checkDatabase();
+
+	if (!connected) {
+		console.error(
+			"Database unavailable. Bot functionality may fail."
+		);
 	}
 });
 
@@ -210,48 +225,63 @@ client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 // --------------------------------------------------------
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-	if (interaction.isAutocomplete()) {
-		const extendedClient = interaction.client as ExtendedClient;
+  if (interaction.isModalSubmit()) {
+    await characterWizardService.handleModal(interaction);
+    return;
+  }
 
-		const command = extendedClient.commands.get(interaction.commandName);
+  if (interaction.isStringSelectMenu()) {
+    await characterWizardService.handleSelectMenu(interaction);
+    return;
+  }
 
-		if (!command?.autocomplete) return;
+  if (interaction.isButton()) {
+    await characterWizardService.handleButton(interaction);
+    return;
+  }
 
-		try {
-			await command.autocomplete(interaction);
-		} catch (err) {
-			console.error(err);
-		}
+  if (interaction.isAutocomplete()) {
+    const extendedClient = interaction.client as ExtendedClient;
 
-		return;
-	}
+    const command = extendedClient.commands.get(interaction.commandName);
 
-	if (!interaction.isChatInputCommand()) return;
-	const extendedClient = interaction.client as ExtendedClient;
+    if (!command?.autocomplete) return;
 
-	const command = extendedClient.commands.get(interaction.commandName);
+    try {
+      await command.autocomplete(interaction);
+    } catch (err) {
+      console.error(err);
+    }
 
-	if (!command) {
-		console.error(`Command ${interaction.commandName} not found.`);
-		return;
-	}
+    return;
+  }
 
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(`Error executing ${interaction.commandName}:`, error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({
-				content: 'There was an error while executing this command!',
-				flags: MessageFlags.Ephemeral,
-			});
-		} else {
-			await interaction.reply({
-				content: 'There was an error while executing this command!',
-				flags: MessageFlags.Ephemeral,
-			});
-		}
-	}
+  if (!interaction.isChatInputCommand()) return;
+  const extendedClient = interaction.client as ExtendedClient;
+
+  const command = extendedClient.commands.get(interaction.commandName);
+
+  if (!command) {
+    console.error(`Command ${interaction.commandName} not found.`);
+    return;
+  }
+
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    console.error(`Error executing ${interaction.commandName}:`, error);
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({
+        content: "There was an error while executing this command!",
+        flags: MessageFlags.Ephemeral,
+      });
+    } else {
+      await interaction.reply({
+        content: "There was an error while executing this command!",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+  }
 });
 
 // --------------------------------------------------------
