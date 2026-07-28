@@ -541,7 +541,7 @@ export type Database = {
           age: number | null
           category: string
           color: string | null
-          current_region_id: string | null
+          associated_region_id: string | null
           dob: string | null
           external_sheet_url: string | null
           full_name: string
@@ -560,7 +560,7 @@ export type Database = {
           age?: number | null
           category: string
           color?: string | null
-          current_region_id?: string | null
+          associated_region_id?: string | null
           dob?: string | null
           external_sheet_url?: string | null
           full_name: string
@@ -579,7 +579,7 @@ export type Database = {
           age?: number | null
           category?: string
           color?: string | null
-          current_region_id?: string | null
+          associated_region_id?: string | null
           dob?: string | null
           external_sheet_url?: string | null
           full_name?: string
@@ -596,22 +596,22 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "characters_current_region_id_fkey"
-            columns: ["current_region_id"]
+            foreignKeyName: "characters_associated_region_id_fkey"
+            columns: ["associated_region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
-            foreignKeyName: "characters_current_region_id_fkey"
-            columns: ["current_region_id"]
+            foreignKeyName: "characters_associated_region_id_fkey"
+            columns: ["associated_region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
             referencedColumns: ["origin_region_id"]
           },
           {
-            foreignKeyName: "characters_current_region_id_fkey"
-            columns: ["current_region_id"]
+            foreignKeyName: "characters_associated_region_id_fkey"
+            columns: ["associated_region_id"]
             isOneToOne: false
             referencedRelation: "regions"
             referencedColumns: ["id"]
@@ -621,7 +621,7 @@ export type Database = {
             columns: ["origin_region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "characters_origin_region_id_fkey"
@@ -702,7 +702,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "event_definitions_region_id_fkey"
@@ -1068,7 +1068,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "gyms_region_id_fkey"
@@ -1207,7 +1207,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "kenn_articles_region_id_fkey"
@@ -1312,7 +1312,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "leagues_region_id_fkey"
@@ -1426,7 +1426,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "organizations_region_id_fkey"
@@ -1823,7 +1823,7 @@ export type Database = {
             columns: ["region_id"]
             isOneToOne: false
             referencedRelation: "character_dashboard_view"
-            referencedColumns: ["current_region_id"]
+            referencedColumns: ["associated_region_id"]
           },
           {
             foreignKeyName: "ribbons_region_id_fkey"
@@ -1933,8 +1933,8 @@ export type Database = {
           character_ribbons: Json | null
           classes: Json | null
           color: string | null
-          current_region_id: string | null
-          current_region_name: string | null
+          associated_region_id: string | null
+          associated_region_name: string | null
           dob: string | null
           external_sheet_url: string | null
           full_name: string | null

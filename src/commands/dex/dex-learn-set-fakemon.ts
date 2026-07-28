@@ -380,7 +380,7 @@ export default {
 				if (i.user.id !== interaction.user.id) {
 					await i.reply({
 						content: 'This interaction is not for you.',
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 					return;
 				}

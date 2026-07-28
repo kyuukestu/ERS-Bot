@@ -366,7 +366,7 @@ async function handlePokedexEntries(
 			.setTitle(`📚 No Pokédex Entries Found`)
 			.setDescription(`No English Pokédex entries available for ${name}.`);
 
-		await interaction.followUp({ embeds: [noEntriesEmbed], ephemeral: true });
+		await interaction.followUp({ embeds: [noEntriesEmbed], flags: MessageFlags.Ephemeral, });
 		return;
 	}
 

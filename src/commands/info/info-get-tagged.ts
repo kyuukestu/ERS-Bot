@@ -38,7 +38,6 @@ export default {
 		const response = await interaction.followUp({
 			content: 'Which threads would you like to be tagged in?',
 			components: [row],
-			// Use 'ephemeral: true' instead of MessageFlags
 			flags: MessageFlags.Ephemeral,
 		});
 

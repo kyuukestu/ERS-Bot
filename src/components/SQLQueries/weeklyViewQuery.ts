@@ -3,7 +3,8 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	ComponentType,
+  ComponentType,
+	MessageFlags
 } from 'discord.js';
 import { db } from '~/database/SQL/database';
 
@@ -173,7 +174,7 @@ export async function weeklyViewQuery(
 
 	collector.on('collect', async (i) => {
 		if (i.user.id !== interaction.user.id)
-			return i.reply({ content: 'Not your calendar.', ephemeral: true });
+			return i.reply({ content: 'Not your calendar.', flags: MessageFlags.Ephemeral, });
 
 		// Acknowledge the button click so Discord doesn't show "Interaction failed"
 		await i.deferUpdate();

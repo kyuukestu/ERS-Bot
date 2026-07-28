@@ -5,7 +5,8 @@ import {
 	ButtonStyle,
 	SlashCommandBuilder,
 	type ChatInputCommandInteraction,
-	type SlashCommandStringOption,
+  type SlashCommandStringOption,
+  MessageFlags
 } from 'discord.js';
 import Fuse from 'fuse.js';
 
@@ -878,7 +879,7 @@ export default {
 
 				collector.on('collect', async (i) => {
 					if (i.user.id !== interaction.user.id) {
-						await i.reply({ content: 'Not for you.', ephemeral: true });
+						await i.reply({ content: 'Not for you.', flags: MessageFlags.Ephemeral, });
 						return;
 					}
 

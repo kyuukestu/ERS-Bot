@@ -6,8 +6,8 @@ import {
   type ButtonInteraction,
 } from "discord.js";
 import { CharacterCreationWizard } from "~/wizards/CharacterCreationWizard";
-import { createRegionSelector } from "~/components/selectors/regionSelector";
-import { createGenderSelector } from "~/components/selectors/genderSelector";
+import { createRegionSelector } from "~/components/StringSelectMenus/regionSelector";
+import { createGenderSelector } from "~/components/StringSelectMenus/genderSelector";
 import { createCharacterNameModal } from "~/components/modals/createCharacterNameModal";
 import { characterSessionStore } from "./CharacterSessionStore";
 import { CharacterEditField } from "~/types/character";

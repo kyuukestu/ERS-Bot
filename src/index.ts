@@ -17,9 +17,21 @@ import { initializeSQLDB } from "./database/SQL/database";
 import { initializeSQLDBSeal } from "./database/SQL/database-seal";
 import { RSSService } from "./services/rss/rssSevice";
 import { RSSServiceSeal } from "./services/rss/rssServiceSeal";
-import { characterWizardService } from "./services/character/characterWizardService";
+import { characterWizardService } from "./services/character/creation/characterWizardService";
 import { checkDatabase } from "./database/supabase/checkConnection";
-
+import { characterEditService } from "./services/character/edit/CharacterEditService";
+import { characterEditorFlowService } from "./services/character/edit/CharacterEditorFlowService";
+import { characterIdentityEditService } from "./services/character/edit/CharacterIdentityEditService";
+import { listEditorService } from "./services/character/edit/ListEditorService.ts";
+import { characterEditSessionStore } from "./services/character/edit/CharacterEditSessionStore.ts";
+import { characterFieldEditService } from "./services/character/edit/characterFieldEditService.ts";
+import { registerAppearanceFields } from "./services/character/fields/appearanceFields.ts";
+import { registerIdentityFields } from "./services/character/fields/identityFields.ts";
+import { registerBackgroundFields } from "./services/character/fields/backgroundFields.ts";
+import { registerLinkFields } from "./services/character/fields/linkFields.ts";
+import { characterAppearanceEditService } from "./services/character/edit/CharacterAppearanceEditService.ts";
+import { characterBackgroundEditService } from "./services/character/edit/CharacterBackgroundEditService.ts";
+import { characterLinksEditService } from "./services/character/edit/CharacterLinksEditService.ts";
 
 // --------------------------------------------------------
 // Process-level guards — prevent crash loops from
@@ -209,16 +221,20 @@ client.once(Events.ClientReady, async (readyClient: Client<true>) => {
 });
 
 client.once(Events.ClientReady, async (client) => {
-	console.log(`Logged in as ${client.user.tag}`);
+  console.log(`Logged in as ${client.user.tag}`);
 
-	const connected = await checkDatabase();
+  const connected = await checkDatabase();
 
-	if (!connected) {
-		console.error(
-			"Database unavailable. Bot functionality may fail."
-		);
-	}
+  if (!connected) {
+    console.error("Database unavailable. Bot functionality may fail.");
+  }
 });
+
+// Register field handlers
+registerAppearanceFields();
+registerIdentityFields();
+registerBackgroundFields();
+registerLinkFields();
 
 // --------------------------------------------------------
 // Interaction handler
@@ -226,17 +242,93 @@ client.once(Events.ClientReady, async (client) => {
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
   if (interaction.isModalSubmit()) {
+    if (interaction.customId.startsWith("character-edit-")) {
+      await characterFieldEditService.handleModal(interaction);
+      return;
+    }
+
+    if (interaction.customId === "list-editor-value-modal") {
+        const session = characterEditSessionStore.get(interaction.user.id);
+    
+        if (!session) return;
+    
+        await listEditorService.handleModal(interaction, session);
+        return;
+      }
+
     await characterWizardService.handleModal(interaction);
     return;
   }
 
   if (interaction.isStringSelectMenu()) {
-    await characterWizardService.handleSelectMenu(interaction);
+    const session = characterEditSessionStore.get(interaction.user.id);
+
+    switch (interaction.customId) {
+      case "character-edit-select":
+        await characterEditService.handleSelection(interaction);
+        break;
+
+      case "character-edit-section":
+        await characterEditorFlowService.handleSectionSelection(interaction);
+        break;
+
+      case "character-edit-identity-field":
+        await characterIdentityEditService.handleIdentityField(interaction);
+        break;
+
+      case "character-edit-appearance-field":
+        await characterAppearanceEditService.handleAppearanceField(interaction);
+        break;
+
+      case "character-edit-background-field":
+        await characterBackgroundEditService.handleBackgroundField(interaction);
+        break;
+
+      case "list-editor-edit-item":
+      case "list-editor-delete-item":
+        if (!session?.listEditor) return;
+
+        await listEditorService.handleSelection(interaction, session);
+        break;
+
+      default:
+        await characterWizardService.handleSelectMenu(interaction);
+        break;
+    }
+
     return;
   }
 
   if (interaction.isButton()) {
-    await characterWizardService.handleButton(interaction);
+    const session = characterEditSessionStore.get(interaction.user.id);
+
+    switch (interaction.customId) {
+      case "list-editor-add":
+      case "list-editor-edit":
+      case "list-editor-delete":
+      case "list-editor-back":
+        if (!session?.listEditor) return;
+
+        await listEditorService.handleButton(interaction, session);
+        break;
+      case "character-edit-back-sections":
+        await characterEditorFlowService.showSections(interaction);
+        break;
+      case "character-edit-sheet-url":
+        await characterLinksEditService.edit(interaction);
+        break;
+        case "character-edit-save":
+          await characterEditorFlowService.save(interaction);
+          break;
+        
+        case "character-edit-discard":
+          await characterEditorFlowService.discard(interaction);
+          break;
+      default:
+        await characterWizardService.handleButton(interaction);
+        break;
+    }
+
     return;
   }
 

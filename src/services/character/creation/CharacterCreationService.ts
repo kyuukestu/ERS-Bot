@@ -2,6 +2,7 @@ import { supabase } from "~/database/supabase/supabase";
 import type { CharacterDraft } from "~/types/character";
 import { type ButtonInteraction, MessageFlags } from "discord.js";
 import { characterSessionStore } from "./CharacterSessionStore";
+import { userService } from "~/services/user/userService";
 
 type CreatedCharacter = {
   id: string;
@@ -16,11 +17,13 @@ class CharacterCreationService {
         full_name: data.fullName ?? "Unknown",
         category: "oc",
         origin_region_id: data.originRegion,
-        current_region_id: data.associatedRegion,
+        associated_region_id: data.associatedRegion,
         gender: data.gender,
       })
       .select()
       .single();
+
+    
 
     if (error) {
       throw error;
@@ -57,6 +60,9 @@ class CharacterCreationService {
     try {
       const character = await characterCreationService.create(wizard.data);
 
+      const userId = await userService.getOrCreateUser(interaction.user.id, interaction.user.username);
+      await userService.linkUser(userId, character.id)
+      
       characterSessionStore.delete(interaction.user.id);
 
       await interaction.editReply({

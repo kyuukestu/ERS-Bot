@@ -2,7 +2,8 @@ import {
 	ChatInputCommandInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle,
+  ButtonStyle,
+  MessageFlags,
 	EmbedBuilder,
 } from 'discord.js';
 
@@ -77,7 +78,7 @@ ${rows}
 		if (i.user.id !== interaction.user.id) {
 			return i.reply({
 				content: 'You cannot control this pagination.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 		}
 

@@ -75,7 +75,7 @@ export default {
 				if (btnInteraction.user.id !== interaction.user.id) {
 					return btnInteraction.reply({
 						content: "These buttons aren't for you!",
-						ephemeral: true,
+						flags: MessageFlags.Ephemeral,
 					});
 				}
 

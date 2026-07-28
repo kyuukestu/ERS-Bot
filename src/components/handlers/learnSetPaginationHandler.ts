@@ -1,8 +1,9 @@
-import type {
-	Message,
-	MessageComponentInteraction,
-	ButtonInteraction,
-	StringSelectMenuInteraction,
+import  {
+type	Message,
+type	MessageComponentInteraction,
+type	ButtonInteraction,
+type  StringSelectMenuInteraction,
+  MessageFlags,
 } from 'discord.js';
 import type {
 	LearnMethodKey,
@@ -103,7 +104,7 @@ export const setupMessageCollector = async (
 		if (i.user.id !== userId) {
 			await i.reply({
 				content: 'This interaction is not for you.',
-				ephemeral: true,
+				flags: MessageFlags.Ephemeral,
 			});
 			return;
 		}
