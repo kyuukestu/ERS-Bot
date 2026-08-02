@@ -28,7 +28,7 @@ export const createAttackEmbed = (
 				inline: true,
 			},
 			{ name: '💪 Power', value: moveInfo.power.toString(), inline: true },
-			{ name: '🎯 Accuracy', value: `${moveInfo.accuracy}`, inline: true },
+			{ name: '🎯 Accuracy', value: `${moveInfo.accuracy}%`, inline: true },
 			{
 				name: '🎲 Effect Chance',
 				value: moveInfo.effect_chance.toString(),
