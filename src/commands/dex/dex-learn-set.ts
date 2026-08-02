@@ -120,7 +120,7 @@ export default {
 		try {
 			const searchName = [pokemonInput, form].filter(Boolean).join('-');
 
-			const { speciesName, formName } = await matchPokemonSpecies(searchName);
+			const { speciesName, formName } = matchPokemonSpecies(searchName);
 			const apiName = formName || speciesName;
 
 			let rawData;

@@ -32,14 +32,14 @@ export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
 			moveInfo.learned_by_pokemon,
 		);
 
-		await interaction.followUp({
-			content: `Best Match for ${moveName}: ${
-				result.bestMatch.name
-			}\n\nOther matches:\n${result.otherMatches
-				.map((move) => move.name)
-				.join('\n')}`,
-			flags: MessageFlags.Ephemeral,
-		});
+		// await interaction.followUp({
+		// 	content: `Best Match for ${moveName}: ${
+		// 		result.bestMatch.name
+		// 	}\n\nOther matches:\n${result.otherMatches
+		// 		.map((move) => move.name)
+		// 		.join('\n')}`,
+		// 	flags: MessageFlags.Ephemeral,
+		// });
 	} catch (error) {
 		console.error('Error fetching move data:', error);
 
@@ -56,16 +56,16 @@ export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
 			})
 			.setTimestamp();
 
-		const result = matchMoveName(moveName);
+		// const result = matchMoveName(moveName);
 
-		await interaction.followUp({
-			content: `Best Match for ${moveName}: ${
-				result.bestMatch.name
-			}\n\nOther matches:\n${result.otherMatches
-				.map((move) => move.name)
-				.join('\n')}`,
-			flags: MessageFlags.Ephemeral,
-		});
+		// await interaction.followUp({
+		// 	content: `Best Match for ${moveName}: ${
+		// 		result.bestMatch.name
+		// 	}\n\nOther matches:\n${result.otherMatches
+		// 		.map((move) => move.name)
+		// 		.join('\n')}`,
+		// 	flags: MessageFlags.Ephemeral,
+		// });
 
 		if (interaction.replied || interaction.deferred) {
 			await interaction.editReply({ embeds: [errorEmbed] });

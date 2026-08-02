@@ -280,12 +280,12 @@ export default {
 				files: [statsImage],
 			});
 
-			await interaction.followUp({
-				content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
-					.map((match) => `- ${match.speciesName}`.trim())
-					.join('\n')}`,
-				flags: MessageFlags.Ephemeral,
-			});
+			// await interaction.followUp({
+			// 	content: `Best Match: ${firstMatch}\n\nOther Matches:\n${otherMatches
+			// 		.map((match) => `- ${match.speciesName}`.trim())
+			// 		.join('\n')}`,
+			// 	flags: MessageFlags.Ephemeral,
+			// });
 
 			// Handle menu interactions
 			const collector = interaction.channel?.createMessageComponentCollector({
