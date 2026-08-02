@@ -70,7 +70,8 @@ export interface MoveData {
 		version_group: { name: string };
 	}[];
 	meta?: {
-		ailment: { name: string };
+    ailment: { name: string };
+		category: { name: string };
 		stat_chance: number;
 		ailment_chance: number;
 		flinch_chance: number;

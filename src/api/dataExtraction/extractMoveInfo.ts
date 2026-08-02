@@ -72,9 +72,6 @@ export const extractMoveInfo = (rawData: unknown) => {
 
 	const formattedName = formatName(name);
 
-	const accuracyPercentage =
-		accuracy !== null && accuracy !== undefined ? `${accuracy}%` : 'N/A';
-
 	const effectChance =
 		effect_chance !== null && effect_chance !== undefined
 			? `${effect_chance}%`
@@ -88,7 +85,7 @@ export const extractMoveInfo = (rawData: unknown) => {
 	return {
 		name: formattedName,
 		stat_changes: stat_changes,
-		accuracy: accuracyPercentage,
+		accuracy: accuracy,
 		effect_entries: effect_entries,
 		effect_chance: effectChance,
 		priority: priority.toString(),

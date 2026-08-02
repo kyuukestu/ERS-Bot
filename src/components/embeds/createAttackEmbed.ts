@@ -2,10 +2,12 @@ import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { type MoveInfo } from '~/api/dataExtraction/extractMoveInfo';
 import { typeColors } from '~/ui/colors';
 import { moveEmojis } from '~/ui/emojis';
+
 export const createAttackEmbed = (
 	interaction: ChatInputCommandInteraction,
 	moveInfo: MoveInfo
 ) => {
+  
 	const embed = new EmbedBuilder()
 		.setColor(typeColors[moveInfo.type] || typeColors['normal'])
 		.setTitle(
