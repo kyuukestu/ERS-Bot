@@ -64,7 +64,7 @@ export default {
 			await interaction.deferReply();
 
 			const { speciesName, formName, firstMatch, otherMatches } =
-				await matchPokemonSpecies(`${pokemonName} ${form}`);
+				 matchPokemonSpecies(`${pokemonName} ${form}`);
 
 			console.log(
 				`First Match: ${firstMatch}; Matched Name: ${speciesName}; Matched Form: ${formName}; Other Matches: ${otherMatches}`

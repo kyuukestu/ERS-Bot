@@ -1,7 +1,6 @@
 import {
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
-	MessageFlags,
 } from 'discord.js';
 import { formatUserInput } from '~/utility/formatting/formatUserInput.ts';
 import { matchMoveName } from '~/utility/fuzzy-search/moves.ts';
