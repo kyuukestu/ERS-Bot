@@ -11,7 +11,7 @@
 		"eslint": "^9.39.5",
 		"globals": "^16.5.0",
 		"jiti": "^2.7.0",
-		"typescript-eslint": "^8.64.0"
+		"typescript-eslint": "^8.65.0"
 	},
 	"peerDependencies": {
 		"typescript": "^5.8.2"
@@ -19,11 +19,11 @@
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.100",
 		"@smogon/calc": "^0.10.0",
-		"@supabase/supabase-js": "^2.110.7",
+		"@supabase/supabase-js": "^2.111.0",
 		"@types/node": "^24.13.3",
 		"@types/node-fetch": "^2.6.13",
-		"axios": "^1.18.1",
-		"axios-cache-interceptor": "^1.12.0",
+		"axios": "^1.19.0",
+		"axios-cache-interceptor": "^1.12.1",
 		"better-sqlite3": "^12.11.1",
 		"canvas": "^3.2.3",
 		"date-fns": "^4.4.0",
@@ -32,7 +32,7 @@
 		"fast-xml-parser": "^5.10.1",
 		"fetch": "^1.1.0",
 		"fuse.js": "^7.5.0",
-		"mongoose": "^8.24.1",
+		"mongoose": "^8.24.2",
 		"node-fetch": "^3.3.2",
 		"pm2": "^6.0.14",
 		"pokenode-ts": "^1.20.0",
