@@ -15,30 +15,30 @@ const CRIT_RATE_VALUE = 1500;
 
 const POWER_VALUES = {
   STATUS: 500,
-  NON_STANDARD_DAMAGE: 7500,
+  NON_STANDARD_DAMAGE: 2000,
 };
 
 const ACCURACY = {
   BASE_THRESHOLD: 80,
   PER_POINT: 20,
-  NEVER_MISS: 1500,
+  NEVER_MISS: 650,
 };
 
 const STATUS_VALUES: Record<string, number> = {
-  burn: 3000,
-  paralysis: 3500,
   freeze: 6000,
   sleep: 5000,
-  poison: 2500,
   badly_poisoned: 4500,
-  confusion: 2500,
+  burn: 3000,
+  paralysis: 3500,
+  poison: 2500,
   flinch: 2500,
+  confusion: 2500,
+  encore: 3000,
+  taunt: 3000,
   infatuation: 2000,
   trap: 2000,
   nightmare: 1500,
   disable: 2500,
-  encore: 3000,
-  taunt: 3000,
   torment: 2500,
   heal_block: 2500,
 };
