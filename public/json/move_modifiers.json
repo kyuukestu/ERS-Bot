@@ -1,0 +1,34 @@
+{
+  "scale-shot": {
+    "stat_changes": [
+      {
+        "change": 1,
+        "stat": {
+          "name": "speed"
+        }
+      }
+    ]
+  },
+  "victory-dance": {
+    "stat_changes": [
+      {
+        "change": 1,
+        "stat": {
+          "name": "attack"
+        }
+      },
+      {
+        "change": 1,
+        "stat": {
+          "name": "defense"
+        }
+      },
+      {
+        "change": 1,
+        "stat": {
+          "name": "speed"
+        }
+      }
+    ]
+  }
+}
