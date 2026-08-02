@@ -26,7 +26,6 @@ export const buildPokemonEmbed = (
 	showShiny: boolean,
 	username: string,
 	avatarURL: string,
-	matchSummary: string,
 ) => {
 	const embedColor = typeColors[getPrimaryType(pokemonInfo)] || 0xffcc00;
 
@@ -56,7 +55,6 @@ export const buildPokemonEmbed = (
 		.addFields(
 			{ name: '** 🏷️ TYPES**', value: types, inline: true },
 			{ name: '** 🎯 ABILITIES**', value: abilities, inline: true },
-			{ name: '** 📊 MATCHES**', value: matchSummary, inline: false },
 			{
 				name: '** 📏 PHYSICAL **',
 				value: `> **Height:** ${pokemonInfo.height} m\n**Weight:** ${pokemonInfo.weight} kg`,
