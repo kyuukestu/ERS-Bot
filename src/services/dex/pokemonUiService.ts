@@ -101,25 +101,25 @@ export const buildPokemonViewActionRow = (hasSpriteGallery: boolean) => {
 	);
 };
 
-export const buildPokemonMatchSummary = (
-	bestMatch: string,
-	otherMatches: Array<{ speciesName?: string }>,
-) => {
-	if (otherMatches.length === 0) {
-		return `Best Match: ${bestMatch}\nNo alternate matches found.`;
-	}
+// export const buildPokemonMatchSummary = (
+// 	bestMatch: string,
+// 	otherMatches: Array<{ speciesName?: string }>,
+// ) => {
+// 	if (otherMatches.length === 0) {
+// 		return `Best Match: ${bestMatch}\nNo alternate matches found.`;
+// 	}
 
-	const displayedMatches = otherMatches
-		.slice(0, 3)
-		.map((match) => match.speciesName ?? 'Unknown')
-		.join(', ');
+// 	const displayedMatches = otherMatches
+// 		.slice(0, 3)
+// 		.map((match) => match.speciesName ?? 'Unknown')
+// 		.join(', ');
 
-	return `Best Match: ${bestMatch}\n${otherMatches.length} alternate match${
-		otherMatches.length === 1 ? '' : 'es'
-	} found. Examples: ${displayedMatches}${
-		otherMatches.length > 3 ? `, and ${otherMatches.length - 3} more.` : ''
-	}`;
-};
+// 	return `Best Match: ${bestMatch}\n${otherMatches.length} alternate match${
+// 		otherMatches.length === 1 ? '' : 'es'
+// 	} found. Examples: ${displayedMatches}${
+// 		otherMatches.length > 3 ? `, and ${otherMatches.length - 3} more.` : ''
+// 	}`;
+// };
 
 export const handlePokedexEntries = async (
 	interaction: ButtonInteraction,

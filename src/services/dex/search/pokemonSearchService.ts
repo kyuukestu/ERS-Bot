@@ -1,7 +1,7 @@
 // services/PokemonSearchService.ts
 
 import Fuse from 'fuse.js';
-import pokemonListRaw from '../../../public/json/pokemon-list.json';
+import pokemonListRaw from '../../../../public/json/pokemon-list.json';
 
 export type PokemonSearchEntry = {
 	name: string;
@@ -44,7 +44,7 @@ class PokemonSearchService {
 		});
 	}
 
-	search(query: string) {
+	search(query: string): PokemonSearchEntry[] {
 		if (!query) {
 			return pokemonList.slice(0, 25);
 		}

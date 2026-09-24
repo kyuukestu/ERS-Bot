@@ -5,7 +5,8 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	type ChatInputCommandInteraction,
-	ComponentType,
+  ComponentType,
+	MessageFlags
 } from 'discord.js';
 
 import type { Fakemon } from '~/api/dataExtraction/extractFakemonInfoFuse';
@@ -15,7 +16,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-list-fakemon')
+		.setName('list-fakemon')
 		.setDescription('Lists all fakemon alphabetically'),
 
 	async execute(interaction: ChatInputCommandInteraction) {

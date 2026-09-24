@@ -3,6 +3,7 @@ import type { CharacterDraft } from "~/types/character";
 import { type ButtonInteraction, MessageFlags } from "discord.js";
 import { characterSessionStore } from "./CharacterSessionStore";
 import { userService } from "~/services/user/userService";
+import { characterEditSessionStore } from "../edit/CharacterEditSessionStore";
 
 type CreatedCharacter = {
   id: string;
@@ -78,8 +79,10 @@ class CharacterCreationService {
     } catch (error) {
       console.error("Character creation failed:", error);
 
+      characterEditSessionStore.delete(interaction.user.id);
+      
       await interaction.editReply({
-        content: "Failed to create character.",
+        content: "Failed to create character.\nCharacter creation has been cancelled.\nPlease try again.",
         components: [],
       });
     }

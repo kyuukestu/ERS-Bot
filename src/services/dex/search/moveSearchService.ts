@@ -1,7 +1,5 @@
-// services/PokemonSearchService.ts
-
 import Fuse from 'fuse.js';
-import moveListRaw from '../../../public/json/moves-list.json';
+import moveListRaw from '../../../../public/json/moves-list.json';
 
 export type MoveSearchEntry = {
 	name: string;
@@ -17,13 +15,13 @@ class MoveSearchService {
 
 	constructor() {
 		this.fuse = new Fuse(moveList, {
-			keys: ['name', 'speciesName', 'formName'],
+			keys: ['name'],
 			threshold: 0.3,
 			ignoreLocation: true,
 		});
 	}
 
-	search(query: string) {
+	search(query: string): MoveSearchEntry[] {
 		if (!query) {
 			return moveList.slice(0, 25);
 		}

@@ -4,9 +4,10 @@ import {
   type SlashCommandStringOption,
   type SlashCommandIntegerOption,
   type AutocompleteInteraction,
+  
 } from "discord.js";
 import { typeChoices } from "~/database/typeChoices.ts";
-import { moveSearchService } from "~/services/dex/moveSearchService.ts";
+import { moveSearchService } from "~/services/dex/search/moveSearchService";
 import { getMoveInfo } from "~/components/handlers/getMoveInfo";
 import { getTRPrice } from "~/components/handlers/getTRPrice";
 import { getFilterListMoves } from "~/components/handlers/getFilterListMove";
@@ -14,7 +15,7 @@ import { getFilterListPokemon } from "~/components/handlers/getFilterListPokemon
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("dex-moves")
+    .setName("moves")
     .setDescription(
       "Provides information about a Pokémon move or searches for a list of moves based on criteria.",
     )
@@ -22,20 +23,6 @@ export default {
       group
         .setName("move-info")
         .setDescription("Provides information about a Pokémon move.")
-        .addSubcommand((sub) =>
-          sub
-            .setName("move")
-            .setDescription(
-              "Provides information about a Pokémon move e.g. Glaciate, Searing Shot, Toxic Thread, etc.",
-            )
-            .addStringOption((option: SlashCommandStringOption) =>
-              option
-                .setName("move")
-                .setDescription("Enter the move name.")
-                .setAutocomplete(true)
-                .setRequired(true),
-            ),
-        )
         .addSubcommand((sub) =>
           sub
             .setName("tr-price")

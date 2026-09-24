@@ -25,7 +25,7 @@ import type {
 	GroupedMove,
 	LearnMethodConfig,
 } from '~/types/learnSetTypes';
-import { pokemonSearchService } from '~/services/dex/pokemonSearchService';
+import { pokemonSearchService } from '~/services/dex/search/pokemonSearchService';
 // import { version_convert } from '~/utility/formatting/formatVersion';
 
 /* ============================================================
@@ -62,7 +62,7 @@ const addPokemonAndFormOptions = (sub: SlashCommandSubcommandBuilder) =>
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-learn-set')
+		.setName('learn-set')
 		.setDescription("View a Pokémon's learnable moves.")
 		.addSubcommand((sub) =>
 			addPokemonAndFormOptions(

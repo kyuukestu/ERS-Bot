@@ -157,7 +157,7 @@ export const formatMoveLine = (
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('fakedex-learn-set')
+		.setName('learn-set-fakemon')
 		.setDescription("View a Pokémon's learnable moves.")
 		.addSubcommand((sub) =>
 			sub
@@ -284,8 +284,6 @@ export default {
 			);
 
 			const name = fakemonData.name;
-			const sprite = fakemonData.sprite;
-			const defaultSprite = '../../../public/sprites-fakemon/MissingNo.1.webp';
 
 			const moves = processMoveData(fakemonData);
 			const groupedMoves = groupAndSortMoves(moves);
