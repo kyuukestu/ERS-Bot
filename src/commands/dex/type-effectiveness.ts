@@ -28,7 +28,7 @@ async function ensureDir() {
 
 export default {
 	data: new SlashCommandBuilder()
-		.setName('dex-type-effectiveness')
+		.setName('type-effectiveness')
 		.setDescription(
 			'Shows type effectiveness for a combination of up to three types.',
 		)
