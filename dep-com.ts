@@ -97,11 +97,11 @@ const rest = new REST().setToken(token);
 		);
 
 		console.log(
-			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId}.\n` +
-				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId}.` +
-				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId}.` +
-				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId}.` +
-				`\nSuccessfully reloaded ${data4.length} application (/) commands for guild ${syncLaeleId}.`,
+			`Successfully reloaded ${data.length} application (/) commands for guild ${guildId} | Pokemon Server.\n` +
+				`Successfully reloaded ${dataO.length} application (/) commands for guild ${outbackguildId} | Outback Server.` +
+				`\nSuccessfully reloaded ${data1.length} application (/) commands for guild ${syncId} | Sync Server.` +
+				`\nSuccessfully reloaded ${data3.length} application (/) commands for guild ${mhapokeId} | MHA Server.` +
+				`\nSuccessfully reloaded ${data4.length} application (/) commands for guild ${syncLaeleId} | Laele Server.`,
 			`\nSuccessfully reloaded ${data5.length} application (/) commands for guild ${TAE}.`,
 		);
 	} catch (error) {
