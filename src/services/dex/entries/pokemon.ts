@@ -26,7 +26,7 @@ import {
   handlePokedexEntries,
 } from "~/services/dex/pokemonUiService.ts";
 import { handleSpriteGallery } from "~/components/handleSpriteGallery";
-import { pokemonSearchService } from "~/services/dex/search/pokemonSearchService";
+import { pokemonSearchService } from "~/services/dex/fuzzy-search/pokemonSearchService";
 
 export const buildPokemonSubcommand = (subcommand: SlashCommandSubcommandBuilder) =>
   subcommand

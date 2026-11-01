@@ -10,7 +10,8 @@ import { createAttackEmbed } from '~/components/embeds/createAttackEmbed';
 import { movePaginatedList } from '~/components/pagination/movePagination';
 
 export async function getMoveInfo(interaction: ChatInputCommandInteraction) {
-	const moveName = formatUserInput(interaction.options.getString('move', true));
+  const moveName = formatUserInput(interaction.options.getString('move', true));
+  console.log(`Selected move: ${moveName}`);
 
 	try {
 		await interaction.deferReply();

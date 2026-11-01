@@ -8,7 +8,7 @@ import { abilityEndPoint } from '~/api/endpoints.ts';
 import { extractAbilityInfo } from '~/api/dataExtraction/extractAbilityInfo.ts';
 import { createAbilityEmbed } from '~/components/embeds/createAbilityEmbed.ts';
 import { abilityPaginationList } from '~/components/pagination/abilityPagination.ts';
-import { abilitySearchService } from '~/services/dex/search/abilitySearchService.ts';
+import { abilitySearchService } from '~/services/dex/fuzzy-search/abilitySearchService';
 
 export const buildAbilitySubcommand = (
 	subcommand: SlashCommandSubcommandBuilder,

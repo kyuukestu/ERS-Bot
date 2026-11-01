@@ -1,3 +1,4 @@
+
 import {
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
@@ -6,33 +7,34 @@ import {
 	ActionRowBuilder,
 } from 'discord.js';
 import type { PokemonList } from '~/types/dexTypes';
-/**
- * * This pagination function accepts a list of type 'Pokemon LIST'
- * TODO:  This can maybe be refactored in concert with other Pokemon Lists and then extract as one Pokemon Paginator.
- */
+
+interface PokemonPaginationOptions {
+	interaction: ChatInputCommandInteraction;
+	matches: PokemonList;
+	moveName?: string | null;
+	abilityName?: string | null;
+	type1?: string | null;
+	type2?: string | null;
+}
 
 export async function sendPaginatedPokemonEmbed({
 	interaction,
+	matches,
 	moveName,
+	abilityName,
 	type1,
 	type2,
-	matches,
-}: {
-	interaction: ChatInputCommandInteraction;
-	moveName: string;
-	type1: string | null;
-	type2: string | null;
-	matches: PokemonList;
-}) {
-	// ----- config -----
+}: PokemonPaginationOptions) {
 	const PAGE_SIZE = 10;
 
 	// ----- paginate helper -----
 	function paginate<T>(items: T[], pageSize: number): T[][] {
 		const pages: T[][] = [];
+
 		for (let i = 0; i < items.length; i += pageSize) {
 			pages.push(items.slice(i, i + pageSize));
 		}
+
 		return pages;
 	}
 
@@ -45,21 +47,37 @@ export async function sendPaginatedPokemonEmbed({
 	const pages = paginate(matches, PAGE_SIZE);
 	let currentPage = 0;
 
+	// ----- search criteria -----
+	const criteria: string[] = [];
+
+	if (moveName) criteria.push(`Move: ${moveName}`);
+	if (abilityName) criteria.push(`Ability: ${abilityName}`);
+
+	const selectedTypes = [type1, type2].filter(
+		(type): type is string => Boolean(type),
+	);
+
+	if (selectedTypes.length > 0) {
+		criteria.push(`Type: ${selectedTypes.join(' / ')}`);
+	}
+
+	const criteriaMessage =
+		criteria.length > 0 ? criteria.join(' | ') : 'All Pokémon';
+
 	// ----- embed builder -----
 	function buildEmbed(page: number) {
 		const pageData = pages[page];
 
-		const typeMessage =
-			type1 || type2 ? [type1, type2].filter(Boolean).join(' / ') : 'ALL';
-
 		return new EmbedBuilder()
-			.setTitle(
-				`Pokemon who learn: ${moveName} - Types: ${typeMessage} (${page + 1}/${pages.length})`,
-			)
+			.setTitle(`Pokémon Search (${page + 1}/${pages.length})`)
 			.setDescription(
-				pageData
-					.map((p) => `• **${p.name}** (${p.types.join(', ')})`)
-					.join('\n'),
+				[
+					`**Criteria:** ${criteriaMessage}`,
+					'',
+					...pageData.map(
+						(p) => `• **${p.name}** (${p.types.join(', ')})`,
+					),
+				].join('\n'),
 			);
 	}
 
@@ -91,11 +109,11 @@ export async function sendPaginatedPokemonEmbed({
 		time: 60_000,
 	});
 
-	collector.on('collect', (i) => {
+	collector.on('collect', async (i) => {
 		if (i.customId === 'prev') currentPage--;
 		if (i.customId === 'next') currentPage++;
 
-		i.update({
+		await i.update({
 			embeds: [buildEmbed(currentPage)],
 			components: [buildRow(currentPage)],
 		});

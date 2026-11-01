@@ -9,7 +9,7 @@ import { itemEndPoint } from '~/api/endpoints';
 import type { ItemData } from '~/interface/apiData';
 import { extractItemInfo } from '~/api/dataExtraction/extractItemInfo.ts';
 import { createItemEmbed } from '~/components/embeds/createItemEmbed.ts';
-import { itemSearchService } from '~/services/dex/search/itemSearchService.ts';
+import { itemSearchService } from '~/services/dex/fuzzy-search/itemSearchService';
 
 export const buildItemSubcommand = (
 	subcommand: SlashCommandSubcommandBuilder,

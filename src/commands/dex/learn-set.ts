@@ -25,7 +25,7 @@ import type {
 	GroupedMove,
 	LearnMethodConfig,
 } from '~/types/learnSetTypes';
-import { pokemonSearchService } from '~/services/dex/search/pokemonSearchService';
+import { pokemonSearchService } from '~/services/dex/fuzzy-search/pokemonSearchService';
 // import { version_convert } from '~/utility/formatting/formatVersion';
 
 /* ============================================================
@@ -48,12 +48,6 @@ const addPokemonAndFormOptions = (sub: SlashCommandSubcommandBuilder) =>
 				.setDescription('Enter the Pokémon name.')
 				.setAutocomplete(true)
 				.setRequired(true),
-		)
-		.addStringOption((o) =>
-			o
-				.setName('form')
-				.setDescription('Enter the form name.')
-				.setRequired(false),
 		);
 
 /* ============================================================
